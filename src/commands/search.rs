@@ -6,11 +6,21 @@ pub fn search(cmd: SearchCommand, conn: &Connection) -> Result <()> {
     let pattern = format!("%{}%", cmd.content);
 
     let mut statement = conn.prepare(
-        "SELECT * FROM notes
+        "SELECT id, note FROM notes
         WHERE note LIKE ?1",
     )?;
 
-    let _ = statement.query([pattern])?;
+    let rows = statement.query_map([pattern], |row| {
+        Ok((
+            row.get::<_, i64>(0)?,
+            row.get::<_, String>(1)?,
+        ))
+    })?;
+
+    for row in rows {
+        let (id, note) = row?;
+        println!("{}: {}", id, note);
+    }
 
     Ok(())
 }

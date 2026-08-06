@@ -34,9 +34,21 @@ fn try_main() -> rusqlite::Result<()> {
 
 fn run(cli: Cli, conn: &Connection) -> rusqlite::Result<()> {
     match cli.command {
-        Some(Commands::New(cmd)) => commands::new::new(cmd, conn)?,
-        Some(Commands::Update(cmd)) => commands::update::update(cmd, conn)?,
-        Some(Commands::Delete(cmd)) => commands::delete::delete(cmd, conn)?,
+        Some(Commands::New(cmd)) => {
+            commands::new::new(cmd, conn)?;
+            println!("Note added!");
+        },
+
+        Some(Commands::Update(cmd)) => {
+            commands::update::update(cmd, conn)?;
+            println!("Note updated!");
+        },
+
+        Some(Commands::Delete(cmd)) => {
+            commands::delete::delete(cmd, conn)?;
+            println!("Note deleted!");
+        },
+
         Some(Commands::All(_)) => commands::all::all(conn)?,
         Some(Commands::Search(cmd)) => commands::search::search(cmd, conn)?,
         Some(Commands::Version) => commands::version::version(),

@@ -27,7 +27,7 @@ pub enum Commands {
 
 #[derive(Args, Clone)]
 pub struct NewCommand {
-    pub note: String,
+    pub note: Vec<String>,
 }
 
 #[derive(Parser, Debug, Clone)]
