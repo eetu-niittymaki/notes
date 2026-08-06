@@ -49,6 +49,11 @@ fn run(cli: Cli, conn: &Connection) -> rusqlite::Result<()> {
             println!("Note deleted!");
         },
 
+        Some(Commands::Out(cmd)) => {
+            commands::out::out(cmd, conn)?;
+            println!("Notes exported!");
+        },
+
         Some(Commands::All(_)) => commands::all::all(conn)?,
         Some(Commands::Search(cmd)) => commands::search::search(cmd, conn)?,
         Some(Commands::Version) => commands::version::version(),

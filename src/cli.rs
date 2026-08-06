@@ -19,8 +19,10 @@ pub enum Commands {
     Delete(DeleteCommand),
     /// Get all notes
     All(AllCommand),
-    /// Search for notes for specific content
+    /// Search notes for specific content
     Search(SearchCommand),
+    /// Export all notes to file (.md)
+    Out(OutCommand),
     /// Prints the programs version number
     Version
 }
@@ -29,6 +31,9 @@ pub enum Commands {
 pub struct NewCommand {
     pub note: Vec<String>,
 }
+
+#[derive(Parser, Debug, Clone)]
+pub struct AllCommand {}
 
 #[derive(Parser, Debug, Clone)]
 pub struct UpdateCommand {
@@ -44,9 +49,11 @@ pub struct DeleteCommand {
 }
 
 #[derive(Parser, Debug, Clone)]
-pub struct AllCommand {}
-
-#[derive(Parser, Debug, Clone)]
 pub struct SearchCommand {
     pub content: String,
+}
+
+#[derive(Parser, Debug, Clone)]
+pub struct OutCommand {
+    pub filetype: String,
 }
