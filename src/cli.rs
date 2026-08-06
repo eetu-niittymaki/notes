@@ -1,4 +1,4 @@
-use clap::{Parser, Subcommand};
+use clap::{Parser, Args, Subcommand};
 
 #[derive(Parser)]
 #[command(name = "notes")]
@@ -25,24 +25,22 @@ pub enum Commands {
     Version
 }
 
-#[derive(Parser, Debug, Clone)]
+#[derive(Args, Clone)]
 pub struct NewCommand {
-    #[arg(short, long, help="Notes content")]
     pub note: String,
 }
 
 #[derive(Parser, Debug, Clone)]
 pub struct UpdateCommand {
     #[arg(short, long, help="ID for note to change")]
-    pub id:u32,
+    pub id: i64,
     #[arg(short, long, help="Notes new content")]
     pub new_content: String,
 }
 
 #[derive(Parser, Debug, Clone)]
 pub struct DeleteCommand {
-    #[arg(short, long, help="ID for note to delete")]
-    pub id: u32,
+    pub id: i64,
 }
 
 #[derive(Parser, Debug, Clone)]
@@ -50,6 +48,5 @@ pub struct AllCommand {}
 
 #[derive(Parser, Debug, Clone)]
 pub struct SearchCommand {
-    #[arg(short, long, help="Search content from notes")]
     pub content: String,
 }
