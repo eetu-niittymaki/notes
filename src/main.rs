@@ -23,8 +23,12 @@ fn try_main() -> rusqlite::Result<()> {
 
     conn.execute(
         "CREATE TABLE IF NOT EXISTS notes (
-            ID INTEGER PRIMARY KEY,
-            NOTE TEXT NOT NULL
+            id INTEGER PRIMARY KEY,
+            title TEXT NOT NULL,
+            content TEXT NOT NULL,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            favorite BOOLEAN NOT NULL DEFAULT 0
         )",
         (),
     )?;

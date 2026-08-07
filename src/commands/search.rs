@@ -6,8 +6,8 @@ pub fn search(cmd: SearchCommand, conn: &Connection) -> Result <()> {
     let pattern = format!("%{}%", cmd.content);
 
     let mut statement = conn.prepare(
-        "SELECT id, note FROM notes
-        WHERE note LIKE ?1",
+    "SELECT title, content FROM notes
+        WHERE content LIKE ?1",
     )?;
 
     let rows = statement.query_map([pattern], |row| {

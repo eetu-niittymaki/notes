@@ -29,7 +29,8 @@ pub enum Commands {
 
 #[derive(Args, Clone)]
 pub struct NewCommand {
-    pub note: Vec<String>,
+    pub title: String,
+    pub content: String,
 }
 
 #[derive(Parser, Debug, Clone)]
@@ -37,13 +38,13 @@ pub struct AllCommand {}
 
 #[derive(Parser, Debug, Clone)]
 pub struct UpdateCommand {
-    pub id: i64,
+    pub title: String,
     pub new_content: String,
 }
 
 #[derive(Parser, Debug, Clone)]
 pub struct DeleteCommand {
-    pub id: Option<i64>,
+    pub title: Option<String>,
     #[arg(short='a', long="all", help="Delete all notes")]
     pub all: bool,
 }

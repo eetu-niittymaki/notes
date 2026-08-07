@@ -18,13 +18,14 @@ pub fn out(cmd: OutCommand, conn: &Connection) -> Result<()> {
         std::process::exit(1);
     }
 
-    let mut statement = conn.prepare("SELECT id, note FROM notes")?;
+    let mut statement = conn.prepare("SELECT id, title, content FROM notes")?;
 
-    let rows: Vec<(i64, String)> = statement
+    let rows: Vec<(i64, String, String)> = statement
         .query_map([], |row| {
             Ok((
                 row.get::<_, i64>(0)?,
                 row.get::<_, String>(1)?,
+                row.get::<_, String>(2)?,
             ))
         })?
         .collect::<Result<_, _>>()?;
@@ -49,7 +50,7 @@ pub fn out(cmd: OutCommand, conn: &Connection) -> Result<()> {
     Ok(())
 }
 
-fn export_text(cmd: &OutCommand, rows: &[(i64, String)], outfile_path: PathBuf) {
+fn export_text(cmd: &OutCommand, rows: &[(i64, String, String)], outfile_path: PathBuf) {
     let mut file = OpenOptions::new()
         .create(true)
         .write(true)
@@ -59,14 +60,14 @@ fn export_text(cmd: &OutCommand, rows: &[(i64, String)], outfile_path: PathBuf) 
 
     match cmd.filetype.as_str() {
         "txt" => {
-            for (_, note) in rows {
-                writeln!(file, "{note}").unwrap();
+            for (_, title, content) in rows {
+                writeln!(file, "{title}: {content}").unwrap();
             }
         }
 
         "md" => {
-            for (_, note) in rows {
-                writeln!(file, "## {note}").unwrap();
+            for (_, title, content) in rows {
+                writeln!(file, "## {title}: {content}").unwrap();
             }
         }
 
@@ -78,7 +79,7 @@ fn export_text(cmd: &OutCommand, rows: &[(i64, String)], outfile_path: PathBuf) 
     }
 }
 
-fn export_image(cmd: &OutCommand, rows: &[(i64, String)], outfile_path: PathBuf) {
+fn export_image(cmd: &OutCommand, rows: &[(i64, String, String)], outfile_path: PathBuf) {
     let html = build_html(rows);
 
     let config = Config::default().format(match cmd.filetype.as_str() {
@@ -101,7 +102,7 @@ fn export_image(cmd: &OutCommand, rows: &[(i64, String)], outfile_path: PathBuf)
     }
 }
 
-fn build_html(rows: &[(i64, String)]) -> String {
+fn build_html(rows: &[(i64, String, String)]) -> String {
     let mut html = String::from(
         r#"<!DOCTYPE html>
 <html>
@@ -114,7 +115,6 @@ body {
     margin: 40px;
     background-color: white;
     color: black;
-    text-align: center;
 }
 .note {
     margin-bottom: 20px;
@@ -125,8 +125,8 @@ body {
 "#,
     );
 
-    for (_, note) in rows {
-        html.push_str(&format!("<div class=\"note\"><h2>{}</h2></div>\n", note));
+    for (_, title ,content) in rows {
+        html.push_str(&format!("<div class=\"note\"><h2>{}: {}</h2></div>\n", title, content));
     }
 
     html.push_str("</body>\n</html>");
