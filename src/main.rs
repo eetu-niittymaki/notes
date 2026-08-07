@@ -51,7 +51,7 @@ fn run(cli: Cli, conn: &Connection) -> rusqlite::Result<()> {
 
         Some(Commands::Out(cmd)) => {
             commands::out::out(cmd, conn)?;
-            println!("Notes exported!");
+            println!("Notes exported to desktop!");
         },
 
         Some(Commands::All(_)) => commands::all::all(conn)?,

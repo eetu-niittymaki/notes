@@ -37,15 +37,15 @@ pub struct AllCommand {}
 
 #[derive(Parser, Debug, Clone)]
 pub struct UpdateCommand {
-    #[arg(short, long, help="ID for note to change")]
     pub id: i64,
-    #[arg(short, long, help="Notes new content")]
     pub new_content: String,
 }
 
 #[derive(Parser, Debug, Clone)]
 pub struct DeleteCommand {
-    pub id: i64,
+    pub id: Option<i64>,
+    #[arg(short='a', long="all", help="Delete all notes")]
+    pub all: bool,
 }
 
 #[derive(Parser, Debug, Clone)]

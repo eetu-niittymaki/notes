@@ -1,5 +1,6 @@
 use std::fs::OpenOptions;
 use std::io::Write;
+use std::path::PathBuf;
 
 use rusqlite::{Connection, Result};
 
@@ -9,8 +10,8 @@ pub fn out(cmd: OutCommand, conn: &Connection) -> Result<()> {
     let supported_filetypes = ["md", "txt", "html", "png"];
 
     if !supported_filetypes.contains(&cmd.filetype.as_str()) {
-        eprintln!("Unsupported filetype, use md, txt or png!");
-        std::process::exit(1);
+        eprintln!("Unsupported filetype, supported formats: {:?}", supported_filetypes);
+        std::process::exit(0);
     }
 
     let mut statement = conn.prepare("SELECT id, note FROM notes")?;
@@ -22,13 +23,17 @@ pub fn out(cmd: OutCommand, conn: &Connection) -> Result<()> {
         ))
     })?;
 
-    let filename = format!("notes.{}", cmd.filetype);
+    let mut path = PathBuf::from(
+        std::env::var("USERPROFILE").expect("USERPROFILE is not set"),
+    );
+    path.push("Desktop");
+    path.push(format!("notes.{}", cmd.filetype));
 
     let mut file = match OpenOptions::new()
         .create(true)
         .write(true)
         .truncate(true)
-        .open(filename)
+        .open(path)
     {
         Ok(file) => file,
         Err(e) => {
@@ -44,10 +49,11 @@ pub fn out(cmd: OutCommand, conn: &Connection) -> Result<()> {
 
         if first_row {
             let write_first_row = match cmd.filetype.as_str() {
-                "md" => writeln!(file, "## Notes"),
-                "html" => writeln!(file, "<h1>Notes</h1>"),
-                _ => writeln!(file, "Notes"),
+                "md" => writeln!(file, "## Notes \n ## ----------"),
+                "html" => writeln!(file, "<h1>Notes</h1> \n <h1>----------</h1>"),
+                _ => writeln!(file, "Notes \n ----------"),
             };
+
 
             if let Err(e) = write_first_row {
                 eprintln!("Failed to write file: {e}");

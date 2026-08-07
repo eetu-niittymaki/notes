@@ -3,10 +3,17 @@ use rusqlite::{Connection, Result};
 use crate::cli::DeleteCommand;
 
 pub fn delete(cmd: DeleteCommand, conn: &Connection) -> Result<()> {
-    conn.execute(
+    if cmd.all {
+        conn.execute(
+            "DELETE FROM notes", [])?;  
+    } else if cmd.id.is_some()  {
+        conn.execute(
         "DELETE FROM notes WHERE id = ?1",
         [cmd.id],
-    )?;
+        )?;
+    } else {
+        eprintln!("Please provide either an ID or -a/--all");
+    }
 
     Ok(())
 }

@@ -17,6 +17,9 @@ pub fn search(cmd: SearchCommand, conn: &Connection) -> Result <()> {
         ))
     })?;
 
+    println!("Found notes");
+    println!("-----------");
+
     for row in rows {
         let (id, note) = row?;
         println!("{}: {}", id, note);
