@@ -12,7 +12,7 @@ pub fn all(conn: &Connection) -> Result<()> {
     .collect::<Result<_,_>>()?;
 
     if !rows.is_empty() {
-         println!("All notes");
+        println!("All notes");
         println!("---------");
 
         for row in rows {

@@ -45,8 +45,7 @@ fn run(cli: Cli, conn: &Connection) -> rusqlite::Result<()> {
         },
 
         Some(Commands::Delete(cmd)) => {
-            commands::delete::delete(cmd, conn)?;
-            println!("Note deleted!");
+            commands::delete::delete(cmd, conn)?;          
         },
 
         Some(Commands::Out(cmd)) => {
