@@ -7,6 +7,8 @@ use crate::config::get_db_path;
 mod config;
 mod cli;
 mod commands;
+mod models;
+mod db;
 
 fn main() {
     if let Err(e) = try_main() {
@@ -38,25 +40,15 @@ fn try_main() -> rusqlite::Result<()> {
 
 fn run(cli: Cli, conn: &Connection) -> rusqlite::Result<()> {
     match cli.command {
-        Some(Commands::New(cmd)) => {
-            commands::new::new(cmd, conn)?;
-            println!("Note added!");
-        },
-
-        Some(Commands::Update(cmd)) => {
-            commands::update::update(cmd, conn)?;
-            println!("Note updated!");
-        },
-
-        Some(Commands::Delete(cmd)) => {
-            commands::delete::delete(cmd, conn)?;          
-        },
+        Some(Commands::New(cmd)) => commands::new::new(cmd, conn)?,
+        Some(Commands::Delete(cmd)) => commands::delete::delete(cmd, conn)?,         
 
         Some(Commands::Out(cmd)) => {
             commands::out::out(cmd, conn)?;
             println!("Notes exported to desktop!");
         },
 
+        Some(Commands::Update(cmd)) => commands::update::update(cmd, conn)?,
         Some(Commands::All(_)) => commands::all::all(conn)?,
         Some(Commands::Search(cmd)) => commands::search::search(cmd, conn)?,
         Some(Commands::Version) => commands::version::version(),

@@ -44,7 +44,10 @@ pub struct UpdateCommand {
 
 #[derive(Parser, Debug, Clone)]
 pub struct DeleteCommand {
+    #[arg(short='t', long="title", help="Title of the note to delete")]
     pub title: Option<String>,
+    #[arg(short='i', long="id", help="ID of the note to delete")]
+    pub id: Option<i64>,
     #[arg(short='a', long="all", help="Delete all notes")]
     pub all: bool,
 }

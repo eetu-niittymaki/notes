@@ -119,6 +119,13 @@ body {
 .note {
     margin-bottom: 20px;
 }
+.title {
+    text-decoration: underline
+}
+.content {
+    margin-bottom: 20px;
+}
+    
 </style>
 </head>
 <body>
@@ -126,7 +133,14 @@ body {
     );
 
     for (_, title ,content) in rows {
-        html.push_str(&format!("<div class=\"note\"><h2>{}: {}</h2></div>\n", title, content));
+        html.push_str(&format!(
+            "<div class=\"note\">
+                <div class=\"title\"><h2>{}</h2></div> 
+                <div class=\"content\">{}</div>
+            </div>\n", 
+            title, content
+            )
+        );
     }
 
     html.push_str("</body>\n</html>");

@@ -1,27 +1,20 @@
 use rusqlite::{Connection, Result};
 
+use crate::db::get_all_notes::get_all_notes;
+
 pub fn all(conn: &Connection) -> Result<()> {
-    let mut statement = conn.prepare("SELECT id, title, content FROM notes")?;
+    let notes = get_all_notes(conn)?;
 
-    let rows: Vec<_> = statement.query_map([], |row| {
-        Ok((
-            row.get::<_, i64>(0)?,
-            row.get::<_, String>(1)?,
-            row.get::<_, String>(2)?,
-        ))
-    })?
-    .collect::<Result<_,_>>()?;
+    if notes.is_empty() {
+        println!("No notes found");
+        std::process::exit(1);
+    }
 
-    if !rows.is_empty() {
-        println!("All notes");
-        println!("---------");
+    println!("All Notes");
+    println!("----------");
 
-        for row in rows {
-            let (_id, title, content) = row;
-            println!("{}: {}", title, content);
-        }
-    } else {
-        println!("No notes found")
+    for note in notes {
+        println!("{} | {}: {}", note.id, note.title, note.content);
     }
 
     Ok(())

@@ -1,13 +1,16 @@
 use rusqlite::{Connection, Result};
 
 use crate::cli::NewCommand;
+use crate::db::add_note::add_note;
 
 pub fn new(cmd: NewCommand, conn: &Connection) -> Result<()> {
-    conn.execute(
-        "INSERT INTO notes (title, content) 
-            VALUES (?1, ?2)",
-        [&cmd.title, &cmd.content],
-    )?;
+    let rows = add_note(conn, &cmd.title, &cmd.content)?;
+
+    if rows == 1 {
+        println!("Note added.");
+    } else {
+        eprintln!("Error in adding note");
+    }
 
     Ok(())
 }
