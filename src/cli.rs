@@ -38,7 +38,10 @@ pub struct NewCommand {
 
 #[derive(Parser, Debug, Clone)]
 pub struct UpdateCommand {
-    pub title: String,
+    #[arg(short='i', long="id", help="ID of the note to update")]
+    pub id: Option<i64>,
+    #[arg(short='t', long="title", help="Title of the note to update")]
+    pub title: Option<String>,
     pub new_content: String,
 }
 

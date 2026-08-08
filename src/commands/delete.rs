@@ -39,7 +39,7 @@ pub fn delete(cmd: DeleteCommand, conn: &Connection) -> Result<()> {
     }
     
     if cmd.title.is_some() || cmd.id.is_some()  {
-        let rows = delete_note(conn, cmd.title.as_deref(), cmd.id)?;
+        let rows = delete_note(conn, cmd.id, cmd.title.as_deref())?;
         if rows == 1 {
             println!("Note deleted!") 
         } else  {

@@ -2,8 +2,8 @@ use rusqlite::{Connection, Result};
 
 pub fn delete_note(
     conn: &Connection,
-    title: Option<&str>,
     id: Option<i64>,
+    title: Option<&str>,
 ) -> Result<usize> {
     if let Some(id) = id {
         return conn.execute(
