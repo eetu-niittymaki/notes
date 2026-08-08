@@ -112,10 +112,13 @@ body {
     margin-bottom: 20px;
 }
 .title {
-    text-decoration: underline
+    text-decoration: underline;
 }
 .content {
-    margin-bottom: 20px;
+    margin-bottom: 10px;
+}
+.created_at {
+    font-weight: bold;
 }
     
 </style>
@@ -126,11 +129,16 @@ body {
 
     for note in notes {
         html.push_str(&format!(
-            "<div class=\"note\">
-                <div class=\"title\"><h2>{}</h2></div> 
-                <div class=\"content\">{}</div>
-            </div>\n", 
-            note.title, note.content
+"<div class=\"note\">
+    <h4 class=\"created_at\">{}</h4>
+    <div class=\"title\">
+        <h2>{}</h2>
+    </div> 
+    <div class=\"content\">{}</div>
+</div>\n", 
+            note.created_at.split_whitespace().next().unwrap(),
+            note.title, 
+            note.content
             )
         );
     }
