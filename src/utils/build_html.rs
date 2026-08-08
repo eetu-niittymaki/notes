@@ -21,6 +21,7 @@ body {
     text-decoration: underline;
 }
 .content {
+    white-space: pre-wrap;
     margin-bottom: 10px;
 }
 .created_at {
@@ -34,6 +35,7 @@ body {
     );
 
     for note in notes {
+        println!("{}", note.content);
         html.push_str(&format!(
 "<div class=\"note\">
     <h4 class=\"created_at\">{}</h4>
