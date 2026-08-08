@@ -10,7 +10,7 @@ pub fn all(conn: &Connection) -> Result<()> {
         std::process::exit(1);
     }
 
-    println!("All Notes");
+    println!("All Notes:");
     println!("----------");
 
     for note in notes {

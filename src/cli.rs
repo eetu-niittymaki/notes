@@ -11,30 +11,30 @@ pub struct Cli {
 
 #[derive(Subcommand)]
 pub enum Commands {
+    /// Get all notes
+    All(AllCommand),
     /// Add new note to database
     New(NewCommand),
     /// Change content of saved note
     Update(UpdateCommand),
     /// Delete saved note
     Delete(DeleteCommand),
-    /// Get all notes
-    All(AllCommand),
     /// Search notes for specific content
     Search(SearchCommand),
-    /// Export all notes to file (.md)
+    /// Export all notes to file
     Out(OutCommand),
     /// Prints the programs version number
     Version
 }
+
+#[derive(Parser, Debug, Clone)]
+pub struct AllCommand {}
 
 #[derive(Args, Clone)]
 pub struct NewCommand {
     pub title: String,
     pub content: String,
 }
-
-#[derive(Parser, Debug, Clone)]
-pub struct AllCommand {}
 
 #[derive(Parser, Debug, Clone)]
 pub struct UpdateCommand {
@@ -54,7 +54,10 @@ pub struct DeleteCommand {
 
 #[derive(Parser, Debug, Clone)]
 pub struct SearchCommand {
-    pub content: String,
+    #[arg(short='t', long="title", help="Title of the note to search")]
+    pub title: Option<String>,
+    #[arg(short='c', long="content", help="Content to search for in notes")]
+    pub content: Option<String>,
 }
 
 #[derive(Parser, Debug, Clone)]

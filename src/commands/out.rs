@@ -6,6 +6,8 @@ use hyper_render::{render, Config, OutputFormat};
 use rusqlite::{Connection, Result};
 
 use crate::cli::OutCommand;
+use crate::db::get_all_notes::get_all_notes;
+use crate::models::Note;
 
 pub fn out(cmd: OutCommand, conn: &Connection) -> Result<()> {
     let supported_filetypes = ["md", "txt", "html", "png", "pdf"];
@@ -18,19 +20,9 @@ pub fn out(cmd: OutCommand, conn: &Connection) -> Result<()> {
         std::process::exit(1);
     }
 
-    let mut statement = conn.prepare("SELECT id, title, content FROM notes")?;
+    let notes = get_all_notes(conn)?;
 
-    let rows: Vec<(i64, String, String)> = statement
-        .query_map([], |row| {
-            Ok((
-                row.get::<_, i64>(0)?,
-                row.get::<_, String>(1)?,
-                row.get::<_, String>(2)?,
-            ))
-        })?
-        .collect::<Result<_, _>>()?;
-
-    if rows.is_empty() {
+    if notes.is_empty() {
         eprintln!("No notes found to export");
         std::process::exit(1);
     }
@@ -42,15 +34,15 @@ pub fn out(cmd: OutCommand, conn: &Connection) -> Result<()> {
     outfile_path.push(format!("notes.{}", cmd.filetype));
 
     match cmd.filetype.as_str() {
-        "txt" | "md" | "html" => export_text(&cmd, &rows, outfile_path),
-        "png" | "pdf" => export_image(&cmd, &rows, outfile_path),
+        "txt" | "md" | "html" => export_text(&cmd, notes, outfile_path),
+        "png" | "pdf" => export_image(&cmd, notes, outfile_path),
         _ => unreachable!(),
     }
 
     Ok(())
 }
 
-fn export_text(cmd: &OutCommand, rows: &[(i64, String, String)], outfile_path: PathBuf) {
+fn export_text(cmd: &OutCommand, notes: Vec<Note> , outfile_path: PathBuf) {
     let mut file = OpenOptions::new()
         .create(true)
         .write(true)
@@ -60,27 +52,27 @@ fn export_text(cmd: &OutCommand, rows: &[(i64, String, String)], outfile_path: P
 
     match cmd.filetype.as_str() {
         "txt" => {
-            for (_, title, content) in rows {
-                writeln!(file, "{title}: {content}").unwrap();
+            for note in notes {
+                writeln!(file, "{}: {}", note.title, note.content).unwrap();
             }
         }
 
         "md" => {
-            for (_, title, content) in rows {
-                writeln!(file, "## {title}: {content}").unwrap();
+            for note in notes {
+                writeln!(file, "## {}: {}", note.title, note.content).unwrap();
             }
         }
 
         "html" => {
-            write!(file, "{}", build_html(rows)).unwrap();
+            write!(file, "{}", build_html(notes)).unwrap();
         }
 
         _ => unreachable!(),
     }
 }
 
-fn export_image(cmd: &OutCommand, rows: &[(i64, String, String)], outfile_path: PathBuf) {
-    let html = build_html(rows);
+fn export_image(cmd: &OutCommand, notes: Vec<Note>, outfile_path: PathBuf) {
+    let html = build_html(notes);
 
     let config = Config::default().format(match cmd.filetype.as_str() {
         "png" => OutputFormat::Png,
@@ -102,7 +94,7 @@ fn export_image(cmd: &OutCommand, rows: &[(i64, String, String)], outfile_path: 
     }
 }
 
-fn build_html(rows: &[(i64, String, String)]) -> String {
+fn build_html(notes: Vec<Note>) -> String {
     let mut html = String::from(
         r#"<!DOCTYPE html>
 <html>
@@ -132,13 +124,13 @@ body {
 "#,
     );
 
-    for (_, title ,content) in rows {
+    for note in notes {
         html.push_str(&format!(
             "<div class=\"note\">
                 <div class=\"title\"><h2>{}</h2></div> 
                 <div class=\"content\">{}</div>
             </div>\n", 
-            title, content
+            note.title, note.content
             )
         );
     }
