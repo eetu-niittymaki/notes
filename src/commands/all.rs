@@ -14,7 +14,7 @@ pub fn all(conn: &Connection) -> Result<()> {
     println!("----------");
 
     for note in notes {
-        println!("{} | {}: {}", note.id, note.title, note.content);
+        println!("{} | {}\n{}", note.id, note.title, note.content);
     }
 
     Ok(())

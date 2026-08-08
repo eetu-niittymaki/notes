@@ -2,18 +2,18 @@ use std::path::PathBuf;
 
 use rusqlite::{Connection, Result};
 
-use crate::cli::OutCommand;
+use crate::cli::ExportCommand;
 use crate::db::get_all_notes::get_all_notes;
 use crate::utils::export_image::export_image;
 use crate::utils::export_text::export_text;
 
-pub fn out(cmd: OutCommand, conn: &Connection) -> Result<()> {
-    let supported_filetypes = ["md", "txt", "html", "png", "pdf"];
+pub fn export(cmd: ExportCommand, conn: &Connection) -> Result<()> {
+    const SUPPORTED_FILETYPES: [&str; 5] = ["md", "txt", "html", "png", "pdf"];
 
-    if !supported_filetypes.contains(&cmd.filetype.as_str()) {
+    if !SUPPORTED_FILETYPES.contains(&cmd.filetype.as_str()) {
         eprintln!(
             "Unsupported filetype, supported formats: {}",
-            supported_filetypes.join(", ")
+            SUPPORTED_FILETYPES.join(", ")
         );
         std::process::exit(1);
     }

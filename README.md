@@ -12,5 +12,6 @@
 ### new - Add new note to database
 ### update - Change content of saved note
 ### search - Search for note that includes title or text content 
-### out - Export all notes to file (txt, md, html, png or pdf)
+### export - Export all notes to file (txt, md, html, png or pdf)
+### import - Import a files (txt, md, html) contents as plain text to database
 ### version - Prints the programs version number

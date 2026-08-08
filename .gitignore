@@ -1,2 +1,3 @@
 *.db
+*.ps1
 /target

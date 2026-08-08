@@ -12,7 +12,7 @@ mod db;
 mod utils;
 
 fn main() {
-    // Program wide error catching
+    // Program wide error catcher
     if let Err(e) = try_main() {
         eprintln!("Error: {e}");
         std::process::exit(1);
@@ -47,7 +47,8 @@ fn run(cli: Cli, conn: &Connection) -> rusqlite::Result<()> {
         Some(Commands::Update(cmd)) => commands::update::update(cmd, conn)?,
         Some(Commands::Delete(cmd)) => commands::delete::delete(cmd, conn)?,
         Some(Commands::Search(cmd)) => commands::search::search(cmd, conn)?,      
-        Some(Commands::Out(cmd)) => commands::out::out(cmd, conn)?,
+        Some(Commands::Export(cmd)) => commands::export::export(cmd, conn)?,
+        Some(Commands::Import(cmd)) => commands::import::import(cmd, conn)?,
         Some(Commands::Version) => commands::version::version(),
         None => {}
     }

@@ -21,8 +21,10 @@ pub enum Commands {
     Delete(DeleteCommand),
     /// Search notes for specific content
     Search(SearchCommand),
-    /// Export all notes to file
-    Out(OutCommand),
+    /// Export all notes to file (txt, md, html, png, pdf)
+    Export(ExportCommand),
+    /// Import a files (txt, md, html) contents as plain text to database 
+    Import(ImportCommand),
     /// Prints the programs version number
     Version
 }
@@ -64,6 +66,11 @@ pub struct SearchCommand {
 }
 
 #[derive(Parser, Debug, Clone)]
-pub struct OutCommand {
+pub struct ExportCommand {
     pub filetype: String,
+}
+
+#[derive(Parser, Debug, Clone)]
+pub struct ImportCommand {
+    pub file: String,
 }
