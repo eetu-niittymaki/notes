@@ -12,8 +12,8 @@ pub fn out(cmd: OutCommand, conn: &Connection) -> Result<()> {
 
     if !supported_filetypes.contains(&cmd.filetype.as_str()) {
         eprintln!(
-            "Unsupported filetype, supported formats: {:?}",
-            supported_filetypes
+            "Unsupported filetype, supported formats: {}",
+            supported_filetypes.join(", ")
         );
         std::process::exit(1);
     }
@@ -36,6 +36,8 @@ pub fn out(cmd: OutCommand, conn: &Connection) -> Result<()> {
         "png" | "pdf" => export_image(cmd.filetype, notes, outfile_path),
         _ => unreachable!(),
     }
+
+    println!("Notes exported to desktop!");
 
     Ok(())
 }

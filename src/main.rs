@@ -12,6 +12,7 @@ mod db;
 mod utils;
 
 fn main() {
+    // Program wide error catching
     if let Err(e) = try_main() {
         eprintln!("Error: {e}");
         std::process::exit(1);
@@ -41,17 +42,12 @@ fn try_main() -> rusqlite::Result<()> {
 
 fn run(cli: Cli, conn: &Connection) -> rusqlite::Result<()> {
     match cli.command {
-        Some(Commands::New(cmd)) => commands::new::new(cmd, conn)?,
-        Some(Commands::Delete(cmd)) => commands::delete::delete(cmd, conn)?,         
-
-        Some(Commands::Out(cmd)) => {
-            commands::out::out(cmd, conn)?;
-            println!("Notes exported to desktop!");
-        },
-
-        Some(Commands::Update(cmd)) => commands::update::update(cmd, conn)?,
         Some(Commands::All(_)) => commands::all::all(conn)?,
-        Some(Commands::Search(cmd)) => commands::search::search(cmd, conn)?,
+        Some(Commands::New(cmd)) => commands::new::new(cmd, conn)?,
+        Some(Commands::Update(cmd)) => commands::update::update(cmd, conn)?,
+        Some(Commands::Delete(cmd)) => commands::delete::delete(cmd, conn)?,
+        Some(Commands::Search(cmd)) => commands::search::search(cmd, conn)?,      
+        Some(Commands::Out(cmd)) => commands::out::out(cmd, conn)?,
         Some(Commands::Version) => commands::version::version(),
         None => {}
     }
