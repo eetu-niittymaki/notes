@@ -7,8 +7,8 @@ pub fn search_notes(
     title: Option<&str>,
     content: Option<&str>,
 ) -> Result<Vec<Note>> {
+    // Searching by title
     if let Some(title) = title {
-        // Searching by title
         let pattern = format!("%{}%", title);
         let mut statement = conn.prepare(
             "SELECT id, title, content, created_at
@@ -29,6 +29,7 @@ pub fn search_notes(
 
         return Ok(notes);
     }
+    
     // Searching by text content
     if let Some(content) = content {
         let pattern = format!("%{}%", content);

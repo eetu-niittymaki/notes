@@ -9,6 +9,7 @@ mod cli;
 mod commands;
 mod models;
 mod db;
+mod utils;
 
 fn main() {
     if let Err(e) = try_main() {
