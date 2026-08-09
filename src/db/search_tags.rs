@@ -7,11 +7,11 @@ pub fn search_tags(
     tag: String,
 ) -> Result<Vec<Note>> {
     let mut statement = conn.prepare(
-    "SELECT notes.*
-        FROM notes AS notes
-        JOIN note_tags AS note_tags ON notes.id = note_tags.note_id
-        JOIN tags AS tags ON note_tags.tag_id = tags.id
-        WHERE tags.name = ?1"
+    "SELECT note.*
+        FROM notes AS note
+        JOIN note_tags AS note_tag ON note.id = note_tag.note_id
+        JOIN tags AS tag ON note_tag.tag_id = tag.id
+        WHERE tag.name = ?1"
     )?;
 
     let notes = statement

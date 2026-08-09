@@ -2,8 +2,8 @@ use rusqlite::{Connection, Result};
 
 pub fn add_tag(
     conn: &Connection,
-    id: Option<i64>, 
-    tag: Option<&str>
+    id: i64, 
+    tag: &str
 ) -> Result <usize> {
     let _ = conn.execute(
         "INSERT INTO tags (name)
@@ -27,7 +27,7 @@ pub fn add_tag(
     "INSERT INTO note_tags (note_id, tag_id)
         VALUES (?1, ?2)
         ON CONFLICT(note_id, tag_id) DO NOTHING",
-        [id, Some(tag_id)]
+        [id, tag_id]
     )?;
 
     Ok(rows_changed)

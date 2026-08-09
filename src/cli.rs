@@ -25,7 +25,8 @@ pub enum Commands {
     Export(ExportCommand),
     /// Import a files (txt, md, html) contents as plain text to database 
     Import(ImportCommand),
-    /// Attach a tag to note
+    #[command(subcommand)]
+    /// Attach a tag to a note
     Tag(TagCommand),
     /// Prints the programs version number
     Version
@@ -79,10 +80,16 @@ pub struct ImportCommand {
     pub file: String,
 }
 
-#[derive(Args, Clone)]
-pub struct TagCommand {
-    pub id: Option<i64>,
-    pub tag: Option<String>,
-    #[arg(short='l', long="list", help="List all tags")]
-    pub list: bool,
+#[derive(Subcommand)]
+pub enum TagCommand {
+    Add {
+        note_id: i64,
+        name: String,
+    },
+
+    Delete {
+        name: String,
+    },
+
+    List,
 }
