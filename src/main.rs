@@ -3,6 +3,7 @@ use clap::Parser;
 use cli::{Cli, Commands};
 
 use crate::config::get_db_path;
+use crate::db::create_tables::create_tables;
 
 mod config;
 mod cli;
@@ -25,17 +26,7 @@ fn try_main() -> rusqlite::Result<()> {
 
     let conn = Connection::open(&db_path)?;
 
-    conn.execute(
-        "CREATE TABLE IF NOT EXISTS notes (
-            id INTEGER PRIMARY KEY,
-            title TEXT NOT NULL,
-            content TEXT NOT NULL,
-            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-            updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-            favorite BOOLEAN NOT NULL DEFAULT 0
-        )",
-        (),
-    )?;
+    create_tables(&conn)?;
 
     run(cli, &conn)
 }
@@ -49,6 +40,7 @@ fn run(cli: Cli, conn: &Connection) -> rusqlite::Result<()> {
         Some(Commands::Search(cmd)) => commands::search::search(cmd, conn)?,      
         Some(Commands::Export(cmd)) => commands::export::export(cmd, conn)?,
         Some(Commands::Import(cmd)) => commands::import::import(cmd, conn)?,
+        Some(Commands::Tag(cmd)) => commands::tag::tag(cmd, conn)?,
         Some(Commands::Version) => commands::version::version(),
         None => {}
     }

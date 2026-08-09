@@ -4,3 +4,7 @@ pub mod delete_note;
 pub mod delete_all_notes;
 pub mod update_note;
 pub mod search_notes;
+pub mod create_tables;
+pub mod add_tag;
+pub mod search_tags;
+pub mod get_all_tags;

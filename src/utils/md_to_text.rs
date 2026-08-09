@@ -25,9 +25,7 @@ pub fn md_to_text(markdown: &str) -> String {
             Event::Start(Tag::Paragraph)
             | Event::Start(Tag::Heading { .. })
             | Event::Start(Tag::Item)
-            | Event::Start(Tag::BlockQuote(_)) => {
-                // Don't add anything here.
-            }
+            | Event::Start(Tag::BlockQuote(_)) => {}
 
             Event::End(TagEnd::Paragraph)
             | Event::End(TagEnd::Heading(_))

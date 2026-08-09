@@ -5,4 +5,5 @@ pub mod delete;
 pub mod search;
 pub mod export;
 pub mod import;
+pub mod tag;
 pub mod version;

@@ -7,7 +7,7 @@ pub fn all(conn: &Connection) -> Result<()> {
 
     if notes.is_empty() {
         println!("No notes found");
-        std::process::exit(1);
+        std::process::exit(0);
     }
 
     println!("All Notes:");

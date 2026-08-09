@@ -4,4 +4,12 @@ pub struct Note {
     pub title: String,
     pub content: String,
     pub created_at: String,
+    pub updated_at: String,
+    pub favorite: bool,
+}
+
+#[derive(Debug)]
+pub struct Tag {
+    pub id: i64,
+    pub name: String,
 }

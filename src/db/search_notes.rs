@@ -11,7 +11,12 @@ pub fn search_notes(
     if let Some(title) = title {
         let pattern = format!("%{}%", title);
         let mut statement = conn.prepare(
-            "SELECT id, title, content, created_at
+            "SELECT id, 
+                        title, 
+                        content, 
+                        created_at,
+                        updated_at,
+                        favorite
              FROM notes
              WHERE title LIKE ?1",
         )?;
@@ -22,7 +27,9 @@ pub fn search_notes(
                     id: row.get(0)?,
                     title: row.get(1)?,
                     content: row.get(2)?,
-                    created_at: row.get(3)?
+                    created_at: row.get(3)?,
+                    updated_at: row.get(4)?,
+                    favorite: row.get(5)?,
                 })
             })?
             .collect::<Result<Vec<_>>>()?;
@@ -34,7 +41,12 @@ pub fn search_notes(
     if let Some(content) = content {
         let pattern = format!("%{}%", content);
         let mut statement = conn.prepare(
-            "SELECT id, title, content, created_at
+            "SELECT id, 
+                        title, 
+                        content, 
+                        created_at,
+                        updated_at,
+                        favorite
              FROM notes
              WHERE content LIKE ?1",
         )?;
@@ -45,7 +57,9 @@ pub fn search_notes(
                     id: row.get(0)?,
                     title: row.get(1)?,
                     content: row.get(2)?,
-                    created_at: row.get(3)?
+                    created_at: row.get(3)?,
+                    updated_at: row.get(4)?,
+                    favorite: row.get(5)?,
                 })
             })?
             .collect::<Result<Vec<_>>>()?;

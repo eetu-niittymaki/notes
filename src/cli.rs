@@ -25,6 +25,8 @@ pub enum Commands {
     Export(ExportCommand),
     /// Import a files (txt, md, html) contents as plain text to database 
     Import(ImportCommand),
+    /// Attach a tag to note
+    Tag(TagCommand),
     /// Prints the programs version number
     Version
 }
@@ -63,6 +65,8 @@ pub struct SearchCommand {
     pub title: Option<String>,
     #[arg(short='c', long="content", help="Content to search for in notes")]
     pub content: Option<String>,
+    #[arg(long="tag", help="Search for notes that have specific tag")]
+    pub tag: Option<String>,
 }
 
 #[derive(Parser, Debug, Clone)]
@@ -73,4 +77,12 @@ pub struct ExportCommand {
 #[derive(Parser, Debug, Clone)]
 pub struct ImportCommand {
     pub file: String,
+}
+
+#[derive(Args, Clone)]
+pub struct TagCommand {
+    pub id: Option<i64>,
+    pub tag: Option<String>,
+    #[arg(short='l', long="list", help="List all tags")]
+    pub list: bool,
 }
