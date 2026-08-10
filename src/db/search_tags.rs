@@ -2,6 +2,7 @@ use rusqlite::{Connection, Result};
 
 use crate::models::Note;
 
+// Search for notes that have specific tag attached to them
 pub fn search_tags(
     conn: &Connection, 
     tag: String,

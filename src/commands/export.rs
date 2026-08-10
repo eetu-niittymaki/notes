@@ -4,6 +4,7 @@ use rusqlite::{Connection, Result};
 
 use crate::cli::ExportCommand;
 use crate::db::get_all_notes::get_all_notes;
+use crate::db::get_all_note_tags::get_all_note_tags;
 use crate::utils::export_image::export_image;
 use crate::utils::export_text::export_text;
 
@@ -25,6 +26,8 @@ pub fn export(cmd: ExportCommand, conn: &Connection) -> Result<()> {
         std::process::exit(0);
     }
 
+    let note_tags = get_all_note_tags(conn)?;
+
     let mut outfile_path = PathBuf::from(
         std::env::var("USERPROFILE").expect("USERPROFILE is not set"),
     );
@@ -32,8 +35,8 @@ pub fn export(cmd: ExportCommand, conn: &Connection) -> Result<()> {
     outfile_path.push(format!("notes.{}", cmd.filetype));
 
     match cmd.filetype.as_str() {
-        "txt" | "md" | "html" => export_text(cmd.filetype, notes, outfile_path),
-        "png" | "pdf" => export_image(cmd.filetype, notes, outfile_path),
+        "txt" | "md" | "html" => export_text(cmd.filetype, notes, note_tags, outfile_path),
+        "png" | "pdf" => export_image(cmd.filetype, notes, note_tags, outfile_path),
         _ => unreachable!(),
     }
 

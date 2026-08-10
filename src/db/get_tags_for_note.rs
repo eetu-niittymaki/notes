@@ -19,8 +19,7 @@ pub fn get_tags_for_note(
         .query_map([note_id], |row| {
             Ok(Tag {
                 id: row.get(0)?,
-                name: row.get(1)?,
-                note_count: 0,
+                name: row.get(1)?
             })
         })?
         .collect::<Result<Vec<_>, _>>()?;

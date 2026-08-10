@@ -1,7 +1,7 @@
 use rusqlite::{Connection, Result};
 
 use crate::db::get_all_notes::get_all_notes;
-use crate::db::get_tags_for_note::get_tags_for_note;
+use crate::db::get_all_note_tags::get_all_note_tags;
 
 pub fn all(conn: &Connection) -> Result<()> {
     let notes = get_all_notes(conn)?;
@@ -11,22 +11,21 @@ pub fn all(conn: &Connection) -> Result<()> {
         std::process::exit(0);
     }
 
+    let note_tags = get_all_note_tags(conn)?;
+
     println!("All Notes:");
     println!("----------");
 
     for note in notes {
-        let tags = get_tags_for_note(conn, note.id)?;
-
         println!("{} | {}", note.id, note.title);
 
-        if !tags.is_empty() {
+        if let Some(tags) = note_tags.get(&note.id) {
             for tag in tags {
                 println!("  #{}", tag.name);
             }
-            println!("\n{}", note.content);
-        } else {
-            println!("{}", note.content);
         }
+
+        println!("\n{}\n", note.content);
     }
 
     Ok(())

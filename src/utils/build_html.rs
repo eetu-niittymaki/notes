@@ -1,33 +1,40 @@
-use crate::models::Note;
+use std::collections::HashMap;
 
-pub fn build_html(notes: Vec<Note>) -> String {
+use crate::models::{Note, Tag};
+
+pub fn build_html(
+    notes: Vec<Note>,
+    note_tags: HashMap<i64, Vec<Tag>>,
+) -> String {
     let mut html = String::from(
         r#"<!DOCTYPE html>
 <html>
 <head>
-<meta charset="utf-8">
+<meta charset="UTF-8">
 <title>Notes</title>
 <style>
-body {
-    font-family: Arial, sans-serif;
-    margin: 40px;
-    background-color: white;
-    color: black;
-}
-.note {
-    margin-bottom: 20px;
-}
-.title {
-    text-decoration: underline;
-}
-.content {
-    white-space: pre-wrap;
-    margin-bottom: 10px;
-}
-.created_at {
-    font-weight: bold;
-}
-    
+    body {
+        font-family: Arial, sans-serif;
+        margin: 40px;
+        background-color: white;
+        color: black;
+    }
+    .note {
+        margin-bottom: 20px;
+    }
+    .title {
+        text-decoration: underline;
+        font-weight: bold;
+    }
+    .content {
+        white-space: pre-wrap;
+        margin-bottom: 10px;
+    }
+    .created_at {}
+    .tag {
+        display: block;
+    }
+        
 </style>
 </head>
 <body>
@@ -35,20 +42,42 @@ body {
     );
 
     for note in notes {
-        println!("{}", note.content);
         html.push_str(&format!(
-"<div class=\"note\">
-    <h4 class=\"created_at\">{}</h4>
-    <div class=\"title\">
+            r#"
+<div class="note">
+    <h4 class="created_at">{}</h4>
+    <div class="title">
         <h2>{}</h2>
-    </div> 
-    <div class=\"content\">{}</div>
-</div>\n", 
-            note.created_at.split_whitespace().next().unwrap(),
-            note.title, 
+    </div>
+"#,
+        note.created_at.split_whitespace().next().unwrap(),
+        note.title
+    ));
+
+    if let Some(tags) = note_tags.get(&note.id) {
+        if !tags.is_empty() {
+            html.push_str(r#"    <div class="tags">"#);
+
+            for tag in tags {
+                html.push_str(&format!(
+                    r#"<span class="tag">#{}</span> "#,
+                    tag.name
+                ));
+                
+            }
+
+            html.push_str("     </div>\n");
+        }
+    }
+
+    html.push_str(&format!(
+        r#"    <div class="content">
+{}
+</div>
+</div>
+"#,
             note.content
-            )
-        );
+        ));
     }
 
     html.push_str("</body>\n</html>");
