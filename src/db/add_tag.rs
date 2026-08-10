@@ -6,16 +6,16 @@ pub fn add_tag(
     tag: &str
 ) -> Result <usize> {
     let _ = conn.execute(
-        "INSERT INTO tags (name)
+    "INSERT INTO tags (name)
          VALUES (?1)
          ON CONFLICT(name) DO NOTHING",
         [&tag],
     );
 
     let mut statement = conn.prepare(
-        "SELECT id 
-        FROM tags
-        WHERE name = ?1"
+    "SELECT id 
+         FROM tags
+         WHERE name = ?1"
     )?;
 
     let tag_id: i64 = statement.query_row(

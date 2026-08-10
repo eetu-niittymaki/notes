@@ -39,7 +39,8 @@ pub fn tag(cmd: TagCommand, conn: &Connection) -> Result<()> {
             println!("---------");
 
             for tag in tags {
-                println!("{} ({} notes)", tag.name, tag.note_count);
+                let word = if tag.note_count > 1 { "notes" } else { "note" };
+                println!("{} ({} {})", tag.name, tag.note_count, word);
             }
         }
     }

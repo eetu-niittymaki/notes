@@ -1,30 +1,52 @@
 use rusqlite::{Connection, Result};
 
+use crate::models::NoteSelector;
+use crate::models::NoteUpdate;
+
 pub fn update_note(
     conn: &Connection,
-    id: Option<i64>,
-    title: Option<&str>,
-    new_content: &str,
+    selector: NoteSelector,
+    update: NoteUpdate,
 ) -> Result<usize> {
-    if let Some(id) = id {
-        return conn.execute(
-            "UPDATE notes
-            SET content = ?1,
-                updated_at = CURRENT_TIMESTAMP
-            WHERE id = ?2",
-            (new_content, id),
-        );
-    }
+    match (selector, update) {
+        (NoteSelector::Id(id), NoteUpdate::Title(new_title)) => {
+            conn.execute(
+                "UPDATE notes
+                 SET title = ?1,
+                     updated_at = CURRENT_TIMESTAMP
+                 WHERE id = ?2",
+                (new_title, id),
+            )
+        }
 
-     if let Some(title) = title {
-        return conn.execute(
-            "UPDATE notes
-            SET content = ?1,
-                updated_at = CURRENT_TIMESTAMP
-            WHERE title = ?2",
-            (new_content, title),
-        );
-    }
+        (NoteSelector::Id(id), NoteUpdate::Content(new_content)) => {
+            conn.execute(
+                "UPDATE notes
+                 SET content = ?1,
+                     updated_at = CURRENT_TIMESTAMP
+                 WHERE id = ?2",
+                (new_content, id),
+            )
+        }
 
-    Ok(0)
+        (NoteSelector::Title(title), NoteUpdate::Title(new_title)) => {
+            conn.execute(
+                "UPDATE notes
+                 SET title = ?1,
+                     updated_at = CURRENT_TIMESTAMP
+                 WHERE title = ?2",
+                (new_title, title),
+            )
+        }
+
+        (NoteSelector::Title(title), NoteUpdate::Content(new_content)) => {
+            conn.execute(
+                "UPDATE notes
+                 SET content = ?1,
+                     updated_at = CURRENT_TIMESTAMP
+                 WHERE title = ?2",
+                (new_content, title),
+            )
+        }
+    }
 }

@@ -14,3 +14,13 @@ pub struct Tag {
     pub name: String,
     pub note_count: i64,
 }
+
+pub enum NoteSelector<'a> {
+    Id(i64),
+    Title(&'a str),
+}
+
+pub enum NoteUpdate<'a> {
+    Title(&'a str),
+    Content(&'a str),
+}

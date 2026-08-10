@@ -47,7 +47,10 @@ pub struct UpdateCommand {
     pub id: Option<i64>,
     #[arg(short='t', long="title", help="Title of the note to update")]
     pub title: Option<String>,
-    pub new_content: String,
+    #[arg(short='n', long="new-title", help="New title for note")]
+    pub new_title: Option<String>,
+    #[arg(short='c', long="content", help="New content for note")]
+    pub new_content: Option<String>,
 }
 
 #[derive(Parser, Debug, Clone)]
@@ -82,14 +85,17 @@ pub struct ImportCommand {
 
 #[derive(Subcommand)]
 pub enum TagCommand {
+    #[command(about = "Add new tag to note with note ID")]
     Add {
         note_id: i64,
         name: String,
     },
 
+    #[command(about = "Delete a tag by tag name")]
     Delete {
         name: String,
     },
 
+    #[command(about = "List all tags and how many notes use them")]
     List,
 }
