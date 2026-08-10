@@ -19,6 +19,7 @@ pub fn build_md(
                 md.push_str(&format!("* #{}\n", tag.name));
             }
         }
+        
         md.push_str(&format!("## {}\n", note.content));
         md.push('\n');
     }

@@ -1,9 +1,10 @@
 use rusqlite::{Connection, Result};
 
+use crate::cli::AllCommand;
 use crate::db::get_all_notes::get_all_notes;
 use crate::db::get_all_note_tags::get_all_note_tags;
 
-pub fn all(conn: &Connection) -> Result<()> {
+pub fn all(cmd: AllCommand, conn: &Connection) -> Result<()> {
     let notes = get_all_notes(conn)?;
 
     if notes.is_empty() {
@@ -25,7 +26,9 @@ pub fn all(conn: &Connection) -> Result<()> {
             }
         }
 
-        println!("\n{}\n", note.content);
+        if cmd.content {
+            println!("\n{}", note.content);
+        }
     }
 
     Ok(())

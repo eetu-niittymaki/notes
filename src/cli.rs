@@ -13,6 +13,8 @@ pub struct Cli {
 pub enum Commands {
     /// Get all notes
     All(AllCommand),
+    /// Get specific note
+    Get(GetCommand),
     /// Add new note to database
     New(NewCommand),
     /// Change content of saved note
@@ -26,14 +28,25 @@ pub enum Commands {
     /// Import a files (txt, md, html) contents as plain text to database 
     Import(ImportCommand),
     #[command(subcommand)]
-    /// Attach a tag to a note
+    /// Attach a tag to a note, delete tag, list all tags
     Tag(TagCommand),
     /// Prints the programs version number
     Version
 }
 
 #[derive(Parser, Debug, Clone)]
-pub struct AllCommand {}
+pub struct AllCommand {
+    #[arg(short='c', long="content", help="Optional flag to also display content of all notes")]
+    pub content: bool,
+}
+
+#[derive(Args, Clone)]
+pub struct GetCommand {
+    #[arg(short='i', long="id", help="ID of the note to fetch")]
+    pub id: Option<i64>,
+    #[arg(short='t', long="title", help="Title of the note to fetch")]
+    pub title: Option<String>,
+}
 
 #[derive(Args, Clone)]
 pub struct NewCommand {

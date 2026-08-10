@@ -33,7 +33,8 @@ fn try_main() -> rusqlite::Result<()> {
 
 fn run(cli: Cli, conn: &Connection) -> rusqlite::Result<()> {
     match cli.command {
-        Some(Commands::All(_)) => commands::all::all(conn)?,
+        Some(Commands::All(cmd)) => commands::all::all(cmd, conn)?,
+        Some(Commands::Get(cmd)) => commands::get::get(cmd, conn)?,
         Some(Commands::New(cmd)) => commands::new::new(cmd, conn)?,
         Some(Commands::Update(cmd)) => commands::update::update(cmd, conn)?,
         Some(Commands::Delete(cmd)) => commands::delete::delete(cmd, conn)?,

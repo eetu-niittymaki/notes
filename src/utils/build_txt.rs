@@ -19,6 +19,7 @@ pub fn build_txt(
                 txt.push_str(&format!("#{}\n", tag.name));
             }
         }
+        
         txt.push_str(&format!("{}\n", note.content));
         txt.push('\n');
     }
