@@ -4,9 +4,10 @@ use std::io::Write;
 use std::path::PathBuf;
 
 use crate::utils::build_html::build_html;
+use crate::utils::build_md::build_md;
+use crate::utils::build_txt::build_txt;
 
-use crate::models::Note;
-use crate::models::Tag;
+use crate::models::{Note, Tag};
 
 pub fn export_text(
     filetype: String, 
@@ -23,39 +24,11 @@ pub fn export_text(
 
     match filetype.as_str() {
         "txt" => {
-            for note in notes {
-                writeln!(file, "{}", 
-                    note.created_at.split_whitespace().next().unwrap()
-                ).unwrap();
-                writeln!(file, "{}", note.title).unwrap();
-
-                if let Some(tags) = note_tags.get(&note.id) {
-                    for tag in tags {
-                        writeln!(file, "#{}", tag.name).unwrap();
-                    }
-                }
-
-                writeln!(file, "{}", note.content).unwrap();
-                writeln!(file).unwrap();
-            }
+            write!(file, "{}", build_txt(notes, note_tags)).unwrap();
         }
 
         "md" => {
-            for note in notes {
-                writeln!(file, "### {}", 
-                    note.created_at.split_whitespace().next().unwrap()
-                ).unwrap();
-                writeln!(file, "# {}", note.title).unwrap();
-                
-                if let Some(tags) = note_tags.get(&note.id) {
-                    for tag in tags {
-                        writeln!(file, "* #{}", tag.name).unwrap();
-                    }
-                }
-
-                writeln!(file, "## {}", note.content).unwrap();
-                writeln!(file).unwrap();
-            }
+            write!(file, "{}", build_md(notes, note_tags)).unwrap();
         }
 
         "html" => {

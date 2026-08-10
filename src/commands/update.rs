@@ -3,8 +3,7 @@ use rusqlite::{Connection, Result};
 use crate::cli::UpdateCommand;
 use crate::db::update_note::update_note;
 
-use crate::models::NoteSelector;
-use crate::models::NoteUpdate;
+use crate::models::{NoteSelector, NoteUpdate};
 
 pub fn update(cmd: UpdateCommand, conn: &Connection) -> Result<()> {
     let selector = match (cmd.id, cmd.title.as_deref()) {
