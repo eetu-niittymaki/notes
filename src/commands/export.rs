@@ -15,14 +15,14 @@ pub fn export(cmd: ExportCommand, conn: &Connection) -> Result<()> {
             "Unsupported filetype, supported formats: {}",
             SUPPORTED_FILETYPES.join(", ")
         );
-        std::process::exit(1);
+        std::process::exit(0);
     }
 
     let notes = get_all_notes(conn)?;
 
     if notes.is_empty() {
         eprintln!("No notes found to export");
-        std::process::exit(1);
+        std::process::exit(0);
     }
 
     let mut outfile_path = PathBuf::from(

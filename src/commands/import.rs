@@ -25,7 +25,7 @@ pub fn import(cmd: ImportCommand, conn: &Connection) -> Result<()> {
             "Unsupported filetype, supported formats: {}",
             SUPPORTED_FILETYPES.join(", ")
         );
-        std::process::exit(1);
+        std::process::exit(0);
     }
 
     let title = file.file_stem().unwrap().to_str().unwrap();

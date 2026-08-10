@@ -8,4 +8,5 @@ pub mod create_tables;
 pub mod add_tag;
 pub mod search_tags;
 pub mod get_all_tags;
+pub mod get_tags_for_note;
 pub mod delete_tag;
