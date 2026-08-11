@@ -35,7 +35,7 @@ pub enum Commands {
     Delete(DeleteCommand),
     /// Search notes for specific content
     Search(SearchCommand),
-    /// Export all notes to file (txt, md, html, png, pdf)
+    /// Export all notes to file (txt, md, html, json, png, pdf)
     Export(ExportCommand),
     /// Import a files (txt, md, html) contents as plain text to database 
     Import(ImportCommand),
