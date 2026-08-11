@@ -4,9 +4,17 @@ use clap::{Parser,
     ValueEnum
 };
 
+const LOGO: &str = "\x1b[1;38;2;46;49;146m
+  ███▄▄  ███  ▄██████▄  █████████ ████████ ▄███████▄
+  ███▀██▄███ ███▀  ▀███    ███    ███      ███▄▄▄▄
+  ███  ▀▀███ ███    ███    ███    ███▀▀▀    ▀██████▄
+  ███    ███ ▀███▄▄███▀    ███    ███▄▄▄▄▄ ▄▄▄▄▄▄███
+  ▀▀▀    ▀▀▀   ▀▀▀▀▀▀      ▀▀▀    ▀▀▀▀▀▀▀▀  ▀▀▀▀▀▀▀\x1b[0m";
+
 #[derive(Parser)]
 #[command(name = "notes")]
-#[command(about = "  CLI tool for saving and exporting notes")]
+#[command(about = "  CLI tool for locally saving, viewing, editing and exporting notes")]
+#[command(before_help = LOGO)]
 #[command(arg_required_else_help = true)]
 pub struct Cli {
     #[command(subcommand)]
