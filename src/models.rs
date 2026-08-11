@@ -26,7 +26,7 @@ pub enum NoteSelector<'a> {
     Title(&'a str),
 }
 
-pub enum NoteUpdate<'a> {
-    Title(&'a str),
-    Content(&'a str),
+pub enum NoteUpdate {
+    Title(String),
+    Content(String),
 }

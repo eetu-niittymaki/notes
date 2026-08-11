@@ -4,7 +4,7 @@ use crate::models::{Note, NoteSelector};
 
 pub fn get_note(
     conn: &Connection,
-    selector: NoteSelector
+    selector: &NoteSelector
 ) -> Result<Note> {
     match selector {
         NoteSelector::Id(id) => {

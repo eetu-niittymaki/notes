@@ -1,7 +1,7 @@
 pub mod new;
 pub mod all;
 pub mod get;
-pub mod update;
+pub mod edit;
 pub mod delete;
 pub mod search;
 pub mod export;

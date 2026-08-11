@@ -36,7 +36,7 @@ fn run(cli: Cli, conn: &Connection) -> rusqlite::Result<()> {
         Some(Commands::All(cmd)) => commands::all::all(cmd, conn)?,
         Some(Commands::Get(cmd)) => commands::get::get(cmd, conn)?,
         Some(Commands::New(cmd)) => commands::new::new(cmd, conn)?,
-        Some(Commands::Update(cmd)) => commands::update::update(cmd, conn)?,
+        Some(Commands::Edit(cmd)) => commands::edit::edit(cmd, conn)?,
         Some(Commands::Delete(cmd)) => commands::delete::delete(cmd, conn)?,
         Some(Commands::Search(cmd)) => commands::search::search(cmd, conn)?,      
         Some(Commands::Export(cmd)) => commands::export::export(cmd, conn)?,

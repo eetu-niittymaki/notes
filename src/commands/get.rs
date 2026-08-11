@@ -23,7 +23,7 @@ pub fn get(cmd: GetCommand, conn: &Connection) -> Result<()> {
         }
     };
 
-    let note =  get_note(conn, selector)?;
+    let note =  get_note(conn, &selector)?;
     let tags = get_tags_for_note(conn, note.id)?;
 
     println!("{} | {}", note.id, note.title);

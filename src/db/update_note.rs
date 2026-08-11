@@ -5,7 +5,7 @@ use crate::models::NoteUpdate;
 
 pub fn update_note(
     conn: &Connection,
-    selector: NoteSelector,
+    selector: &NoteSelector,
     update: NoteUpdate,
 ) -> Result<usize> {
     match (selector, update) {

@@ -1,4 +1,8 @@
-use clap::{Parser, Args, Subcommand};
+use clap::{Parser,
+    Args, 
+    Subcommand, 
+    ValueEnum
+};
 
 #[derive(Parser)]
 #[command(name = "notes")]
@@ -18,7 +22,7 @@ pub enum Commands {
     /// Add new note to database
     New(NewCommand),
     /// Change content of saved note
-    Update(UpdateCommand),
+    Edit(EditCommand),
     /// Delete saved note
     Delete(DeleteCommand),
     /// Search notes for specific content
@@ -54,16 +58,10 @@ pub struct NewCommand {
     pub content: String,
 }
 
-#[derive(Parser, Debug, Clone)]
-pub struct UpdateCommand {
-    #[arg(short='i', long="id", help="ID of the note to update")]
-    pub id: Option<i64>,
-    #[arg(short='t', long="title", help="Title of the note to update")]
-    pub title: Option<String>,
-    #[arg(short='n', long="new-title", help="New title for note")]
-    pub new_title: Option<String>,
-    #[arg(short='c', long="content", help="New content for note")]
-    pub new_content: Option<String>,
+#[derive(Parser, Debug)]
+pub struct EditCommand {
+    pub id: i64,
+    pub field: EditField,
 }
 
 #[derive(Parser, Debug, Clone)]
@@ -111,4 +109,10 @@ pub enum TagCommand {
 
     #[command(about = "List all tags and how many notes use them")]
     List,
+}
+
+#[derive(ValueEnum, Clone, Debug)]
+pub enum EditField {
+    Title,
+    Content,
 }
