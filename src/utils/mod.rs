@@ -8,3 +8,4 @@ pub mod read_file;
 pub mod md_to_text;
 pub mod html_to_text;
 pub mod editor;
+pub mod logo;

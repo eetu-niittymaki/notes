@@ -6,6 +6,7 @@ edition = "2024"
 [dependencies]
 clap = { version = "4.6.5", features = ["derive"] }
 hyper-render = "0.2.2"
+owo-colors = "4.3.0"
 pulldown-cmark = "0.13.4"
 rusqlite = { version = "0.40.1", features = ["bundled"] }
 scraper = "0.27.0"

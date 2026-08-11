@@ -2,6 +2,7 @@ use rusqlite::{Connection};
 use clap::Parser;
 use cli::{Cli, Commands};
 
+use crate::utils::logo::logo;
 use crate::config::get_db_path;
 use crate::db::create_tables::create_tables;
 
@@ -21,6 +22,7 @@ fn main() {
 }
 
 fn try_main() -> rusqlite::Result<()> {
+    logo();
     let cli = Cli::parse();
     let db_path = get_db_path();
 
