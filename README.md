@@ -1,6 +1,6 @@
 # notes
 
-![image](https://i.postimg.cc/3JXGHnLx/Untitled.png)
+![image](https://i.postimg.cc/Y9gXKThL/img.png)
 
 ## CLI tool for locally saving, viewing, editing and exporting notes
 
