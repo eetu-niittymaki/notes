@@ -6,6 +6,7 @@ use std::path::PathBuf;
 use crate::utils::build_html::build_html;
 use crate::utils::build_md::build_md;
 use crate::utils::build_txt::build_txt;
+use crate::utils::build_json::build_json;
 
 use crate::models::{Note, Tag};
 
@@ -33,6 +34,10 @@ pub fn export_text(
 
         "html" => {
             write!(file, "{}", build_html(notes, note_tags)).unwrap();
+        }
+
+        "json" => {
+            write!(file, "{}", build_json(notes, note_tags)).unwrap();
         }
 
         _ => unreachable!(),

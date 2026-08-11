@@ -9,7 +9,7 @@ use crate::utils::export_image::export_image;
 use crate::utils::export_text::export_text;
 
 pub fn export(cmd: ExportCommand, conn: &Connection) -> Result<()> {
-    const SUPPORTED_FILETYPES: [&str; 5] = ["md", "txt", "html", "png", "pdf"];
+    const SUPPORTED_FILETYPES: [&str; 6] = ["md", "txt", "html", "json", "png", "pdf"];
 
     if !SUPPORTED_FILETYPES.contains(&cmd.filetype.as_str()) {
         eprintln!(
@@ -35,7 +35,7 @@ pub fn export(cmd: ExportCommand, conn: &Connection) -> Result<()> {
     outfile_path.push(format!("notes.{}", cmd.filetype));
 
     match cmd.filetype.as_str() {
-        "txt" | "md" | "html" => export_text(cmd.filetype, notes, note_tags, outfile_path),
+        "txt" | "md" | "html" | "json" => export_text(cmd.filetype, notes, note_tags, outfile_path),
         "png" | "pdf" => export_image(cmd.filetype, notes, note_tags, outfile_path),
         _ => unreachable!(),
     }
