@@ -1,69 +1,46 @@
 use std::collections::HashMap;
 
+use serde_json::json;
+
 use crate::models::{Note, Tag};
 
 pub fn build_json(notes: Vec<Note>, note_tags: HashMap<i64, Vec<Tag>>) -> String {
-  let mut json = String::from("{\n  \"notes\": [\n");
+    let notes_json: Vec<_> = notes
+        .iter()
+        .map(|note| {
+            let date = note.created_at.split_whitespace().next().unwrap();
 
-  for (note_index, note) in notes.iter().enumerate() {
-    let date = note.created_at.split_whitespace().next().unwrap();
+            let tags: Vec<_> = note_tags
+                .get(&note.id)
+                .map(|tags| {
+                    tags.iter()
+                        .map(|tag| {
+                            json!({
+                                "id": tag.id,
+                                "name": tag.name
+                            })
+                        })
+                        .collect()
+                })
+                .unwrap_or_default();
 
-    json.push_str("    {\n");
-    json.push_str(&format!(
-      "      \"id\": {},\n",
-      note.id
-    ));
+            let mut note_json = json!({
+                "id": note.id,
+                "created_at": date,
+                "title": note.title,
+                "content": note.content
+            });
 
-    json.push_str(&format!(
-      "      \"created_at\": \"{}\",\n",
-      date
-    ));
+            if !tags.is_empty() {
+                note_json["tags"] = json!(tags);
+            }
 
-    json.push_str(&format!(
-      "      \"title\": \"{}\",\n",
-      note.title
-    ));
+            note_json
+        })
+        .collect();
 
-    if let Some(tags) = note_tags.get(&note.id) {
-      if !tags.is_empty() {
-        json.push_str("      \"tags\": [\n");
-
-        for (tag_index, tag) in tags.iter().enumerate() {
-          json.push_str("        {\n");
-          json.push_str(&format!(
-            "          \"id\": {},\n",
-            tag.id
-          ));
-          json.push_str(&format!(
-            "          \"name\": \"{}\"\n",
-            tag.name
-          ));
-
-          if tag_index + 1 < tags.len() {
-            json.push_str("        },\n");
-          } else {
-            json.push_str("        }\n");
-          }
-        }
-
-        json.push_str("      ],\n");
-      }
-    }
-
-    json.push_str(&format!(
-      "      \"content\": \"{}\"\n",
-      note.content
-    ));
-
-    if note_index + 1 < notes.len() {
-      json.push_str("    },\n");
-    } else {
-      json.push_str("    }\n");
-    }
-  }
-
-  json.push_str("  ]\n");
-  json.push('}');
-
-  json
+    serde_json::to_string_pretty(&json!({
+        "notes": notes_json
+    }))
+    .unwrap()
 }
