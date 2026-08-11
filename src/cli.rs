@@ -6,7 +6,7 @@ use clap::{Parser,
 
 #[derive(Parser)]
 #[command(name = "notes")]
-#[command(about = "CLI tool for saving and exporting notes")]
+#[command(about = "  CLI tool for saving and exporting notes")]
 #[command(arg_required_else_help = true)]
 pub struct Cli {
     #[command(subcommand)]

@@ -1,5 +1,9 @@
 # notes
 
+![image](https://i.postimg.cc/3JXGHnLx/Untitled.png)
+
+## CLI tool for locally saving, viewing, editing and exporting notes
+
 # Installation
 ## Download and run install.ps1 in powershell 
 ## Or download and extract notes.zip manually, add location of notes.exe to PATH
