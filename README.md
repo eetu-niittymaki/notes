@@ -6,6 +6,8 @@
 
 # Installation
 ## Download and run install.ps1 in powershell 
+### On Windows 11 if you have execution policy blocked run: 
+### powershell -ExecutionPolicy Bypass -File "\Path\To\install.ps1"
 ## Or download and extract notes.zip manually, add location of notes.exe to PATH
 
 # Usage
