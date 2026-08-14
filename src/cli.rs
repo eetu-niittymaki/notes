@@ -99,7 +99,7 @@ pub struct ExportCommand {
 
 #[derive(Parser, Debug, Clone)]
 pub struct ImportCommand {
-    pub file: String,
+    pub file: Option<String>,
 }
 
 #[derive(Subcommand)]

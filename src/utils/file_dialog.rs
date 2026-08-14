@@ -2,10 +2,20 @@ use std::path::PathBuf;
 
 use rfd::FileDialog;
 
-pub fn folder() -> PathBuf {
-    let folder = FileDialog::new()
-        .set_directory("/")
-        .pick_folder();
+use crate::config::IMPORT_FILETYPES;
 
-    folder.unwrap()
+pub fn folder() -> PathBuf {
+    FileDialog::new()
+        .set_directory("/")
+        .pick_folder()
+        .unwrap()
+}
+
+pub fn file() -> PathBuf {
+    FileDialog::new()
+        .set_directory("/")
+        .set_title("Select File To Import")
+        .add_filter("Supported Filetypes", &IMPORT_FILETYPES)
+        .pick_file()
+        .unwrap()
 }

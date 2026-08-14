@@ -9,13 +9,13 @@ use crate::utils::export_image::export_image;
 use crate::utils::export_text::export_text;
 use crate::utils::file_dialog::folder;
 
-pub fn export(cmd: ExportCommand, conn: &Connection) -> Result<()> {
-    const SUPPORTED_FILETYPES: [&str; 6] = ["md", "txt", "html", "json", "png", "pdf"];
+use crate::config::EXPORT_FILETYPES;
 
-    if !SUPPORTED_FILETYPES.contains(&cmd.filetype.as_str()) {
+pub fn export(cmd: ExportCommand, conn: &Connection) -> Result<()> {
+    if !EXPORT_FILETYPES.contains(&cmd.filetype.as_str()) {
         eprintln!(
             "Unsupported filetype, supported formats: {}",
-            SUPPORTED_FILETYPES.join(", ")
+            EXPORT_FILETYPES.join(", ")
         );
         std::process::exit(0);
     }

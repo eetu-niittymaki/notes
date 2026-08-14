@@ -45,10 +45,11 @@ pub fn build_html(
         html.push_str(&format!(
             r#"
 <div class="note">
-    <h4 class="created_at">{}</h4>
     <div class="title">
-        <h2>{}</h2>
+        <h1>{}</h1>
     </div>
+    <h4 class="created_at">{}</h4>
+    
 "#,
         note.created_at.split_whitespace().next().unwrap(),
         note.title
@@ -72,7 +73,7 @@ pub fn build_html(
 
     html.push_str(&format!(
         r#"    <div class="content">
-{}
+<p>{}</p>
 </div>
 </div>
 "#,

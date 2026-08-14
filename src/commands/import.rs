@@ -1,17 +1,22 @@
-use std::path::Path;
+use std::path::PathBuf;
 
 use rusqlite::{Connection, Result};
 
 use crate::cli::ImportCommand;
+use crate::utils::file_dialog::file;
 use crate::utils::read_file_content::read_file_content;
 use crate::utils::md_to_text::md_to_text;
 use crate::utils::html_to_text::html_to_text;
 use crate::db::add_note::add_note;
 
-pub fn import(cmd: ImportCommand, conn: &Connection) -> Result<()> {
-    const SUPPORTED_FILETYPES: [&str; 3] = ["md", "txt", "html"];
+use crate::config::IMPORT_FILETYPES;
 
-    let file = Path::new(&cmd.file);
+pub fn import(cmd: ImportCommand, conn: &Connection) -> Result<()> {
+
+    let file = match &cmd.file {
+        Some(path) => PathBuf::from(path),
+        None => file()
+    };
 
     if !file.exists() {
         eprintln!("File not found!");
@@ -20,16 +25,16 @@ pub fn import(cmd: ImportCommand, conn: &Connection) -> Result<()> {
 
     let extension = file.extension().and_then(|ext| ext.to_str());
 
-    if extension.is_none_or(|ext| !SUPPORTED_FILETYPES.contains(&ext)) {
+    if extension.is_none_or(|ext| !IMPORT_FILETYPES.contains(&ext)) {
         eprintln!(
             "Unsupported filetype, supported formats: {}",
-            SUPPORTED_FILETYPES.join(", ")
+            IMPORT_FILETYPES.join(", ")
         );
         std::process::exit(0);
     }
 
     let title = file.file_stem().unwrap().to_str().unwrap();
-    let content = read_file_content(file);
+    let content = read_file_content(&file);
 
     match extension.as_deref() {
         Some("md") => {
@@ -45,6 +50,8 @@ pub fn import(cmd: ImportCommand, conn: &Connection) -> Result<()> {
         }
         _ => unreachable!()
     }
+
+    println!("File {} imported!", format!("{}.{}", title, extension.unwrap()));
 
     Ok(())
 }

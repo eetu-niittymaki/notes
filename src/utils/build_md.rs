@@ -11,8 +11,8 @@ pub fn build_md(
     for note in notes {
         let date = note.created_at.split_whitespace().next().unwrap();
 
-        md.push_str(&format!("### {}\n", date));
         md.push_str(&format!("# {}\n", note.title));
+        md.push_str(&format!("### {}\n", date));
 
         if let Some(tags) = note_tags.get(&note.id) {
             for tag in tags {
