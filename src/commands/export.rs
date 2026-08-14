@@ -7,6 +7,7 @@ use crate::db::get_all_notes::get_all_notes;
 use crate::db::get_all_note_tags::get_all_note_tags;
 use crate::utils::export_image::export_image;
 use crate::utils::export_text::export_text;
+use crate::utils::file_dialog::folder;
 
 pub fn export(cmd: ExportCommand, conn: &Connection) -> Result<()> {
     const SUPPORTED_FILETYPES: [&str; 6] = ["md", "txt", "html", "json", "png", "pdf"];
@@ -28,10 +29,9 @@ pub fn export(cmd: ExportCommand, conn: &Connection) -> Result<()> {
 
     let note_tags = get_all_note_tags(conn)?;
 
-    let mut outfile_path = PathBuf::from(
-        std::env::var("USERPROFILE").expect("USERPROFILE is not set"),
-    );
-    outfile_path.push("Desktop");
+    let mut outfile_path = PathBuf::new();
+    let folder = folder();
+    outfile_path.push(&folder);
     outfile_path.push(format!("notes.{}", cmd.filetype));
 
     match cmd.filetype.as_str() {
@@ -40,7 +40,7 @@ pub fn export(cmd: ExportCommand, conn: &Connection) -> Result<()> {
         _ => unreachable!(),
     }
 
-    println!("Notes exported to desktop!");
+    println!("Notes exported to {}", &folder.to_string_lossy());
 
     Ok(())
 }

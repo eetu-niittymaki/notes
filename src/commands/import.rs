@@ -3,7 +3,7 @@ use std::path::Path;
 use rusqlite::{Connection, Result};
 
 use crate::cli::ImportCommand;
-use crate::utils::read_file::read_file;
+use crate::utils::read_file_content::read_file_content;
 use crate::utils::md_to_text::md_to_text;
 use crate::utils::html_to_text::html_to_text;
 use crate::db::add_note::add_note;
@@ -29,7 +29,7 @@ pub fn import(cmd: ImportCommand, conn: &Connection) -> Result<()> {
     }
 
     let title = file.file_stem().unwrap().to_str().unwrap();
-    let content = read_file(file);
+    let content = read_file_content(file);
 
     match extension.as_deref() {
         Some("md") => {

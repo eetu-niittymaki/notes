@@ -9,6 +9,7 @@ enable-ansi-support = "0.3.1"
 hyper-render = "0.2.2"
 owo-colors = "4.3.0"
 pulldown-cmark = "0.13.4"
+rfd = "0.17.2"
 rusqlite = { version = "0.40.1", features = ["bundled"] }
 scraper = "0.27.0"
 serde_json = { version = "1.0.151", features = ["preserve_order"] }
