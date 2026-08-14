@@ -1,25 +1,17 @@
-use std::io::{self, Write};
-
 use rusqlite::{Connection, Result};
 
 use crate::cli::DeleteCommand;
 use crate::db::delete_all_notes::delete_all_notes;
 use crate::db::delete_note::delete_note;
+use crate::utils::get_user_input::get_user_input;
 
 use crate::models::NoteSelector;
 
 pub fn delete(cmd: DeleteCommand, conn: &Connection) -> Result<()> {
     if cmd.all {
-        let mut confirm = String::new();
-        print!("Delete all notes? y/n: ");
-        io::stdout().flush().expect("Failed to flush stdout");
-        
-        io::stdin()
-            .read_line(&mut confirm)
-            .expect("Failed to read input");
+        println!("Delete all notes? y/n");
+        let confirm = get_user_input().trim().to_lowercase();
 
-        confirm = confirm.trim().to_lowercase();
-    
         if confirm == "y" || confirm == "yes" {
             let rows = delete_all_notes(conn)?;
             if rows > 0 {

@@ -3,10 +3,10 @@ use std::fs::OpenOptions;
 use std::io::Write;
 use std::path::PathBuf;
 
-use crate::utils::build_html::build_html;
-use crate::utils::build_md::build_md;
-use crate::utils::build_txt::build_txt;
-use crate::utils::build_json::build_json;
+use crate::utils::export::build_html::build_html;
+use crate::utils::export::build_md::build_md;
+use crate::utils::export::build_txt::build_txt;
+use crate::utils::export::build_json::build_json;
 
 use crate::models::{Note, Tag};
 

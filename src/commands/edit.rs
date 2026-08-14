@@ -14,12 +14,18 @@ pub fn edit(cmd: EditCommand, conn: &Connection) -> Result<()> {
 
     let update = match cmd.field {
         EditField::Title => {
-            let new_title = editor(note.title);
+            let new_title = editor(
+                note.title,
+                 Some("Edit Title".to_string())
+            );
             NoteUpdate::Title(new_title)
         }
 
         EditField::Content => {
-            let new_content = editor(note.content);
+            let new_content = editor(
+                note.content,
+                 Some("Edit Contetent".to_string())
+                );
             NoteUpdate::Content(new_content)
         }
     };

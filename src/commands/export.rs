@@ -5,8 +5,8 @@ use rusqlite::{Connection, Result};
 use crate::cli::ExportCommand;
 use crate::db::get_all_notes::get_all_notes;
 use crate::db::get_all_note_tags::get_all_note_tags;
-use crate::utils::export_image::export_image;
-use crate::utils::export_text::export_text;
+use crate::utils::export::export_image::export_image;
+use crate::utils::export::export_text::export_text;
 use crate::utils::file_dialog::folder;
 
 use crate::config::EXPORT_FILETYPES;

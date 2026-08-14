@@ -99,6 +99,7 @@ pub struct ExportCommand {
 
 #[derive(Parser, Debug, Clone)]
 pub struct ImportCommand {
+    #[arg(help="Give file path from command line or choose through file dialog")]
     pub file: Option<String>,
 }
 

@@ -3,7 +3,7 @@ use std::collections::HashMap;
 
 use hyper_render::{render, Config, OutputFormat};
 
-use crate::utils::build_html::build_html;
+use crate::utils::export::build_html::build_html;
 
 use crate::models::Note;
 use crate::models::Tag;
