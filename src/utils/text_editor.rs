@@ -4,7 +4,10 @@ use std::{
     process::Command,
 };
 
-pub fn editor(init_content: String, editor_name: Option<String>) -> String {
+pub fn text_editor(
+    init_content: String, 
+    editor_name: Option<String>
+) -> String {
     let editor = var("EDITOR").unwrap_or_else(|_| "notepad.exe".to_string());
 
     let mut file_path = env::temp_dir();

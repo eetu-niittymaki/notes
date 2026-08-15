@@ -3,7 +3,7 @@ use rusqlite::{Connection, Result};
 use crate::cli::{EditCommand, EditField};
 use crate::db::update_note::update_note;
 use crate::db::get_note::get_note;
-use crate::utils::editor::editor;
+use crate::utils::text_editor::text_editor;
 
 use crate::models::{NoteSelector, NoteUpdate};
 
@@ -14,7 +14,7 @@ pub fn edit(cmd: EditCommand, conn: &Connection) -> Result<()> {
 
     let update = match cmd.field {
         EditField::Title => {
-            let new_title = editor(
+            let new_title = text_editor(
                 note.title,
                  Some("Edit Title".to_string())
             );
@@ -22,7 +22,7 @@ pub fn edit(cmd: EditCommand, conn: &Connection) -> Result<()> {
         }
 
         EditField::Content => {
-            let new_content = editor(
+            let new_content = text_editor(
                 note.content,
                  Some("Edit Contetent".to_string())
                 );

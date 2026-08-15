@@ -30,8 +30,15 @@ pub fn export(cmd: ExportCommand, conn: &Connection) -> Result<()> {
     let note_tags = get_all_note_tags(conn)?;
 
     let mut outfile_path = PathBuf::new();
-    let folder = folder();
-    outfile_path.push(&folder);
+    
+    let folder = match folder() {
+        Some(path) => outfile_path.push(path),
+        None => {
+            println!("Folder selection cancelled");
+            std::process::exit(0);
+        }
+    };
+
     outfile_path.push(format!("notes.{}", cmd.filetype));
 
     match cmd.filetype.as_str() {
@@ -40,7 +47,7 @@ pub fn export(cmd: ExportCommand, conn: &Connection) -> Result<()> {
         _ => unreachable!(),
     }
 
-    println!("Notes exported to {}", &folder.to_string_lossy());
+    println!("Notes exported to {:?}", folder);
 
     Ok(())
 }

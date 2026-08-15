@@ -5,16 +5,25 @@ use rusqlite::{Connection, Result};
 use crate::cli::ImportCommand;
 use crate::utils::file_dialog::file;
 use crate::utils::read_file_content::read_file_content;
-use crate::utils::import::md_to_text::md_to_text;
-use crate::utils::import::html_to_text::html_to_text;
-use crate::db::add_note::add_note;
+use crate::utils::import::import_without_separating::import_without_separating;
+use crate::utils::import::import_with_separators::import_with_separators;
+use crate::utils::get_user_input::get_user_input;
 
 use crate::config::IMPORT_FILETYPES;
 
 pub fn import(cmd: ImportCommand, conn: &Connection) -> Result<()> {
+    // Get file through command line args or file dialog if no arg
     let file = match &cmd.file {
         Some(path) => PathBuf::from(path),
-        None => file()
+        None => {
+            match file() { // Get file through file dialog, print error if dialog exited
+                Some(path) => path,
+                None => {
+                    println!("File selection canceled");
+                    std::process::exit(0); 
+                }
+            }
+        }
     };
 
     if !file.exists() {
@@ -35,22 +44,24 @@ pub fn import(cmd: ImportCommand, conn: &Connection) -> Result<()> {
     let title = file.file_stem().unwrap().to_str().unwrap();
     let content = read_file_content(&file);
 
-    match extension.as_deref() {
-        Some("md") => {
-            let text = md_to_text(&content);
-            add_note(conn, title, &text).unwrap();
-        },
-        Some("html") => {
-            let text = html_to_text(&content);
-            add_note(conn, title, &text).unwrap();
-        },
-        Some("txt") => {
-            add_note(conn, title, &content).unwrap();
-        }
-        _ => unreachable!()
-    }
+    println!("How should the file be imported? 
+[1] Entire file as one note
+[2] Manually add separator # at the title of each note. Rest of the text is considered content.");
 
-    println!("File {} imported!", format!("{}.{}", title, extension.unwrap()));
+    let mode: u8 = get_user_input()
+        .parse()
+        .unwrap_or(0);
+
+    let result = match mode {
+        1 => import_without_separating(conn, &extension.unwrap(), content, title),
+        2 => import_with_separators(conn, &extension.unwrap(), content),
+        _ => {
+            println!("Please enter a number from 1-2.");
+            return Ok(())
+        }
+    };
+
+    println!("Successfully imported {} notes.", result.unwrap());
 
     Ok(())
 }
