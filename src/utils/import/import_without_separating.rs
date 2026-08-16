@@ -1,5 +1,4 @@
-use rusqlite::Result;
-
+use crate::error::Result;
 use crate::db::Database;
 
 use crate::utils::import::md_to_text::md_to_text;
@@ -35,17 +34,17 @@ pub fn import_without_separating (
     let rows = match extension {
         "md" => {
             let text = md_to_text(&content);
-            db.notes().create(title, &text)?
+            db.notes().create(title, &text)
         },
         "html" => {
             let text = html_to_text(&content);
-            db.notes().create(title, &text)?
+            db.notes().create(title, &text)
         },
         "txt" => {
-            db.notes().create(title, &content)?
+            db.notes().create(title, &content)
         }
         _ => unreachable!()
     };
 
-    Ok(rows)
+    Ok(rows.unwrap())
 }

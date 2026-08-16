@@ -73,7 +73,7 @@ pub fn notes(
 // Search for notes that have specific tag attached to them
 pub fn tags(
     conn: &Connection, 
-    tag: String,
+    tag: &str,
 ) -> Result<Vec<Note>> {
     let mut statement = conn.prepare(
     "SELECT note.*

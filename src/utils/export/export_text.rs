@@ -8,38 +8,28 @@ use crate::utils::export::build_md::build_md;
 use crate::utils::export::build_txt::build_txt;
 use crate::utils::export::build_json::build_json;
 
+use crate::error::Result;
 use crate::models::{Note, Tag};
 
 pub fn export_text(
-    filetype: String, 
+    filetype: &str, 
     notes: Vec<Note>,
     note_tags: HashMap<i64, Vec<Tag>>,
     outfile_path: PathBuf
-) {
+) -> Result<()> {
     let mut file = OpenOptions::new()
         .create(true)
         .write(true)
         .truncate(true)
-        .open(outfile_path)
-        .unwrap();
+        .open(&outfile_path)?;
 
-    match filetype.as_str() {
-        "txt" => {
-            write!(file, "{}", build_txt(notes, note_tags)).unwrap();
-        }
-
-        "md" => {
-            write!(file, "{}", build_md(notes, note_tags)).unwrap();
-        }
-
-        "html" => {
-            write!(file, "{}", build_html(notes, note_tags)).unwrap();
-        }
-
-        "json" => {
-            write!(file, "{}", build_json(notes, note_tags)).unwrap();
-        }
-
+    match filetype {
+        "txt" => write!(file, "{}", build_txt(notes, note_tags))?,
+        "md" => write!(file, "{}", build_md(notes, note_tags))?,
+        "html" => write!(file, "{}", build_html(notes, note_tags))?,
+        "json" => write!(file, "{}", build_json(notes, note_tags))?,
         _ => unreachable!(),
     }
+
+    Ok(())
 }

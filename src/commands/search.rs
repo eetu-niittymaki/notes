@@ -1,4 +1,4 @@
-use rusqlite::Result;
+use crate::error::Result;
 
 use crate::cli::SearchCommand;
 
@@ -12,7 +12,7 @@ pub fn search(cmd: SearchCommand, db: &Database,) -> Result<()> {
 
     let notes = match (&cmd.title, &cmd.content, &cmd.tag) {
         (_, _, Some(tag)) => {
-            db.search().tags(tag.to_string())?
+            db.search().tags(tag)?
         }
 
         (Some(title), None, None) => {

@@ -1,6 +1,8 @@
 use std::collections::HashMap;
 
-use rusqlite::{Connection, Result};
+use rusqlite::Connection;
+
+use crate::error::Result;
 
 use crate::models::{Tag, TagWithCount};
 
@@ -18,22 +20,22 @@ impl<'a> TagsRepository<'a> {
     }  
 
     pub fn add(&self, id: i64, tag: &str) -> Result<usize> {
-        create::add(&self.conn, id, tag)
+        Ok(create::add(self.conn, id, tag)?)
     }
     
     pub fn all(&self) -> Result<Vec<TagWithCount>> {
-        get::all(&self.conn)
+        Ok(get::all(self.conn)?)
     }
 
     pub fn all_for_notes(&self) -> Result<HashMap<i64, Vec<Tag>>> {
-        get::all_for_notes(&self.conn)
+        Ok(get::all_for_notes(self.conn)?)
     }
 
     pub fn for_note(&self, note_id: i64) -> Result<Vec<Tag>> {
-        get::for_note(&self.conn, note_id)
+        Ok(get::for_note(self.conn, note_id)?)
     }
 
     pub fn delete(&self, name: &str) -> Result<usize> {
-        delete::one(&self.conn, name)
+        Ok(delete::one(self.conn, name)?)
     }
 }

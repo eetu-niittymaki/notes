@@ -1,5 +1,6 @@
-use rusqlite::{Connection, Result};
+use rusqlite::Connection;
 
+use crate::error::Result;
 use crate::models::Note;
 
 mod search;
@@ -14,10 +15,10 @@ impl<'a> SearchRepository<'a> {
     }  
     
     pub fn notes(&self, title: Option<&str>, content: Option<&str>) -> Result<Vec<Note>> {
-        search::notes(&self.conn, title, content)
+        Ok(search::notes(self.conn, title, content)?)
     }
 
-    pub fn tags(&self, tag: String) -> Result<Vec<Note>> {
-        search::tags(&self.conn, tag)
+    pub fn tags(&self, tag: &str) -> Result<Vec<Note>> {
+        Ok(search::tags(self.conn, &tag)?)
     }
 }

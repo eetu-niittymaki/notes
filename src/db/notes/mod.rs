@@ -3,7 +3,9 @@ mod create;
 mod update;
 mod delete;
 
-use rusqlite::{Connection, Result};
+use rusqlite::Connection;
+
+use crate::error::Result;
 
 use crate::models::{Note, NoteSelector, NoteUpdate};
 
@@ -16,25 +18,25 @@ impl<'a> NotesRepository<'a> {
         Self { conn }
     }   
     pub fn create(&self, title: String, content: &str) -> Result<usize> {
-        create::create(&self.conn, title, content)
+        Ok(create::create(self.conn, &title, content)?)
     }
     pub fn get(&self, selector: NoteSelector) -> Result<Note> {
-        get::one(&self.conn, &selector)
+        Ok(get::one(self.conn, &selector)?)
     }
 
     pub fn get_all(&self) -> Result<Vec<Note>> {
-        get::all(&self.conn)
+        Ok(get::all(self.conn)?)
     }
 
     pub fn update(&self, selector: NoteSelector, updater: NoteUpdate) -> Result<usize> {
-        update::update(&self.conn, &selector, updater)
+        Ok(update::update(self.conn, &selector, updater)?)
     }
 
     pub fn delete(&self, selector: NoteSelector) -> Result<usize> {
-        delete::one(&self.conn, &selector)
+        Ok(delete::one(self.conn, &selector)?)
     }
 
     pub fn delete_all(&self) -> Result<usize> {
-        delete::all(&self.conn)
+        Ok(delete::all(self.conn)?)
     }
 }

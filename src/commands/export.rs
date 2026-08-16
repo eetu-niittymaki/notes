@@ -1,6 +1,4 @@
-use std::path::PathBuf;
-
-use rusqlite::Result;
+use crate::error::Result;
 
 use crate::cli::ExportCommand;
 
@@ -30,21 +28,19 @@ pub fn export(cmd: ExportCommand, db: &Database,) -> Result<()> {
 
     let note_tags = db.tags().all_for_notes()?;
 
-    let mut outfile_path = PathBuf::new();
-    
     let folder = match folder() {
-        Some(path) => outfile_path.push(path),
+        Some(path) => path,
         None => {
             println!("Folder selection cancelled");
             std::process::exit(0);
         }
     };
 
-    outfile_path.push(format!("notes.{}", cmd.filetype));
+    let outfile_path = folder.join(format!("notes.{}", cmd.filetype));
 
     match cmd.filetype.as_str() {
-        "txt" | "md" | "html" | "json" => export_text(cmd.filetype, notes, note_tags, outfile_path),
-        "png" | "pdf" => export_image(cmd.filetype, notes, note_tags, outfile_path),
+        "txt" | "md" | "html" | "json" => export_text(&cmd.filetype, notes, note_tags, outfile_path)?,
+        "png" | "pdf" => export_image(&cmd.filetype, notes, note_tags, outfile_path)?,
         _ => unreachable!(),
     }
 

@@ -1,4 +1,4 @@
-use rusqlite::Result;
+use crate::error::Result;
 
 use crate::cli::{EditCommand, EditField};
 

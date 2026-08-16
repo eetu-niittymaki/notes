@@ -1,15 +1,15 @@
-use rusqlite::{Connection};
 use clap::Parser;
 use cli::{Cli, Commands};
 
 use crate::config::get_db_path;
 use crate::db::Database;
-use crate::db::create_tables::create_tables;
+use crate::error::Result;
 
 mod config;
 mod cli;
 mod commands;
 mod models;
+mod error;
 mod db;
 mod utils;
 
@@ -21,20 +21,16 @@ fn main() {
     }
 }
 
-fn try_main() -> rusqlite::Result<()> {
+fn try_main() -> Result<()> {
     let cli = Cli::parse();
     let db_path = get_db_path();
 
-    let conn = Connection::open(&db_path)?;
-
-    create_tables(&conn)?;
-
-    let db = Database::new(conn);
+    let db = Database::open(&db_path)?;
 
     run(cli, &db)
 }
 
-fn run(cli: Cli, db: &Database) -> rusqlite::Result<()> {
+fn run(cli: Cli, db: &Database) -> Result<()> {
     match cli.command {
         Some(Commands::All(cmd)) => commands::all::all(cmd, db)?,
         Some(Commands::Get(cmd)) => commands::get::get(cmd, db)?,

@@ -1,6 +1,5 @@
-use rusqlite::Result;
-
 use crate::db::Database;
+use crate::error::Result;
 
 use crate::utils::import::md_to_text::md_to_text;
 use crate::utils::import::html_to_text::html_to_text;

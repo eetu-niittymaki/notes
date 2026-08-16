@@ -1,6 +1,6 @@
 use std::path::PathBuf;
 
-use rusqlite::Result;
+use crate::error::Result;
 
 use crate::cli::ImportCommand;
 
