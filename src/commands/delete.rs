@@ -1,19 +1,20 @@
-use rusqlite::{Connection, Result};
+use rusqlite::Result;
 
 use crate::cli::DeleteCommand;
-use crate::db::delete_all_notes::delete_all_notes;
-use crate::db::delete_note::delete_note;
+
+use crate::db::Database;
+
 use crate::utils::get_user_input::get_user_input;
 
 use crate::models::NoteSelector;
 
-pub fn delete(cmd: DeleteCommand, conn: &Connection) -> Result<()> {
+pub fn delete(cmd: DeleteCommand, db: &Database,) -> Result<()> {
     if cmd.all {
         println!("Delete all notes? y/n");
         let confirm = get_user_input().trim().to_lowercase();
 
         if confirm == "y" || confirm == "yes" {
-            let rows = delete_all_notes(conn)?;
+            let rows = db.notes().delete_all()?;
             if rows > 0 {
                 println!("All notes deleted!");
             } else {
@@ -43,7 +44,7 @@ pub fn delete(cmd: DeleteCommand, conn: &Connection) -> Result<()> {
         }
     };
     
-    let rows = delete_note(conn, selector)?;
+    let rows = db.notes().delete(selector)?;
     if rows == 1 {
         println!("Note deleted!") 
     } else  {

@@ -1,10 +1,10 @@
-use rusqlite::{Connection, Result};
+use rusqlite::Result;
 
 use crate::cli::SearchCommand;
-use crate::db::search_notes::search_notes;
-use crate::db::search_tags::search_tags;
 
-pub fn search(cmd: SearchCommand, conn: &Connection) -> Result<()> {
+use crate::db::Database;
+
+pub fn search(cmd: SearchCommand, db: &Database,) -> Result<()> {
     if cmd.title.is_some() && cmd.content.is_some() {
         eprintln!("Please provide either a title or text content, not both.");
         return Ok(());
@@ -12,15 +12,15 @@ pub fn search(cmd: SearchCommand, conn: &Connection) -> Result<()> {
 
     let notes = match (&cmd.title, &cmd.content, &cmd.tag) {
         (_, _, Some(tag)) => {
-            search_tags(conn, tag.to_string())?
+            db.search().tags(tag.to_string())?
         }
 
         (Some(title), None, None) => {
-            search_notes(conn, Some(title), None)?
+            db.search().notes(Some(title), None)?
         }
 
         (None, Some(content), None) => {
-            search_notes(conn, None, Some(content))?
+            db.search().notes(None, Some(content))?
         }
 
         _ => {

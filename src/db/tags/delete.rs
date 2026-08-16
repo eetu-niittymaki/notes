@@ -1,6 +1,6 @@
 use rusqlite::{Connection, Result};
 
-pub fn delete_tag(
+pub fn one(
     conn: &Connection, 
     name: &str
 ) -> Result<usize> {

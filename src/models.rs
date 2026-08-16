@@ -21,6 +21,7 @@ pub struct TagWithCount {
     pub note_count: i64,
 }
 
+#[derive(Clone)]
 pub enum NoteSelector<'a> {
     Id(i64),
     Title(&'a str),

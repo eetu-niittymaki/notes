@@ -1,10 +1,11 @@
-use rusqlite::{Connection, Result};
+use rusqlite::Result;
 
 use crate::cli::NewCommand;
-use crate::db::add_note::add_note;
 
-pub fn new(cmd: NewCommand, conn: &Connection) -> Result<()> {
-    let rows = add_note(conn, &cmd.title, &cmd.content)?;
+use crate::db::Database;
+
+pub fn new(cmd: NewCommand, db: &Database,) -> Result<()> {
+    let rows = db.notes().create(cmd.title, &cmd.content)?;
 
     if rows == 1 {
         println!("Note added.");

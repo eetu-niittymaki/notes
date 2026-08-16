@@ -1,12 +1,12 @@
-use rusqlite::{Connection, Result};
+use rusqlite::Result;
 
 use crate::cli::GetCommand;
-use crate::db::get_note::get_note;
-use crate::db::get_tags_for_note::get_tags_for_note;
+
+use crate::db::Database;
 
 use crate::models::NoteSelector;
 
-pub fn get(cmd: GetCommand, conn: &Connection) -> Result<()> {
+pub fn get(cmd: GetCommand, db: &Database,) -> Result<()> {
     let selector = match (cmd.id, cmd.title.as_deref()) {
         (Some(id), None) => NoteSelector::Id(id),
 
@@ -23,8 +23,8 @@ pub fn get(cmd: GetCommand, conn: &Connection) -> Result<()> {
         }
     };
 
-    let note =  get_note(conn, &selector)?;
-    let tags = get_tags_for_note(conn, note.id)?;
+    let note =  db.notes().get(selector)?;
+    let tags = db.tags().for_note(note.id)?;
 
     println!("{} | {}", note.id, note.title);
     

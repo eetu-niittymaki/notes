@@ -1,8 +1,11 @@
 use std::path::PathBuf;
 
-use rusqlite::{Connection, Result};
+use rusqlite::Result;
 
 use crate::cli::ImportCommand;
+
+use crate::db::Database;
+
 use crate::utils::file_dialog::file;
 use crate::utils::read_file_content::read_file_content;
 use crate::utils::import::import_without_separating::import_without_separating;
@@ -11,7 +14,7 @@ use crate::utils::get_user_input::get_user_input;
 
 use crate::config::IMPORT_FILETYPES;
 
-pub fn import(cmd: ImportCommand, conn: &Connection) -> Result<()> {
+pub fn import(cmd: ImportCommand, db: &Database,) -> Result<()> {
     // Get file through command line args or file dialog if no arg
     let file = match &cmd.file {
         Some(path) => PathBuf::from(path),
@@ -53,8 +56,8 @@ pub fn import(cmd: ImportCommand, conn: &Connection) -> Result<()> {
         .unwrap_or(0);
 
     let result = match mode {
-        1 => import_without_separating(conn, &extension.unwrap(), content, title),
-        2 => import_with_separators(conn, &extension.unwrap(), content),
+        1 => import_without_separating(db, &extension.unwrap(), content, title),
+        2 => import_with_separators(db, &extension.unwrap(), content),
         _ => {
             println!("Please enter a number from 1-2.");
             return Ok(())

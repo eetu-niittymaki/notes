@@ -2,7 +2,7 @@ use rusqlite::{Connection, Result};
 
 use crate::models::{Note, NoteSelector};
 
-pub fn get_note(
+pub fn one(
     conn: &Connection,
     selector: &NoteSelector
 ) -> Result<Note> {
@@ -10,7 +10,7 @@ pub fn get_note(
         NoteSelector::Id(id) => {
             let mut statement = conn.prepare(
             "SELECT * FROM notes
-                WHERE id = ?1"
+            WHERE id = ?1"
             )?;
 
             let note: Note = statement.query_row(
@@ -31,7 +31,7 @@ pub fn get_note(
         NoteSelector::Title(title) => {
             let mut statement = conn.prepare(
             "SELECT * FROM notes
-                WHERE title = ?1"
+            WHERE title = ?1"
             )?;
 
             let note: Note = statement.query_row(
@@ -49,4 +49,31 @@ pub fn get_note(
             Ok(note)
         }
     }
+}
+
+pub fn all(conn: &Connection) -> Result<Vec<Note>> {
+    let mut statement = conn.prepare(
+        "SELECT id, 
+                title, 
+                content, 
+                created_at,
+                updated_at,
+                favorite
+            FROM notes"
+    )?;
+
+    let notes = statement
+        .query_map([], |row| {
+            Ok(Note {
+                id: row.get(0)?,
+                title: row.get(1)?,
+                content: row.get(2)?,
+                created_at: row.get(3)?,
+                updated_at: row.get(4)?,
+                favorite: row.get(5)?,
+            })
+        })?
+        .collect::<Result<Vec<_>, _>>()?;
+
+    Ok(notes)
 }

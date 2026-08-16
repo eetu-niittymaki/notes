@@ -1,18 +1,18 @@
-use rusqlite::{Connection, Result};
+use rusqlite::Result;
 
 use crate::cli::AllCommand;
-use crate::db::get_all_notes::get_all_notes;
-use crate::db::get_all_note_tags::get_all_note_tags;
 
-pub fn all(cmd: AllCommand, conn: &Connection) -> Result<()> {
-    let notes = get_all_notes(conn)?;
+use crate::db::Database;
+
+pub fn all(cmd: AllCommand, db: &Database,) -> Result<()> {
+    let notes = db.notes().get_all()?;
 
     if notes.is_empty() {
         println!("No notes found");
         std::process::exit(0);
     }
 
-    let note_tags = get_all_note_tags(conn)?;
+    let note_tags = db.tags().all_for_notes()?;
 
     println!("All Notes:");
     println!("----------");

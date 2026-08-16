@@ -1,13 +1,13 @@
 use rusqlite::{Connection, Result};
 
-pub fn add_note(
+pub fn create(
     conn: &Connection,
-    title: &str,
+    title: String,
     content: &str,
 ) -> Result<usize> {
     conn.execute(
         "INSERT INTO notes (title, content)
          VALUES (?1, ?2)",
-        [title, content],
+        [title, content.to_string()],
     )
 }

@@ -1,6 +1,6 @@
 use rusqlite::{Connection, Result};
 
-pub fn add_tag(
+pub fn add(
     conn: &Connection,
     id: i64, 
     tag: &str

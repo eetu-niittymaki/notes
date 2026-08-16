@@ -1,12 +1,13 @@
-use rusqlite::{Connection, Result};
+use rusqlite::Result;
+
+use crate::db::Database;
 
 use crate::utils::import::md_to_text::md_to_text;
 use crate::utils::import::html_to_text::html_to_text;
 use crate::utils::get_user_input::get_user_input;
-use crate::db::add_note::add_note;
 
 pub fn import_without_separating (
-    conn: &Connection,
+    db: &Database,
     extension: &str,
     content: String,
     title: &str
@@ -34,14 +35,14 @@ pub fn import_without_separating (
     let rows = match extension {
         "md" => {
             let text = md_to_text(&content);
-            add_note(conn, &title, &text)?
+            db.notes().create(title, &text)?
         },
         "html" => {
             let text = html_to_text(&content);
-            add_note(conn, &title, &text)?
+            db.notes().create(title, &text)?
         },
         "txt" => {
-            add_note(conn, &title, &content)?
+            db.notes().create(title, &content)?
         }
         _ => unreachable!()
     };

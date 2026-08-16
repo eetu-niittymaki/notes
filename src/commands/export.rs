@@ -1,17 +1,18 @@
 use std::path::PathBuf;
 
-use rusqlite::{Connection, Result};
+use rusqlite::Result;
 
 use crate::cli::ExportCommand;
-use crate::db::get_all_notes::get_all_notes;
-use crate::db::get_all_note_tags::get_all_note_tags;
+
+use crate::db::Database;
+
 use crate::utils::export::export_image::export_image;
 use crate::utils::export::export_text::export_text;
 use crate::utils::file_dialog::folder;
 
 use crate::config::EXPORT_FILETYPES;
 
-pub fn export(cmd: ExportCommand, conn: &Connection) -> Result<()> {
+pub fn export(cmd: ExportCommand, db: &Database,) -> Result<()> {
     if !EXPORT_FILETYPES.contains(&cmd.filetype.as_str()) {
         eprintln!(
             "Unsupported filetype, supported formats: {}",
@@ -20,14 +21,14 @@ pub fn export(cmd: ExportCommand, conn: &Connection) -> Result<()> {
         std::process::exit(0);
     }
 
-    let notes = get_all_notes(conn)?;
+    let notes = db.notes().get_all()?;
 
     if notes.is_empty() {
         eprintln!("No notes found to export");
         std::process::exit(0);
     }
 
-    let note_tags = get_all_note_tags(conn)?;
+    let note_tags = db.tags().all_for_notes()?;
 
     let mut outfile_path = PathBuf::new();
     

@@ -1,14 +1,13 @@
-use rusqlite::{Connection, Result};
+use rusqlite::Result;
 
 use crate::cli::TagCommand;
-use crate::db::add_tag::add_tag;
-use crate::db::get_all_tags::get_all_tags;
-use crate::db::delete_tag::delete_tag;
 
-pub fn tag(cmd: TagCommand, conn: &Connection) -> Result<()> {
+use crate::db::Database;
+
+pub fn tag(cmd: TagCommand, db: &Database,) -> Result<()> {
     match cmd {
         TagCommand::Add { note_id, name } => {
-            let rows = add_tag(conn, note_id, &name)?;
+            let rows = db.tags().add(note_id, &name)?;
 
             if rows == 1 {
                 println!("Tag '{}' added to note {}!", name, note_id);
@@ -18,7 +17,7 @@ pub fn tag(cmd: TagCommand, conn: &Connection) -> Result<()> {
         }
 
         TagCommand::Delete { name } => {
-            let rows = delete_tag(conn, &name)?;
+            let rows = db.tags().delete(&name)?;
 
             if rows == 1 {
                 println!("Tag '{}' deleted!", name);
@@ -28,7 +27,7 @@ pub fn tag(cmd: TagCommand, conn: &Connection) -> Result<()> {
         }
 
         TagCommand::List => {
-            let tags = get_all_tags(conn)?;
+            let tags = db.tags().all()?;
 
             if tags.is_empty() {
                 println!("No tags found");

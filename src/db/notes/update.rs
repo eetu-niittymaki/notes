@@ -3,7 +3,7 @@ use rusqlite::{Connection, Result};
 use crate::models::NoteSelector;
 use crate::models::NoteUpdate;
 
-pub fn update_note(
+pub fn update(
     conn: &Connection,
     selector: &NoteSelector,
     update: NoteUpdate,

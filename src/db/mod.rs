@@ -1,14 +1,32 @@
-pub mod get_all_notes;
-pub mod get_note;
-pub mod add_note;
-pub mod delete_note;
-pub mod delete_all_notes;
-pub mod update_note;
-pub mod search_notes;
+pub mod notes;
+pub mod tags;
+pub mod search;
 pub mod create_tables;
-pub mod add_tag;
-pub mod search_tags;
-pub mod get_all_tags;
-pub mod get_all_note_tags;
-pub mod get_tags_for_note;
-pub mod delete_tag;
+
+use rusqlite::Connection;
+
+pub use notes::NotesRepository;
+pub use tags::TagsRepository;
+pub use search::SearchRepository;
+
+pub struct Database {
+    conn: Connection,
+}
+
+impl Database {
+    pub fn new(conn: Connection) -> Self {
+        Self { conn }
+    }
+
+    pub fn notes(&self) -> NotesRepository<'_> {
+        NotesRepository::new(&self.conn)
+    }
+
+    pub fn tags(&self) -> TagsRepository<'_> {
+        TagsRepository::new(&self.conn)
+    }
+
+    pub fn search(&self) -> SearchRepository<'_> {
+        SearchRepository::new(&self.conn)
+    }
+}

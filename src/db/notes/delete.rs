@@ -2,9 +2,9 @@ use rusqlite::{Connection, Result};
 
 use crate::models::NoteSelector;
 
-pub fn delete_note(
+pub fn one(
     conn: &Connection,
-    selector: NoteSelector
+    selector: &NoteSelector
 ) -> Result<usize> {
     match selector {
         NoteSelector::Id(id) => {
@@ -21,4 +21,11 @@ pub fn delete_note(
             )
         }
     }
+}
+
+pub fn all(conn: &Connection) -> Result<usize> {
+    conn.execute(
+        "DELETE FROM notes", 
+        []
+    ) 
 }
