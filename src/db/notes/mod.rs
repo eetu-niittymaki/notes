@@ -17,9 +17,11 @@ impl<'a> NotesRepository<'a> {
     pub fn new(conn: &'a Connection) -> Self {
         Self { conn }
     }   
+    
     pub fn create(&self, title: String, content: &str) -> Result<usize> {
         Ok(create::create(self.conn, &title, content)?)
     }
+    
     pub fn get(&self, selector: NoteSelector) -> Result<Note> {
         Ok(get::one(self.conn, &selector)?)
     }

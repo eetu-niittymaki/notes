@@ -32,17 +32,9 @@ pub fn import_without_separating (
     };
 
     let rows = match extension {
-        "md" => {
-            let text = md_to_text(&content);
-            db.notes().create(title, &text)
-        },
-        "html" => {
-            let text = html_to_text(&content);
-            db.notes().create(title, &text)
-        },
-        "txt" => {
-            db.notes().create(title, &content)
-        }
+        "md" => db.notes().create(title, &md_to_text(&content)),
+        "html" => db.notes().create(title,  &html_to_text(&content)),
+        "txt" => db.notes().create(title, &content),
         _ => unreachable!()
     };
 

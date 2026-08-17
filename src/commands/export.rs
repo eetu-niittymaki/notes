@@ -28,7 +28,7 @@ pub fn export(cmd: ExportCommand, db: &Database,) -> Result<()> {
 
     let note_tags = db.tags().all_for_notes()?;
 
-    let folder = match folder() {
+    let folder = match folder("Select Destination Folder") {
         Some(path) => path,
         None => {
             println!("Folder selection cancelled");

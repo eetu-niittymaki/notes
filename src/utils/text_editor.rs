@@ -8,23 +8,27 @@ pub fn text_editor(
     init_content: String, 
     editor_name: Option<String>
 ) -> String {
+    // Get editor program from the `EDITOR` env variable
+    // Default to notepad.exe if not found
     let editor = var("EDITOR").unwrap_or_else(|_| "notepad.exe".to_string());
 
-    let mut file_path = env::temp_dir();
+    let mut temp_dir = env::temp_dir();
 
     let editor_name = editor_name.unwrap_or("Edit".to_string());
 
-    file_path.push(editor_name);
+    temp_dir.push(editor_name);
 
-    fs::write(&file_path, init_content)
+    // Create and write original contents to temp file in temp directory
+    fs::write(&temp_dir, init_content)
         .expect("Could not create temp file");
 
+    // Open temp file in editor
     Command::new(editor)
-        .arg(&file_path)
+        .arg(&temp_dir)
         .status()
         .expect("Something went wrong");
 
-     let edited_content = fs::read_to_string(&file_path)
+    let edited_content = fs::read_to_string(&temp_dir)
         .expect("Could not read file");
 
     edited_content

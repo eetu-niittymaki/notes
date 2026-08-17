@@ -19,7 +19,7 @@ pub fn import(cmd: ImportCommand, db: &Database,) -> Result<()> {
     let file = match &cmd.file {
         Some(path) => PathBuf::from(path),
         None => {
-            match file() { // Get file through file dialog, print error if dialog exited
+            match file("Select File To Import") { // Get file through file dialog, print error if dialog exited
                 Some(path) => path,
                 None => {
                     println!("File selection canceled");
