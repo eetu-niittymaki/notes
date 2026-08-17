@@ -1,8 +1,7 @@
-use crate::error::Result;
+use notes_core::error::Result;
+use notes_core::db::Database;
 
 use crate::models::cli::NewCommand;
-
-use crate::db::Database;
 
 pub async fn new(cmd: NewCommand, db: &Database,) -> Result<()> {
     let rows = db.notes().create(cmd.title, &cmd.content).await?;

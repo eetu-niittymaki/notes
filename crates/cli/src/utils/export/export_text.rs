@@ -8,10 +8,10 @@ use crate::utils::export::build_md::build_md;
 use crate::utils::export::build_txt::build_txt;
 use crate::utils::export::build_json::build_json;
 
-use crate::error::Result;
+use notes_core::error::Result;
 
-use crate::models::note::Note;
-use crate::models::tag::Tag;
+use notes_core::models::note::Note;
+use notes_core::models::tag::Tag;
 
 pub fn export_text(
     filetype: &str, 

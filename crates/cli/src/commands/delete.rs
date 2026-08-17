@@ -1,13 +1,11 @@
-use crate::error::Result;
+use notes_core::error::Result;
+use notes_core::db::Database;
+
+use notes_core::models::note::NoteSelector;
 
 use crate::models::cli::DeleteCommand;
-use crate::models::note::NoteSelector;
-
-use crate::db::Database;
 
 use crate::utils::get_user_input::get_user_input;
-
-
 
 pub async fn delete(cmd: DeleteCommand, db: &Database,) -> Result<()> {
     if cmd.all {

@@ -1,8 +1,7 @@
-use crate::error::Result;
+use notes_core::error::Result;
+use notes_core::db::Database;
 
 use crate::models::cli::TagCommand;
-
-use crate::db::Database;
 
 pub async fn tag(cmd: TagCommand, db: &Database,) -> Result<()> {
     match cmd {

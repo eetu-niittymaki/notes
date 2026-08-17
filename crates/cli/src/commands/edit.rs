@@ -1,9 +1,9 @@
-use crate::error::Result;
+use notes_core::error::Result;
+use notes_core::db::Database;
+
+use notes_core::models::note::{NoteSelector, NoteUpdate};
 
 use crate::models::cli::{EditCommand, EditField};
-use crate::models::note::{NoteSelector, NoteUpdate};
-
-use crate::db::Database;
 
 use crate::utils::text_editor::text_editor;
 

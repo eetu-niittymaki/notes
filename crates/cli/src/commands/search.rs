@@ -1,8 +1,7 @@
-use crate::error::Result;
+use notes_core::error::Result;
+use notes_core::db::Database;
 
 use crate::models::cli::SearchCommand;
-
-use crate::db::Database;
 
 pub async fn search(cmd: SearchCommand, db: &Database,) -> Result<()> {
     if cmd.title.is_some() && cmd.content.is_some() {

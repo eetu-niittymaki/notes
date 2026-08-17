@@ -1,8 +1,7 @@
-use crate::error::Result;
+use notes_core::db::Database;
+use notes_core::error::Result;
 
 use crate::models::cli::AllCommand;
-
-use crate::db::Database;
 
 pub async fn all(cmd: AllCommand, db: &Database,) -> Result<()> {
     let notes = db.notes().get_all().await?;

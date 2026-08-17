@@ -1,8 +1,7 @@
-use crate::error::Result;
+use notes_core::error::Result;
+use notes_core::db::Database;
 
 use crate::models::cli::ExportCommand;
-
-use crate::db::Database;
 
 use crate::utils::export::export_image::export_image;
 use crate::utils::export::export_text::export_text;

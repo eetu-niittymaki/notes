@@ -1,5 +1,5 @@
-use crate::error::Result;
-use crate::db::Database;
+use notes_core::error::Result;
+use notes_core::db::Database;
 
 use crate::utils::import::md_to_text::md_to_text;
 use crate::utils::import::html_to_text::html_to_text;

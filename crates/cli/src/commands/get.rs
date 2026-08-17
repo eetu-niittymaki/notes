@@ -1,9 +1,9 @@
-use crate::error::Result;
+use notes_core::error::Result;
+use notes_core::db::Database;
+
+use notes_core::models::note::NoteSelector;
 
 use crate::models::cli::GetCommand;
-use crate::models::note::NoteSelector;
-
-use crate::db::Database;
 
 pub async fn get(cmd: GetCommand, db: &Database,) -> Result<()> {
     let selector = match (cmd.id, cmd.title.as_deref()) {

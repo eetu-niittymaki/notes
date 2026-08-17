@@ -1,15 +1,13 @@
 use clap::Parser;
-use models::cli::{Cli, Commands};
 
-use crate::config::get_db_path;
-use crate::db::Database;
-use crate::error::Result;
+use notes_core::db::Database;
+use notes_core::error::Result;
+
+use models::cli::{Cli, Commands};
 
 mod config;
 mod models;
 mod commands;
-mod error;
-mod db;
 mod utils;
 
 #[tokio::main]
@@ -23,7 +21,7 @@ async fn main() {
 
 async fn try_main() -> Result<()> {
     let cli = Cli::parse();
-    let db_path = get_db_path();
+    let db_path = config::get_db_path();
 
     let db = Database::open(&db_path).await?;
 
