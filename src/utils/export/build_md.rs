@@ -1,6 +1,7 @@
 use std::collections::HashMap;
 
-use crate::models::{Note, Tag};
+use crate::models::note::Note;
+use crate::models::tag::Tag;
 
 pub fn build_md(
     notes: Vec<Note>,

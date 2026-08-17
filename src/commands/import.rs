@@ -2,7 +2,7 @@ use std::path::PathBuf;
 
 use crate::error::Result;
 
-use crate::cli::ImportCommand;
+use crate::models::cli::ImportCommand;
 
 use crate::db::Database;
 

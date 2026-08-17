@@ -1,6 +1,6 @@
 use crate::error::Result;
 
-use crate::cli::SearchCommand;
+use crate::models::cli::SearchCommand;
 
 use crate::db::Database;
 

@@ -9,7 +9,9 @@ use crate::utils::export::build_txt::build_txt;
 use crate::utils::export::build_json::build_json;
 
 use crate::error::Result;
-use crate::models::{Note, Tag};
+
+use crate::models::note::Note;
+use crate::models::tag::Tag;
 
 pub fn export_text(
     filetype: &str, 

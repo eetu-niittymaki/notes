@@ -1,6 +1,6 @@
 use crate::error::Result;
 
-use crate::cli::ExportCommand;
+use crate::models::cli::ExportCommand;
 
 use crate::db::Database;
 

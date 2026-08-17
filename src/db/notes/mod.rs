@@ -7,7 +7,7 @@ use libsql::Connection;
 
 use crate::error::Result;
 
-use crate::models::{Note, NoteSelector, NoteUpdate};
+use crate::models::note::{Note, NoteSelector, NoteUpdate};
 
 pub struct NotesRepository<'a> {
     conn: &'a Connection,

@@ -4,7 +4,7 @@ use libsql::Connection;
 
 use crate::error::Result;
 
-use crate::models::{Tag, TagWithCount};
+use crate::models::tag::{Tag, TagWithCount};
 
 mod get;
 mod create;

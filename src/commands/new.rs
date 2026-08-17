@@ -1,6 +1,6 @@
 use crate::error::Result;
 
-use crate::cli::NewCommand;
+use crate::models::cli::NewCommand;
 
 use crate::db::Database;
 

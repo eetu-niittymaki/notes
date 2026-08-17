@@ -1,12 +1,13 @@
 use crate::error::Result;
 
-use crate::cli::DeleteCommand;
+use crate::models::cli::DeleteCommand;
+use crate::models::note::NoteSelector;
 
 use crate::db::Database;
 
 use crate::utils::get_user_input::get_user_input;
 
-use crate::models::NoteSelector;
+
 
 pub async fn delete(cmd: DeleteCommand, db: &Database,) -> Result<()> {
     if cmd.all {

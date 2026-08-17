@@ -6,8 +6,8 @@ use hyper_render::{render, Config, OutputFormat};
 use crate::error::Result;
 use crate::utils::export::build_html::build_html;
 
-use crate::models::Note;
-use crate::models::Tag;
+use crate::models::note::Note;
+use crate::models::tag::Tag;
 
 pub fn export_image(
     filetype: &str, 

@@ -1,6 +1,6 @@
 use crate::error::Result;
 
-use crate::cli::TagCommand;
+use crate::models::cli::TagCommand;
 
 use crate::db::Database;
 

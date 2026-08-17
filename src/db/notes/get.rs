@@ -2,7 +2,7 @@ use libsql::Connection;
 
 use crate::error::Result;
 
-use crate::models::{Note, NoteSelector};
+use crate::models::note::{Note, NoteSelector};
 
 fn note_from_row(row: &libsql::Row) -> Result<Note> {
     Ok(Note {

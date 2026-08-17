@@ -1,12 +1,11 @@
 use crate::error::Result;
 
-use crate::cli::{EditCommand, EditField};
+use crate::models::cli::{EditCommand, EditField};
+use crate::models::note::{NoteSelector, NoteUpdate};
 
 use crate::db::Database;
 
 use crate::utils::text_editor::text_editor;
-
-use crate::models::{NoteSelector, NoteUpdate};
 
 pub async fn edit(cmd: EditCommand, db: &Database,) -> Result<()> {
     let selector = NoteSelector::Id(cmd.id);

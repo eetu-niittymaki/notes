@@ -2,8 +2,7 @@ use libsql::Connection;
 
 use crate::error::Result;
 
-use crate::models::NoteSelector;
-use crate::models::NoteUpdate;
+use crate::models::note::{NoteSelector, NoteUpdate};
 
 pub async fn update(
     conn: &Connection,

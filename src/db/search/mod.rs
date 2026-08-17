@@ -1,7 +1,7 @@
 use libsql::Connection;
 
 use crate::error::Result;
-use crate::models::Note;
+use crate::models::note::Note;
 
 mod search;
 

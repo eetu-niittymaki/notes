@@ -1,10 +1,9 @@
 use crate::error::Result;
 
-use crate::cli::GetCommand;
+use crate::models::cli::GetCommand;
+use crate::models::note::NoteSelector;
 
 use crate::db::Database;
-
-use crate::models::NoteSelector;
 
 pub async fn get(cmd: GetCommand, db: &Database,) -> Result<()> {
     let selector = match (cmd.id, cmd.title.as_deref()) {

@@ -2,7 +2,7 @@ use libsql::Connection;
 
 use crate::error::Result;
 
-use crate::models::NoteSelector;
+use crate::models::note::NoteSelector;
 
 pub async fn one(
     conn: &Connection,

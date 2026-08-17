@@ -1,14 +1,13 @@
 use clap::Parser;
-use cli::{Cli, Commands};
+use models::cli::{Cli, Commands};
 
 use crate::config::get_db_path;
 use crate::db::Database;
 use crate::error::Result;
 
 mod config;
-mod cli;
-mod commands;
 mod models;
+mod commands;
 mod error;
 mod db;
 mod utils;

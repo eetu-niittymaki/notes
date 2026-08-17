@@ -2,7 +2,8 @@ use std::collections::HashMap;
 
 use serde_json::{json, Map, Value};
 
-use crate::models::{Note, Tag};
+use crate::models::note::Note;
+use crate::models::tag::Tag;
 
 pub fn build_json(notes: Vec<Note>, note_tags: HashMap<i64, Vec<Tag>>) -> String {
     let notes_json: Vec<_> = notes

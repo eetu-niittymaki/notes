@@ -3,7 +3,7 @@ use std::collections::HashMap;
 use libsql::Connection;
 
 use crate::error::Result;
-use crate::models::{Tag, TagWithCount};
+use crate::models::tag::{Tag, TagWithCount};
 
 pub async fn all(conn: &Connection) -> Result<Vec<TagWithCount>> {
     let statement = conn
