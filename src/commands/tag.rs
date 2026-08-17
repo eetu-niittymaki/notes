@@ -4,10 +4,10 @@ use crate::cli::TagCommand;
 
 use crate::db::Database;
 
-pub fn tag(cmd: TagCommand, db: &Database,) -> Result<()> {
+pub async fn tag(cmd: TagCommand, db: &Database,) -> Result<()> {
     match cmd {
         TagCommand::Add { note_id, name } => {
-            let rows = db.tags().add(note_id, &name)?;
+            let rows = db.tags().add(note_id, &name).await?;
 
             if rows == 1 {
                 println!("Tag '{}' added to note {}!", name, note_id);
@@ -17,7 +17,7 @@ pub fn tag(cmd: TagCommand, db: &Database,) -> Result<()> {
         }
 
         TagCommand::Delete { name } => {
-            let rows = db.tags().delete(&name)?;
+            let rows = db.tags().delete(&name).await?;
 
             if rows == 1 {
                 println!("Tag '{}' deleted!", name);
@@ -27,7 +27,7 @@ pub fn tag(cmd: TagCommand, db: &Database,) -> Result<()> {
         }
 
         TagCommand::List => {
-            let tags = db.tags().all()?;
+            let tags = db.tags().all().await?;
 
             if tags.is_empty() {
                 println!("No tags found");

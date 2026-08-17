@@ -1,13 +1,15 @@
-use rusqlite::{Connection, Result};
+use libsql::Connection;
 
-pub fn create(
+use crate::error::Result;
+
+pub async fn create(
     conn: &Connection,
     title: &str,
     content: &str,
-) -> Result<usize> {
-    conn.execute(
+) -> Result<u64> {
+    Ok(conn.execute(
         "INSERT INTO notes (title, content)
          VALUES (?1, ?2)",
         [title, content],
-    )
+    ).await?)
 }

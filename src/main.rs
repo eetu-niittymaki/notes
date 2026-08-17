@@ -13,34 +13,35 @@ mod error;
 mod db;
 mod utils;
 
-fn main() {
+#[tokio::main]
+async fn main() {
     // Program wide error catcher
-    if let Err(e) = try_main() {
+    if let Err(e) = try_main().await {
         eprintln!("Error: {e}");
         std::process::exit(1);
     }
 }
 
-fn try_main() -> Result<()> {
+async fn try_main() -> Result<()> {
     let cli = Cli::parse();
     let db_path = get_db_path();
 
-    let db = Database::open(&db_path)?;
+    let db = Database::open(&db_path).await?;
 
-    run(cli, &db)
+    run(cli, &db).await
 }
 
-fn run(cli: Cli, db: &Database) -> Result<()> {
+async fn run(cli: Cli, db: &Database) -> Result<()> {
     match cli.command {
-        Some(Commands::All(cmd)) => commands::all::all(cmd, db)?,
-        Some(Commands::Get(cmd)) => commands::get::get(cmd, db)?,
-        Some(Commands::New(cmd)) => commands::new::new(cmd, db)?,
-        Some(Commands::Edit(cmd)) => commands::edit::edit(cmd, db)?,
-        Some(Commands::Delete(cmd)) => commands::delete::delete(cmd, db)?,
-        Some(Commands::Search(cmd)) => commands::search::search(cmd, db)?,      
-        Some(Commands::Export(cmd)) => commands::export::export(cmd, db)?,
-        Some(Commands::Import(cmd)) => commands::import::import(cmd, db)?,
-        Some(Commands::Tag(cmd)) => commands::tag::tag(cmd, db)?,
+        Some(Commands::All(cmd)) => commands::all::all(cmd, db).await?,
+        Some(Commands::Get(cmd)) => commands::get::get(cmd, db).await?,
+        Some(Commands::New(cmd)) => commands::new::new(cmd, db).await?,
+        Some(Commands::Edit(cmd)) => commands::edit::edit(cmd, db).await?,
+        Some(Commands::Delete(cmd)) => commands::delete::delete(cmd, db).await?,
+        Some(Commands::Search(cmd)) => commands::search::search(cmd, db).await?,      
+        Some(Commands::Export(cmd)) => commands::export::export(cmd, db).await?,
+        Some(Commands::Import(cmd)) => commands::import::import(cmd, db).await?,
+        Some(Commands::Tag(cmd)) => commands::tag::tag(cmd, db).await?,
         Some(Commands::Version) => commands::version::version(),
         None => {}
     }

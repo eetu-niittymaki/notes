@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 
-use rusqlite::Connection;
+use libsql::Connection;
 
 use crate::error::Result;
 
@@ -19,23 +19,23 @@ impl<'a> TagsRepository<'a> {
         Self { conn }
     }  
 
-    pub fn add(&self, id: i64, tag: &str) -> Result<usize> {
-        Ok(create::add(self.conn, id, tag)?)
+    pub async fn add(&self, id: i64, tag: &str) -> Result<u64> {
+        create::add(self.conn, id, tag).await
     }
     
-    pub fn all(&self) -> Result<Vec<TagWithCount>> {
-        Ok(get::all(self.conn)?)
+    pub async fn all(&self) -> Result<Vec<TagWithCount>> {
+        get::all(self.conn).await
     }
 
-    pub fn all_for_notes(&self) -> Result<HashMap<i64, Vec<Tag>>> {
-        Ok(get::all_for_notes(self.conn)?)
+    pub async fn all_for_notes(&self) -> Result<HashMap<i64, Vec<Tag>>> {
+        get::all_for_notes(self.conn).await
     }
 
-    pub fn for_note(&self, note_id: i64) -> Result<Vec<Tag>> {
-        Ok(get::for_note(self.conn, note_id)?)
+    pub async fn for_note(&self, note_id: i64) -> Result<Vec<Tag>> {
+        get::for_note(self.conn, note_id).await
     }
 
-    pub fn delete(&self, name: &str) -> Result<usize> {
-        Ok(delete::one(self.conn, name)?)
+    pub async fn delete(&self, name: &str) -> Result<u64> {
+        delete::one(self.conn, name).await
     }
 }

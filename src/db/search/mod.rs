@@ -1,4 +1,4 @@
-use rusqlite::Connection;
+use libsql::Connection;
 
 use crate::error::Result;
 use crate::models::Note;
@@ -14,11 +14,11 @@ impl<'a> SearchRepository<'a> {
         Self { conn }
     }  
     
-    pub fn notes(&self, title: Option<&str>, content: Option<&str>) -> Result<Vec<Note>> {
-        Ok(search::notes(self.conn, title, content)?)
+    pub async fn notes(&self, title: Option<&str>, content: Option<&str>) -> Result<Vec<Note>> {
+        search::notes(self.conn, title, content).await
     }
 
-    pub fn tags(&self, tag: &str) -> Result<Vec<Note>> {
-        Ok(search::tags(self.conn, &tag)?)
+    pub async fn tags(&self, tag: &str) -> Result<Vec<Note>> {
+        search::tags(self.conn, &tag).await
     }
 }

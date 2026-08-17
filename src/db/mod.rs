@@ -1,6 +1,6 @@
 use std::path::Path;
 
-use rusqlite::Connection;
+use libsql::{Builder, Connection};
 
 use crate::db::create_tables::create_tables;
 
@@ -18,9 +18,14 @@ pub struct Database {
 }
 
 impl Database {
-    pub fn open(path: &Path) -> rusqlite::Result<Self> {
-        let conn = Connection::open(path)?;
-        create_tables(&conn)?;
+    pub async fn open(path: &Path) -> libsql::Result<Self> {
+        let db = Builder::new_local(path)
+            .build()
+            .await?;
+
+        let conn = db.connect()?;
+
+        create_tables(&conn).await?;
 
         Ok(Self { conn })
     }

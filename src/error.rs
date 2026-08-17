@@ -3,9 +3,10 @@ use std::fmt;
 #[derive(Debug)]
 pub enum Error {
     // Error from SQLite/database operation.
-    Database(rusqlite::Error),
+    Database(libsql::Error),
     // Error from input/output operations,
     Io(std::io::Error),
+    NoteNotFound,
 }
 
 // `Display` determines how the error looks when printed
@@ -14,6 +15,7 @@ impl fmt::Display for Error {
         match self {
             Error::Database(e) => write!(f, "database error: {}", e),
             Error::Io(e) => write!(f, "I/O error: {}", e),
+            Error::NoteNotFound => write!(f, "Note not found error"),
         }
     }
 }
@@ -22,9 +24,9 @@ impl fmt::Display for Error {
 // Tells Rust that `Error` type follows the standard std::error::Error` trait.
 impl std::error::Error for Error {}
 
-// Automatically convert rusqlite::Error into custom Error type
-impl From<rusqlite::Error> for Error {
-    fn from(error: rusqlite::Error) -> Self {
+// Automatically convert libsql::Error into custom Error type
+impl From<libsql::Error> for Error {
+    fn from(error: libsql::Error) -> Self {
         Error::Database(error)
     }
 }

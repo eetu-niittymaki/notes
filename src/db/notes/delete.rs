@@ -1,31 +1,32 @@
-use rusqlite::{Connection, Result};
+use libsql::Connection;
+
+use crate::error::Result;
 
 use crate::models::NoteSelector;
 
-pub fn one(
+pub async fn one(
     conn: &Connection,
-    selector: &NoteSelector
-) -> Result<usize> {
+    selector: &NoteSelector<'_>
+) -> Result<u64> {
     match selector {
         NoteSelector::Id(id) => {
-            conn.execute(
+            Ok(conn.execute(
                 "DELETE FROM notes WHERE id = ?1",
-            [id],
-            )
+            [*id],
+            ).await?)
         }
 
         NoteSelector::Title(title) => {
-            conn.execute(
+            Ok(conn.execute(
                 "DELETE FROM notes WHERE title = ?1",
-            [title],
-            )
+            [*title],
+            ).await?)
         }
     }
 }
 
-pub fn all(conn: &Connection) -> Result<usize> {
-    conn.execute(
-        "DELETE FROM notes", 
-        []
-    ) 
+pub async fn all(conn: &Connection) -> Result<u64> {
+    Ok(conn.execute(
+        "DELETE FROM notes",())
+        .await?)
 }

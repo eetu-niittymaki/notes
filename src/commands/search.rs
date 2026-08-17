@@ -4,7 +4,7 @@ use crate::cli::SearchCommand;
 
 use crate::db::Database;
 
-pub fn search(cmd: SearchCommand, db: &Database,) -> Result<()> {
+pub async fn search(cmd: SearchCommand, db: &Database,) -> Result<()> {
     if cmd.title.is_some() && cmd.content.is_some() {
         eprintln!("Please provide either a title or text content, not both.");
         return Ok(());
@@ -12,15 +12,15 @@ pub fn search(cmd: SearchCommand, db: &Database,) -> Result<()> {
 
     let notes = match (&cmd.title, &cmd.content, &cmd.tag) {
         (_, _, Some(tag)) => {
-            db.search().tags(tag)?
+            db.search().tags(tag).await?
         }
 
         (Some(title), None, None) => {
-            db.search().notes(Some(title), None)?
+            db.search().notes(Some(title), None).await?
         }
 
         (None, Some(content), None) => {
-            db.search().notes(None, Some(content))?
+            db.search().notes(None, Some(content)).await?
         }
 
         _ => {

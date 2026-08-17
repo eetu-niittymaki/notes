@@ -8,13 +8,13 @@ use crate::utils::get_user_input::get_user_input;
 
 use crate::models::NoteSelector;
 
-pub fn delete(cmd: DeleteCommand, db: &Database,) -> Result<()> {
+pub async fn delete(cmd: DeleteCommand, db: &Database,) -> Result<()> {
     if cmd.all {
         println!("Delete all notes? y/n");
         let confirm = get_user_input().trim().to_lowercase();
 
         if confirm == "y" || confirm == "yes" {
-            let rows = db.notes().delete_all()?;
+            let rows = db.notes().delete_all().await?;
             if rows > 0 {
                 println!("All notes deleted!");
             } else {
@@ -44,7 +44,7 @@ pub fn delete(cmd: DeleteCommand, db: &Database,) -> Result<()> {
         }
     };
     
-    let rows = db.notes().delete(selector)?;
+    let rows = db.notes().delete(selector).await?;
     if rows == 1 {
         println!("Note deleted!") 
     } else  {

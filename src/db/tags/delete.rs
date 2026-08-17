@@ -1,11 +1,13 @@
-use rusqlite::{Connection, Result};
+use libsql::Connection;
 
-pub fn one(
+use crate::error::Result;
+
+pub async fn one(
     conn: &Connection, 
     name: &str
-) -> Result<usize> {
-    return conn.execute(
+) -> Result<u64> {
+    Ok(conn.execute(
         "DELETE FROM tags WHERE name = ?1",
         [name],
-    );
+    ).await?)
 }

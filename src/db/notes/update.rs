@@ -1,52 +1,54 @@
-use rusqlite::{Connection, Result};
+use libsql::Connection;
+
+use crate::error::Result;
 
 use crate::models::NoteSelector;
 use crate::models::NoteUpdate;
 
-pub fn update(
+pub async fn update(
     conn: &Connection,
-    selector: &NoteSelector,
+    selector: &NoteSelector<'_>,
     update: NoteUpdate,
-) -> Result<usize> {
+) -> Result<u64> {
     match (selector, update) {
         (NoteSelector::Id(id), NoteUpdate::Title(new_title)) => {
-            conn.execute(
+            Ok(conn.execute(
                 "UPDATE notes
                  SET title = ?1,
                      updated_at = CURRENT_TIMESTAMP
                  WHERE id = ?2",
-                (new_title, id),
-            )
+                (new_title, *id),
+            ).await?)
         }
 
         (NoteSelector::Id(id), NoteUpdate::Content(new_content)) => {
-            conn.execute(
+            Ok(conn.execute(
                 "UPDATE notes
                  SET content = ?1,
                      updated_at = CURRENT_TIMESTAMP
                  WHERE id = ?2",
-                (new_content, id),
-            )
+                (new_content, *id),
+            ).await?)
         }
 
         (NoteSelector::Title(title), NoteUpdate::Title(new_title)) => {
-            conn.execute(
+            Ok(conn.execute(
                 "UPDATE notes
                  SET title = ?1,
                      updated_at = CURRENT_TIMESTAMP
                  WHERE title = ?2",
-                (new_title, title),
-            )
+                (new_title, *title),
+            ).await?)
         }
 
         (NoteSelector::Title(title), NoteUpdate::Content(new_content)) => {
-            conn.execute(
+            Ok(conn.execute(
                 "UPDATE notes
                  SET content = ?1,
                      updated_at = CURRENT_TIMESTAMP
                  WHERE title = ?2",
-                (new_content, title),
-            )
+                (new_content, *title),
+            ).await?)
         }
     }
 }

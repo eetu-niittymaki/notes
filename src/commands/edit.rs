@@ -8,10 +8,10 @@ use crate::utils::text_editor::text_editor;
 
 use crate::models::{NoteSelector, NoteUpdate};
 
-pub fn edit(cmd: EditCommand, db: &Database,) -> Result<()> {
+pub async fn edit(cmd: EditCommand, db: &Database,) -> Result<()> {
     let selector = NoteSelector::Id(cmd.id);
 
-    let note = db.notes().get(selector.clone())?;
+    let note = db.notes().get(selector.clone()).await?;
 
     let update = match cmd.field {
         EditField::Title => {
@@ -31,7 +31,7 @@ pub fn edit(cmd: EditCommand, db: &Database,) -> Result<()> {
         }
     };
 
-    let updated = db.notes().update(selector, update)?;
+    let updated = db.notes().update(selector, update).await?;
 
     if updated == 1 {
         println!("Note updated successfully!");

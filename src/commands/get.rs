@@ -6,7 +6,7 @@ use crate::db::Database;
 
 use crate::models::NoteSelector;
 
-pub fn get(cmd: GetCommand, db: &Database,) -> Result<()> {
+pub async fn get(cmd: GetCommand, db: &Database,) -> Result<()> {
     let selector = match (cmd.id, cmd.title.as_deref()) {
         (Some(id), None) => NoteSelector::Id(id),
 
@@ -23,8 +23,8 @@ pub fn get(cmd: GetCommand, db: &Database,) -> Result<()> {
         }
     };
 
-    let note =  db.notes().get(selector)?;
-    let tags = db.tags().for_note(note.id)?;
+    let note =  db.notes().get(selector).await?;
+    let tags = db.tags().for_note(note.id).await?;
 
     println!("{} | {}", note.id, note.title);
     

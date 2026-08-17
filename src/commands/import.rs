@@ -14,7 +14,7 @@ use crate::utils::get_user_input::get_user_input;
 
 use crate::config::IMPORT_FILETYPES;
 
-pub fn import(cmd: ImportCommand, db: &Database,) -> Result<()> {
+pub async fn import(cmd: ImportCommand, db: &Database,) -> Result<()> {
     // Get file through command line args or file dialog if no arg
     let file = match &cmd.file {
         Some(path) => PathBuf::from(path),
@@ -56,8 +56,8 @@ pub fn import(cmd: ImportCommand, db: &Database,) -> Result<()> {
         .unwrap_or(0);
 
     let result = match mode {
-        1 => import_without_separating(db, &extension.unwrap(), content, title),
-        2 => import_with_separators(db, &extension.unwrap(), content),
+        1 => import_without_separating(db, &extension.unwrap(), content, title).await,
+        2 => import_with_separators(db, &extension.unwrap(), content).await,
         _ => {
             println!("Please enter a number from 1-2.");
             return Ok(())

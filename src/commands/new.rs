@@ -4,8 +4,8 @@ use crate::cli::NewCommand;
 
 use crate::db::Database;
 
-pub fn new(cmd: NewCommand, db: &Database,) -> Result<()> {
-    let rows = db.notes().create(cmd.title, &cmd.content)?;
+pub async fn new(cmd: NewCommand, db: &Database,) -> Result<()> {
+    let rows = db.notes().create(cmd.title, &cmd.content).await?;
 
     if rows == 1 {
         println!("Note added.");

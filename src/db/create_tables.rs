@@ -1,8 +1,8 @@
-use rusqlite::{Connection};
+use libsql::Connection;
 
-pub fn create_tables(conn: &Connection) -> rusqlite::Result<()> {
-    conn.execute_batch(
-    "BEGIN;
+pub async fn create_tables(conn: &Connection) -> libsql::Result<()> {
+    conn.execute_transactional_batch(
+        r#"
         CREATE TABLE IF NOT EXISTS notes (
             id INTEGER PRIMARY KEY,
             title TEXT NOT NULL,
@@ -26,6 +26,9 @@ pub fn create_tables(conn: &Connection) -> rusqlite::Result<()> {
             FOREIGN KEY (note_id) REFERENCES notes(id) ON DELETE CASCADE,
             FOREIGN KEY (tag_id) REFERENCES tags(id) ON DELETE CASCADE
         );
-        COMMIT;",
+        "#,
     )
+    .await?;
+
+    Ok(())
 }

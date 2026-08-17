@@ -1,8 +1,20 @@
-use rusqlite::{Connection, Result};
+use libsql::Connection;
 
+use crate::error::Result;
 use crate::models::Note;
 
-pub fn notes(
+fn note_from_row(row: &libsql::Row) -> Result<Note> {
+    Ok(Note {
+        id: row.get(0)?,
+        title: row.get(1)?,
+        content: row.get(2)?,
+        created_at: row.get(3)?,
+        updated_at: row.get(4)?,
+        favorite: row.get(5)?,
+    })
+}
+
+pub async fn notes(
     conn: &Connection,
     title: Option<&str>,
     content: Option<&str>,
@@ -10,91 +22,97 @@ pub fn notes(
     // Searching by title
     if let Some(title) = title {
         let pattern = format!("%{}%", title);
-        let mut statement = conn.prepare(
-            "SELECT id, 
-                        title, 
-                        content, 
-                        created_at,
-                        updated_at,
-                        favorite
-             FROM notes
-             WHERE title LIKE ?1",
-        )?;
 
-        let notes = statement
-            .query_map([pattern], |row| {
-                Ok(Note {
-                    id: row.get(0)?,
-                    title: row.get(1)?,
-                    content: row.get(2)?,
-                    created_at: row.get(3)?,
-                    updated_at: row.get(4)?,
-                    favorite: row.get(5)?,
-                })
-            })?
-            .collect::<Result<Vec<_>>>()?;
+        let statement = conn
+            .prepare(
+                r#"
+                SELECT id,
+                       title,
+                       content,
+                       created_at,
+                       updated_at,
+                       favorite
+                FROM notes
+                WHERE title LIKE ?1
+                "#,
+            )
+            .await?;
+
+        let mut rows = statement.query([pattern]).await?;
+
+        let mut notes = Vec::new();
+
+        while let Some(row) = rows.next().await? {
+            notes.push(note_from_row(&row)?);
+        }
 
         return Ok(notes);
     }
-    
+
     // Searching by text content
     if let Some(content) = content {
         let pattern = format!("%{}%", content);
-        let mut statement = conn.prepare(
-            "SELECT id, 
-                        title, 
-                        content, 
-                        created_at,
-                        updated_at,
-                        favorite
-             FROM notes
-             WHERE content LIKE ?1",
-        )?;
 
-        let notes = statement
-            .query_map([pattern], |row| {
-                Ok(Note {
-                    id: row.get(0)?,
-                    title: row.get(1)?,
-                    content: row.get(2)?,
-                    created_at: row.get(3)?,
-                    updated_at: row.get(4)?,
-                    favorite: row.get(5)?,
-                })
-            })?
-            .collect::<Result<Vec<_>>>()?;
+        let statement = conn
+            .prepare(
+                r#"
+                SELECT id,
+                       title,
+                       content,
+                       created_at,
+                       updated_at,
+                       favorite
+                FROM notes
+                WHERE content LIKE ?1
+                "#,
+            )
+            .await?;
+
+        let mut rows = statement.query([pattern]).await?;
+
+        let mut notes = Vec::new();
+
+        while let Some(row) = rows.next().await? {
+            notes.push(note_from_row(&row)?);
+        }
 
         return Ok(notes);
     }
-    // Return empty vector if no notes found
+
     Ok(Vec::new())
 }
 
-// Search for notes that have specific tag attached to them
-pub fn tags(
-    conn: &Connection, 
+// Search for notes that have a specific tag attached to them
+pub async fn tags(
+    conn: &Connection,
     tag: &str,
 ) -> Result<Vec<Note>> {
-    let mut statement = conn.prepare(
-    "SELECT note.*
-        FROM notes AS note
-        JOIN note_tags AS note_tag ON note.id = note_tag.note_id
-        JOIN tags AS tag ON note_tag.tag_id = tag.id
-        WHERE tag.name = ?1"
-    )?;
+    let statement = conn
+        .prepare(
+            r#"
+            SELECT note.id,
+                   note.title,
+                   note.content,
+                   note.created_at,
+                   note.updated_at,
+                   note.favorite
+            FROM notes AS note
+            JOIN note_tags AS note_tag
+                ON note.id = note_tag.note_id
+            JOIN tags AS tag
+                ON note_tag.tag_id = tag.id
+            WHERE tag.name = ?1
+            "#,
+        )
+        .await?;
 
-    let notes = statement
-            .query_map([tag], |row| {
-                Ok(Note {
-                    id: row.get(0)?,
-                    title: row.get(1)?,
-                    content: row.get(2)?,
-                    created_at: row.get(3)?,
-                    updated_at: row.get(4)?,
-                    favorite: row.get(5)?,
-                })
-            })?
-            .collect::<Result<Vec<_>>>()?;
+    let mut rows = statement.query([tag]).await?;
 
-    return Ok(notes);
+    let mut notes = Vec::new();
+
+    while let Some(row) = rows.next().await? {
+        notes.push(note_from_row(&row)?);
+    }
+
+    Ok(notes)
 }

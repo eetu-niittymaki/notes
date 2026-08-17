@@ -10,7 +10,7 @@ use crate::utils::file_dialog::folder;
 
 use crate::config::EXPORT_FILETYPES;
 
-pub fn export(cmd: ExportCommand, db: &Database,) -> Result<()> {
+pub async fn export(cmd: ExportCommand, db: &Database,) -> Result<()> {
     if !EXPORT_FILETYPES.contains(&cmd.filetype.as_str()) {
         eprintln!(
             "Unsupported filetype, supported formats: {}",
@@ -19,14 +19,14 @@ pub fn export(cmd: ExportCommand, db: &Database,) -> Result<()> {
         std::process::exit(0);
     }
 
-    let notes = db.notes().get_all()?;
+    let notes = db.notes().get_all().await?;
 
     if notes.is_empty() {
         eprintln!("No notes found to export");
         std::process::exit(0);
     }
 
-    let note_tags = db.tags().all_for_notes()?;
+    let note_tags = db.tags().all_for_notes().await?;
 
     let folder = match folder("Select Destination Folder") {
         Some(path) => path,
