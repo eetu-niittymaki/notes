@@ -1,11 +1,7 @@
-use std::collections::HashMap;
-
-use notes_core::models::note::Note;
-use notes_core::models::tag::Tag;
+use notes_core::models::note::NoteWithTags;
 
 pub fn build_html(
-    notes: Vec<Note>,
-    note_tags: HashMap<i64, Vec<Tag>>,
+    notes: Vec<NoteWithTags>,
 ) -> String {
     let mut html = String::from(
         r#"<!DOCTYPE html>
@@ -56,20 +52,18 @@ pub fn build_html(
         note.title
     ));
 
-    if let Some(tags) = note_tags.get(&note.id) {
-        if !tags.is_empty() {
-            html.push_str(r#"    <div class="tags">"#);
+    if !note.tags.is_empty() {
+        html.push_str(r#"    <div class="tags">"#);
 
-            for tag in tags {
-                html.push_str(&format!(
-                    r#"<span class="tag">#{}</span> "#,
-                    tag.name
-                ));
-                
-            }
-
-            html.push_str("     </div>\n");
+        for tag in note.tags {
+            html.push_str(&format!(
+                r#"<span class="tag">#{}</span> "#,
+                tag.name
+            ));
+            
         }
+
+        html.push_str("     </div>\n");
     }
 
     html.push_str(&format!(

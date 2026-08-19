@@ -1,6 +1,8 @@
 use notes_core::error::Result;
 use notes_core::db::Database;
 
+use notes_core::models::note::CreateNote;
+
 use crate::utils::import::md_to_text::md_to_text;
 use crate::utils::import::html_to_text::html_to_text;
 use crate::utils::get_user_input::get_user_input;
@@ -32,9 +34,17 @@ pub async fn import_without_separating (
     };
 
     let rows = match extension {
-        "md" => db.notes().create(title, &md_to_text(&content)).await,
-        "html" => db.notes().create(title,  &html_to_text(&content)).await,
-        "txt" => db.notes().create(title, &content).await,
+        "md" => db.notes().create(CreateNote { 
+            title: title, 
+            content: md_to_text(&content) }).await,
+
+        "html" => db.notes().create(CreateNote { 
+            title: title,  
+            content: html_to_text(&content) }).await,
+
+        "txt" => db.notes().create(CreateNote { 
+            title: title, 
+            content: content }).await,
         _ => unreachable!()
     };
 

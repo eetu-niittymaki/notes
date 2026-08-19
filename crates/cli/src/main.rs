@@ -5,8 +5,8 @@ use notes_core::error::Result;
 
 use models::cli::{Cli, Commands};
 
-mod config;
 mod models;
+mod config;
 mod commands;
 mod utils;
 
@@ -21,7 +21,12 @@ async fn main() {
 
 async fn try_main() -> Result<()> {
     let cli = Cli::parse();
-    let db_path = config::get_db_path();
+    let mut db_path = config::get_db_path();
+
+    db_path.pop();
+    db_path.pop();
+    db_path.pop();
+    db_path.push("notes.db");
 
     let db = Database::open(&db_path).await?;
 

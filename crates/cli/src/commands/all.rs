@@ -4,25 +4,22 @@ use notes_core::error::Result;
 use crate::models::cli::AllCommand;
 
 pub async fn all(cmd: AllCommand, db: &Database,) -> Result<()> {
-    let notes = db.notes().get_all().await?;
+    let notes_with_tags = db.notes().get_all_with_tags().await?;
 
-    if notes.is_empty() {
+    if notes_with_tags.is_empty() {
         println!("No notes found");
         std::process::exit(0);
     }
 
-    let note_tags = db.tags().all_for_notes().await?;
 
     println!("All Notes:");
     println!("----------");
 
-    for note in notes {
+    for note in notes_with_tags {
         println!("{} | {}", note.id, note.title);
 
-        if let Some(tags) = note_tags.get(&note.id) {
-            for tag in tags {
-                println!("  #{}", tag.name);
-            }
+        for tag in note.tags {
+            println!("  #{}", tag.name);
         }
 
         if cmd.content {

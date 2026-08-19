@@ -1,5 +1,4 @@
 use std::path::PathBuf;
-use std::collections::HashMap;
 
 use hyper_render::{render, Config, OutputFormat};
 
@@ -7,16 +6,14 @@ use notes_core::error::Result;
 
 use crate::utils::export::build_html::build_html;
 
-use notes_core::models::note::Note;
-use notes_core::models::tag::Tag;
+use notes_core::models::note::NoteWithTags;
 
 pub fn export_image(
     filetype: &str, 
-    notes: Vec<Note>, 
-    note_tags: HashMap<i64, Vec<Tag>>, 
+    notes: Vec<NoteWithTags>, 
     outfile_path: PathBuf
 ) -> Result<()> {
-    let html = build_html(notes, note_tags);
+    let html = build_html(notes);
 
     let config = Config::default().format(match filetype {
         "png" => OutputFormat::Png,

@@ -4,9 +4,14 @@ use libsql::Connection;
 
 use crate::error::Result;
 
-use crate::models::tag::{Tag, TagWithCount};
+use crate::models::tag::{
+    Tag, 
+    TagWithCount,
+    CreateTag,
+    DeleteTag,
+};
 
-mod get;
+pub mod get;
 mod create;
 mod delete;
 
@@ -19,8 +24,8 @@ impl<'a> TagsRepository<'a> {
         Self { conn }
     }  
 
-    pub async fn add(&self, id: i64, tag: &str) -> Result<u64> {
-        create::add(self.conn, id, tag).await
+    pub async fn add(&self, tag: CreateTag<'_>) -> Result<u64> {
+        create::add(self.conn, tag.id, &tag.name).await
     }
     
     pub async fn all(&self) -> Result<Vec<TagWithCount>> {
@@ -35,7 +40,7 @@ impl<'a> TagsRepository<'a> {
         get::for_note(self.conn, note_id).await
     }
 
-    pub async fn delete(&self, name: &str) -> Result<u64> {
-        delete::one(self.conn, name).await
+    pub async fn delete(&self, tag: DeleteTag<'_>) -> Result<u64> {
+        delete::one(self.conn, &tag.name).await
     }
 }

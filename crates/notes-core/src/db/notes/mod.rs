@@ -7,7 +7,9 @@ use libsql::Connection;
 
 use crate::error::Result;
 
-use crate::models::note::{Note, NoteSelector, NoteUpdate};
+use crate::models::note::{
+    CreateNote, Note, NoteSelector, NoteUpdate, NoteWithTags
+};
 
 pub struct NotesRepository<'a> {
     conn: &'a Connection,
@@ -18,8 +20,8 @@ impl<'a> NotesRepository<'a> {
         Self { conn }
     }   
     
-    pub async fn create(&self, title: String, content: &str) -> Result<u64> {
-        create::create(self.conn, &title, content).await
+    pub async fn create(&self, note: CreateNote) -> Result<u64> {
+        create::create(self.conn, &note.title, &note.content).await
     }
     
     pub async fn get(&self, selector: NoteSelector<'_>) -> Result<Note> {
@@ -28,6 +30,10 @@ impl<'a> NotesRepository<'a> {
 
     pub async fn get_all(&self) -> Result<Vec<Note>> {
         get::all(self.conn).await
+    }
+
+    pub async fn get_all_with_tags(&self) -> Result<Vec<NoteWithTags>> {
+        get::all_with_tags(self.conn).await
     }
 
     pub async fn update(&self, selector: NoteSelector<'_>, updater: NoteUpdate) -> Result<u64> {

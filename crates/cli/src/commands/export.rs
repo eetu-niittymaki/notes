@@ -18,14 +18,12 @@ pub async fn export(cmd: ExportCommand, db: &Database,) -> Result<()> {
         std::process::exit(0);
     }
 
-    let notes = db.notes().get_all().await?;
+    let notes = db.notes().get_all_with_tags().await?;
 
     if notes.is_empty() {
         eprintln!("No notes found to export");
         std::process::exit(0);
     }
-
-    let note_tags = db.tags().all_for_notes().await?;
 
     let folder = match folder("Select Destination Folder") {
         Some(path) => path,
@@ -38,8 +36,8 @@ pub async fn export(cmd: ExportCommand, db: &Database,) -> Result<()> {
     let outfile_path = folder.join(format!("notes.{}", cmd.filetype));
 
     match cmd.filetype.as_str() {
-        "txt" | "md" | "html" | "json" => export_text(&cmd.filetype, notes, note_tags, outfile_path)?,
-        "png" | "pdf" => export_image(&cmd.filetype, notes, note_tags, outfile_path)?,
+        "txt" | "md" | "html" | "json" => export_text(&cmd.filetype, notes, outfile_path)?,
+        "png" | "pdf" => export_image(&cmd.filetype, notes, outfile_path)?,
         _ => unreachable!(),
     }
 

@@ -1,4 +1,8 @@
-#[derive(Debug)]
+use serde::{Deserialize, Serialize};
+
+use crate::models::tag::Tag;
+
+#[derive(Debug, Serialize)]
 pub struct Note {
     pub id: i64,
     pub title: String,
@@ -6,6 +10,23 @@ pub struct Note {
     pub created_at: String,
     pub updated_at: String,
     pub favorite: bool,
+}
+
+#[derive(Serialize)]
+pub struct NoteWithTags {
+    pub id: i64,
+    pub title: String,
+    pub content: String,
+    pub created_at: String,
+    pub updated_at: String,
+    pub favorite: bool,
+    pub tags: Vec<Tag>,
+}
+
+#[derive(Deserialize)]
+pub struct CreateNote {
+    pub title: String,
+    pub content: String
 }
 
 #[derive(Clone)]

@@ -1,43 +1,47 @@
-use actix_web::{get, App, HttpServer, HttpResponse, Responder, web};
+use std::env;
 
-#[get("/")]
-async fn index() -> impl Responder {
-    HttpResponse::Ok().body("Welcome to the Sammy Todo API!")
-}
+use actix_web::{web, App, HttpResponse, HttpServer, Result};
+use dotenvy::dotenv;
+
+use notes_core::config;
+use notes_core::db::Database;
+
+mod handlers;
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
-    HttpServer::new(|| {
+    dotenv().ok();
+
+    let port = env::var("PORT")
+        .unwrap_or_else(|_| "8080".to_string())
+        .parse::<u16>()
+        .expect("Invalid port");
+
+    let mut db_path = config::get_db_path();
+    
+    db_path.pop();
+    db_path.pop();
+    db_path.pop();
+    db_path.push("notes.db");
+
+    let db = Database::open(&db_path)
+        .await
+        .expect("Failed to open database");
+
+    let db = web::Data::new(db);
+
+    HttpServer::new(move || {
         App::new()
-            .service(index)
-            .service(get_todo)
-            .service(create_todo)
+            .app_data(db.clone())
+            .route("/", web::get().to(index))
+            .route("/notes", web::get().to(handlers::notes::get_notes))
+            .route("/notes", web::post().to(handlers::notes::create_note))
     })
-    .bind("127.0.0.1:8080")?
+    .bind(("127.0.0.1", port))?
     .run()
     .await
 }
 
-use serde::{Serialize, Deserialize}; // Added Deserialize to imports
-
-#[derive(Serialize, Deserialize)] // Ensure Deserialize is imported
-struct Todo {
-    id: i32,
-    title: String,
-    completed: bool,
-}
-
-#[get("/todos")]
-async fn create_todo(todo: web::Json<Todo>) -> impl Responder {
-    HttpResponse::Ok().body(serde_json::to_string(&todo).unwrap())
-}
-
-#[get("/todos/{id}")]
-async fn get_todo(id: web::Path<i32>) -> impl Responder {
-    let todo = Todo {
-        id: id.into_inner(),
-        title: "Learn Actix-Web".to_string(),
-        completed: false,
-    };
-    HttpResponse::Ok().body(serde_json::to_string(&todo).unwrap())
+async fn index() -> Result<HttpResponse> {
+    Ok(HttpResponse::Ok().body("Notes API"))
 }

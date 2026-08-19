@@ -1,11 +1,7 @@
-use std::collections::HashMap;
-
-use notes_core::models::note::Note;
-use notes_core::models::tag::Tag;
+use notes_core::models::note::NoteWithTags;
 
 pub fn build_txt(
-    notes: Vec<Note>,
-    note_tags: HashMap<i64, Vec<Tag>>,
+    notes: Vec<NoteWithTags>,
 ) -> String {
     let mut txt = String::from("");
 
@@ -15,8 +11,8 @@ pub fn build_txt(
         txt.push_str(&format!("{}\n", date));
         txt.push_str(&format!("{}\n", note.title));
 
-        if let Some(tags) = note_tags.get(&note.id) {
-            for tag in tags {
+        if !note.tags.is_empty() {
+            for tag in note.tags {
                 txt.push_str(&format!("#{}\n", tag.name));
             }
         }

@@ -1,4 +1,6 @@
 use notes_core::error::Result;
+use notes_core::models::tag::CreateTag;
+use notes_core::models::tag::DeleteTag;
 use notes_core::db::Database;
 
 use crate::models::cli::TagCommand;
@@ -6,7 +8,10 @@ use crate::models::cli::TagCommand;
 pub async fn tag(cmd: TagCommand, db: &Database,) -> Result<()> {
     match cmd {
         TagCommand::Add { note_id, name } => {
-            let rows = db.tags().add(note_id, &name).await?;
+            let rows = db.tags().add(CreateTag { 
+                id: note_id,
+                name: &name 
+            }).await?;
 
             if rows == 1 {
                 println!("Tag '{}' added to note {}!", name, note_id);
@@ -16,7 +21,8 @@ pub async fn tag(cmd: TagCommand, db: &Database,) -> Result<()> {
         }
 
         TagCommand::Delete { name } => {
-            let rows = db.tags().delete(&name).await?;
+            let rows = db.tags().delete(DeleteTag { name: &name })
+            .await?;
 
             if rows == 1 {
                 println!("Tag '{}' deleted!", name);

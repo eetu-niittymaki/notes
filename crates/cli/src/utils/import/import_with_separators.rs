@@ -1,8 +1,11 @@
 use notes_core::db::Database;
 use notes_core::error::Result;
 
+use notes_core::models::note::CreateNote;
+
 use crate::utils::import::md_to_text::md_to_text;
 use crate::utils::import::html_to_text::html_to_text;
+
 use crate::utils::text_editor::text_editor;
 
 pub async fn import_with_separators (
@@ -31,7 +34,10 @@ pub async fn import_with_separators (
     for line in edited_content.lines() {
         if let Some(title) = line.strip_prefix('#') {
             if let Some(title) = current_title.take() {
-                db.notes().create(title, &current_content.join("\n")).await?;
+                db.notes().create(CreateNote {
+                    title: title, 
+                    content: current_content.join("\n") }
+                ).await?;
                 added_notes += 1;
                 current_content.clear();
             }
@@ -44,7 +50,10 @@ pub async fn import_with_separators (
 
     if let Some(title) = current_title {
         added_notes += 1;
-        db.notes().create(title, &current_content.join("\n")).await?;
+        db.notes().create(CreateNote { 
+            title: title, 
+            content: current_content.join("\n") }
+        ).await?;
     }
 
     Ok(added_notes)

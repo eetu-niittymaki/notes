@@ -1,29 +1,23 @@
-use std::collections::HashMap;
-
 use serde_json::{json, Map, Value};
 
-use notes_core::models::note::Note;
-use notes_core::models::tag::Tag;
+use notes_core::models::note::NoteWithTags;
 
-pub fn build_json(notes: Vec<Note>, note_tags: HashMap<i64, Vec<Tag>>) -> String {
+pub fn build_json(notes: Vec<NoteWithTags>) -> String {
     let notes_json: Vec<_> = notes
         .iter()
         .map(|note| {
             let date = note.created_at.split_whitespace().next().unwrap();
 
-            let tags: Vec<_> = note_tags
-                .get(&note.id)
-                .map(|tags| {
-                    tags.iter()
-                        .map(|tag| {
-                            json!({
-                                "id": tag.id,
-                                "name": tag.name
-                            })
-                        })
-                        .collect()
+            let tags: Vec<_> = note
+                .tags
+                .iter()
+                .map(|tag| {
+                    json!({
+                        "id": tag.id,
+                        "name": tag.name
+                    })
                 })
-                .unwrap_or_default();
+                .collect();
 
             let mut note_json = Map::new();
 
