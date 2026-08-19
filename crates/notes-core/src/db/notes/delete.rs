@@ -4,7 +4,7 @@ use crate::error::Result;
 
 use crate::models::note::NoteSelector;
 
-pub async fn one(
+pub async fn delete(
     conn: &Connection,
     selector: &NoteSelector<'_>
 ) -> Result<u64> {
@@ -25,7 +25,7 @@ pub async fn one(
     }
 }
 
-pub async fn all(conn: &Connection) -> Result<u64> {
+pub async fn delete_all(conn: &Connection) -> Result<u64> {
     Ok(conn.execute(
         "DELETE FROM notes",())
         .await?)

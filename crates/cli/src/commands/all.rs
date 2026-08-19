@@ -3,14 +3,18 @@ use notes_core::error::Result;
 
 use crate::models::cli::AllCommand;
 
-pub async fn all(cmd: AllCommand, db: &Database,) -> Result<()> {
-    let notes_with_tags = db.notes().get_all_with_tags().await?;
+use notes_core::models::note::NoteWithTags;
+
+pub async fn all(cmd: AllCommand, db: &Database) -> Result<()> {
+    let notes_with_tags = reqwest::get("http://127.0.0.1:8080/notes")
+        .await?
+        .json::<Vec<NoteWithTags>>()
+        .await?;
 
     if notes_with_tags.is_empty() {
         println!("No notes found");
         std::process::exit(0);
     }
-
 
     println!("All Notes:");
     println!("----------");
@@ -25,7 +29,7 @@ pub async fn all(cmd: AllCommand, db: &Database,) -> Result<()> {
         if cmd.content {
             println!("\n{}", note.content);
         }
-    }
+    } 
 
     Ok(())
 }

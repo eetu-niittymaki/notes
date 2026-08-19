@@ -36,6 +36,8 @@ async fn main() -> std::io::Result<()> {
             .route("/", web::get().to(index))
             .route("/notes", web::get().to(handlers::notes::get_notes))
             .route("/notes", web::post().to(handlers::notes::create_note))
+            .route("/notes", web::delete().to(handlers::notes::delete_note))
+            .route("/notes/all", web::delete().to(handlers::notes::delete_all_notes))
     })
     .bind(("127.0.0.1", port))?
     .run()

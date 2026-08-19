@@ -12,7 +12,7 @@ pub struct Note {
     pub favorite: bool,
 }
 
-#[derive(Serialize)]
+#[derive( Debug, Serialize, Deserialize)]
 pub struct NoteWithTags {
     pub id: i64,
     pub title: String,
@@ -23,7 +23,7 @@ pub struct NoteWithTags {
     pub tags: Vec<Tag>,
 }
 
-#[derive(Deserialize)]
+#[derive(Serialize, Deserialize)]
 pub struct CreateNote {
     pub title: String,
     pub content: String
@@ -38,4 +38,10 @@ pub enum NoteSelector<'a> {
 pub enum NoteUpdate {
     Title(String),
     Content(String),
+}
+
+#[derive(Deserialize)]
+pub struct NoteQuery {
+    pub id: Option<i64>,
+    pub title: Option<String>,
 }

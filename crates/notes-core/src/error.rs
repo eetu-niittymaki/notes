@@ -6,6 +6,7 @@ pub enum Error {
     Database(libsql::Error),
     // Error from input/output operations,
     Io(std::io::Error),
+    Reqwest(reqwest::Error),
     NoteNotFound,
 }
 
@@ -13,9 +14,10 @@ pub enum Error {
 impl fmt::Display for Error {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
-            Error::Database(e) => write!(f, "database error: {}", e),
-            Error::Io(e) => write!(f, "I/O error: {}", e),
-            Error::NoteNotFound => write!(f, "Note not found error"),
+            Error::Database(e) => write!(f, "Error in accessign database: {}", e),
+            Error::Io(e) => write!(f, "File operation failed: {}", e),
+            Error::Reqwest(e) => write!(f, "Could not contact the server: {}", e),
+            Error::NoteNotFound => write!(f, "Note not found"),
         }
     }
 }
@@ -35,6 +37,13 @@ impl From<libsql::Error> for Error {
 impl From<std::io::Error> for Error {
     fn from(error: std::io::Error) -> Self {
         Error::Io(error)
+    }
+}
+
+// Automatically convert reqwest::Error into custom Error type
+impl From<reqwest::Error> for Error {
+    fn from(error: reqwest::Error) -> Self {
+        Error::Reqwest(error)
     }
 }
 

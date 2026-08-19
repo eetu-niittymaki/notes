@@ -41,10 +41,10 @@ impl<'a> NotesRepository<'a> {
     }
 
     pub async fn delete(&self, selector: NoteSelector<'_>) -> Result<u64> {
-        delete::one(self.conn, &selector).await
+        delete::delete(self.conn, &selector).await
     }
 
     pub async fn delete_all(&self) -> Result<u64> {
-        delete::all(self.conn).await
+        delete::delete_all(self.conn).await
     }
 }

@@ -6,16 +6,21 @@ use notes_core::models::note::CreateNote;
 use crate::models::cli::NewCommand;
 
 pub async fn new(cmd: NewCommand, db: &Database,) -> Result<()> {
-    let rows = db.notes().create(CreateNote {
+    let client = reqwest::Client::new();
+    let body = CreateNote {
         title: cmd.title, 
         content: cmd.content
-    }).await?;
+    };
 
-    if rows == 1 {
-        println!("Note added.");
-    } else {
-        eprintln!("Error in adding note");
-    }
+    let response = client
+        .post("http://127.0.0.1:8080/notes")
+        .json(&body)
+        .send()
+        .await?;
+
+    response.error_for_status()?;
+    
+    println!("Note added.");
 
     Ok(())
 }

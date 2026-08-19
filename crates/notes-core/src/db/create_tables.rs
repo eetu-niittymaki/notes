@@ -5,7 +5,7 @@ pub async fn create_tables(conn: &Connection) -> libsql::Result<()> {
         r#"
         CREATE TABLE IF NOT EXISTS notes (
             id INTEGER PRIMARY KEY,
-            title TEXT NOT NULL,
+            title TEXT NOT NULL UNIQUE,
             content TEXT NOT NULL,
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
             updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
