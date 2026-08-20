@@ -1,28 +1,22 @@
 use notes_core::error::Result;
 use notes_core::db::Database;
 
-use notes_core::models::note::NoteSelector;
-
+use crate::config;
 use crate::models::cli::GetCommand;
 
+use notes_core::models::note::NoteWithTags;
+
 pub async fn get(cmd: GetCommand, db: &Database,) -> Result<()> {
-    let selector = match (cmd.id, cmd.title.as_deref()) {
-        (Some(id), None) => NoteSelector::Id(id),
+    let client = reqwest::Client::new();
 
-        (None, Some(title)) => NoteSelector::Title(title),
+    let note =  client
+        .get(format!("{}note", config::URL))
+        .query(&[("id", cmd.id)])
+        .send()
+        .await?
+        .json::<NoteWithTags>()
+        .await?;
 
-        (None, None) => {
-            eprintln!("Please provide either --id or --title");
-            return Ok(());
-        }
-
-        (Some(_), Some(_)) => {
-            eprintln!("Please provide either --id or --title, not both");
-            return Ok(());
-        }
-    };
-
-    let note =  db.notes().get(selector).await?;
     let tags = db.tags().for_note(note.id).await?;
 
     println!("{} | {}", note.id, note.title);

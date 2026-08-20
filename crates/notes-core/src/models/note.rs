@@ -2,7 +2,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::models::tag::Tag;
 
-#[derive(Debug, Serialize)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct Note {
     pub id: i64,
     pub title: String,
@@ -29,19 +29,32 @@ pub struct CreateNote {
     pub content: String
 }
 
-#[derive(Clone)]
-pub enum NoteSelector<'a> {
-    Id(i64),
-    Title(&'a str),
+#[derive(Serialize, Deserialize)]
+pub struct UpdateNoteQuery {
+    pub id: i64,
+    pub title: Option<String>,
+    pub content: Option<String>
 }
 
+#[derive(Serialize, Deserialize)]
+pub struct DeleteNote {
+    pub id: i64,
+}
+
+#[derive(Serialize, Deserialize)]
+pub struct NoteQuery {
+    pub id: i64,
+}
+
+#[derive(Serialize, Deserialize)]
+pub struct NoteResponse {
+    pub notes: Vec<Note>,
+}
+
+#[derive(Serialize, Deserialize)]
 pub enum NoteUpdate {
     Title(String),
     Content(String),
 }
 
-#[derive(Deserialize)]
-pub struct NoteQuery {
-    pub id: Option<i64>,
-    pub title: Option<String>,
-}
+

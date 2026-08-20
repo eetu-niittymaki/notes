@@ -3,6 +3,7 @@ use notes_core::db::Database;
 
 use notes_core::models::note::CreateNote;
 
+use crate::config;
 use crate::models::cli::NewCommand;
 
 pub async fn new(cmd: NewCommand, db: &Database,) -> Result<()> {
@@ -13,14 +14,16 @@ pub async fn new(cmd: NewCommand, db: &Database,) -> Result<()> {
     };
 
     let response = client
-        .post("http://127.0.0.1:8080/notes")
+        .post(format!("{}notes", config::URL))
         .json(&body)
         .send()
         .await?;
 
-    response.error_for_status()?;
+    if response.status().is_success() {
+         println!("Note added");
+    } else {
+        println!("Error in adding note");
+    }
     
-    println!("Note added.");
-
     Ok(())
 }

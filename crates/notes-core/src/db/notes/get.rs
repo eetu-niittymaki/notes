@@ -1,10 +1,11 @@
 use libsql::Connection;
 
+use crate::error::Error::NoteNotFound;
 use crate::error::Result;
 
-use crate::models::note::{Note, NoteSelector, NoteWithTags};
+use crate::models::note::{Note, NoteWithTags};
 
-use crate::db::tags::get::all_for_notes;
+use crate::db::tags::get::{all_for_notes, for_note};
 
 fn note_from_row(row: &libsql::Row) -> Result<Note> {
     Ok(Note {
@@ -19,38 +20,43 @@ fn note_from_row(row: &libsql::Row) -> Result<Note> {
 
 pub async fn one(
     conn: &Connection,
-    selector: &NoteSelector<'_>,
-) -> Result<Note> {
-    let mut rows = match selector {
-        NoteSelector::Id(id) => {
-            conn.query(
-                "SELECT id, title, content, created_at, updated_at, favorite
-                 FROM notes
-                 WHERE id = ?1",
-                [*id],
-            )
-            .await?
-        }
+    id: i64,
+) -> Result<NoteWithTags> {
+    let mut rows = conn
+        .query(
+            r#"
+            SELECT
+                id,
+                title,
+                content,
+                created_at,
+                updated_at,
+                favorite
+            FROM notes
+            WHERE id = ?1
+            "#,
+            [id],
+        )
+        .await?;
 
-        NoteSelector::Title(title) => {
-            conn.query(
-                "SELECT id, title, content, created_at, updated_at, favorite
-                 FROM notes
-                 WHERE title = ?1",
-                [*title],
-            )
-            .await?
+    let row = match rows.next().await? {
+        Some(row) => row,
+        None => {
+            return Err(NoteNotFound.into());
         }
     };
 
-    match rows.next().await? {
-        Some(row) => note_from_row(&row),
-        None => {
-            // You need to decide what your application-level
-            // "not found" error should be here.
-            todo!("return your NoteNotFound error")
-        }
-    }
+    let tags = for_note(conn, id).await?;
+
+    Ok(NoteWithTags {
+        id: row.get(0)?,
+        title: row.get(1)?,
+        content: row.get(2)?,
+        created_at: row.get(3)?,
+        updated_at: row.get(4)?,
+        favorite: row.get(5)?,
+        tags,
+    })
 }
 
 pub async fn all(conn: &Connection) -> Result<Vec<Note>> {

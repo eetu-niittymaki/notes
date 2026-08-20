@@ -5,8 +5,11 @@ use crate::models::cli::AllCommand;
 
 use notes_core::models::note::NoteWithTags;
 
+use crate::config;
+
 pub async fn all(cmd: AllCommand, db: &Database) -> Result<()> {
-    let notes_with_tags = reqwest::get("http://127.0.0.1:8080/notes")
+    let notes_with_tags = reqwest::get(
+        format!("{}notes", config::URL))
         .await?
         .json::<Vec<NoteWithTags>>()
         .await?;

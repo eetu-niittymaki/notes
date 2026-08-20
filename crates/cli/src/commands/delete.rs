@@ -1,20 +1,27 @@
 use notes_core::error::Result;
 use notes_core::db::Database;
-
-use notes_core::models::note::NoteSelector;
+use notes_core::models::note::DeleteNote;
 
 use crate::models::cli::DeleteCommand;
 
 use crate::utils::get_user_input::get_user_input;
 
+use crate::config;
+
 pub async fn delete(cmd: DeleteCommand, db: &Database,) -> Result<()> {
+    let client = reqwest::Client::new();
+
     if cmd.all {
         println!("Delete all notes? y/n");
         let confirm = get_user_input().trim().to_lowercase();
 
         if confirm == "y" || confirm == "yes" {
-            let rows = db.notes().delete_all().await?;
-            if rows > 0 {
+            let response = &client
+                .delete(format!("{}notes/all", config::URL))
+                .send()
+                .await?;
+
+            if response.status().is_success() {
                 println!("All notes deleted!");
             } else {
                 println!("No notes to delete")
@@ -27,30 +34,19 @@ pub async fn delete(cmd: DeleteCommand, db: &Database,) -> Result<()> {
         }
     } 
 
-    let selector = match (cmd.id, cmd.title.as_deref()) {
-        (Some(id), None) => NoteSelector::Id(id),
+    let query = DeleteNote { id: cmd.id };
 
-        (None, Some(title)) => NoteSelector::Title(title),
+    let response = client
+        .delete(format!("{}notes", config::URL))
+        .query(&query)
+        .send()
+        .await?;
 
-        (None, None) => {
-            eprintln!("Please provide either --id or --title");
-            return Ok(());
-        }
-
-        (Some(_), Some(_)) => {
-            eprintln!("Please provide either --id or --title, not both");
-            return Ok(());
-        }
-    };
-    
-    let rows = db.notes().delete(selector).await?;
-    if rows == 1 {
+    if response.status().is_success() {
         println!("Note deleted!") 
     } else  {
         println!("No matching note found")
     }
         
-
-
     Ok(())
 }

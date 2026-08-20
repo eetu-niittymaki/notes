@@ -55,9 +55,7 @@ pub struct AllCommand {
 #[derive(Args, Clone)]
 pub struct GetCommand {
     #[arg(short='i', long="id", help="ID of the note to fetch")]
-    pub id: Option<i64>,
-    #[arg(short='t', long="title", help="Title of the note to fetch")]
-    pub title: Option<String>,
+    pub id: i64,
 }
 
 #[derive(Args, Clone)]
@@ -74,10 +72,8 @@ pub struct EditCommand {
 
 #[derive(Parser, Debug, Clone)]
 pub struct DeleteCommand {
-    #[arg(short='t', long="title", help="Title of the note to delete")]
-    pub title: Option<String>,
-    #[arg(short='i', long="id", help="ID of the note to delete")]
-    pub id: Option<i64>,
+    #[arg(help="ID of the note to delete")]
+    pub id: i64,
     #[arg(short='a', long="all", help="Delete all notes")]
     pub all: bool,
 }
