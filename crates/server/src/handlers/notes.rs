@@ -1,7 +1,6 @@
 use actix_web::{web, HttpResponse, Result};
 
 use notes_core::db::Database;
-
 use notes_core::models::note::{
     CreateNoteQuery,
     DeleteNoteQuery, 
@@ -11,8 +10,8 @@ use notes_core::models::note::{
 };
 
 pub async fn get_note(
-    query: web::Query<NoteQuery>,
     db: web::Data<Database>,
+    query: web::Query<NoteQuery>,
 ) -> Result<HttpResponse, actix_web::Error> {
     let notes = db
         .notes()
@@ -37,11 +36,11 @@ pub async fn get_all_notes(
 
 pub async fn create_note(
     db: web::Data<Database>,
-    payload: web::Json<CreateNoteQuery>,
+    query: web::Json<CreateNoteQuery>,
 ) -> Result<HttpResponse, actix_web::Error> {
     let id = db
         .notes()
-        .create(payload.into_inner())
+        .create(query.into_inner())
         .await
         .map_err(actix_web::error::ErrorInternalServerError)?;
 
@@ -49,8 +48,8 @@ pub async fn create_note(
 }
 
 pub async fn update_note(
-    query: web::Query<UpdateNoteQuery>,
     db: web::Data<Database>,
+    query: web::Query<UpdateNoteQuery>,
 ) -> Result<HttpResponse, actix_web::Error> {
     let update = match (&query.title, &query.content) {
         (Some(title), None) => NoteUpdate::Title(title.clone()),
@@ -85,8 +84,8 @@ pub async fn update_note(
 
 
 pub async fn delete_note(
-    query: web::Query<DeleteNoteQuery>,
     db: web::Data<Database>,
+    query: web::Query<DeleteNoteQuery>,
 ) -> Result<HttpResponse, actix_web::Error> {
     let deleted = db.notes()
                 .delete(query.id)

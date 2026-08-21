@@ -1,6 +1,5 @@
 use notes_core::error::Result;
-use notes_core::db::Database;
-
+use crate::client::ApiClient;
 use crate::models::cli::ExportCommand;
 
 use crate::utils::export::export_image::export_image;
@@ -9,7 +8,7 @@ use crate::utils::file_dialog::folder;
 
 use crate::config::EXPORT_FILETYPES;
 
-pub async fn export(cmd: ExportCommand, db: &Database,) -> Result<()> {
+pub async fn export(cmd: ExportCommand, api: &ApiClient,) -> Result<()> {
     if !EXPORT_FILETYPES.contains(&cmd.filetype.as_str()) {
         eprintln!(
             "Unsupported filetype, supported formats: {}",
@@ -18,7 +17,7 @@ pub async fn export(cmd: ExportCommand, db: &Database,) -> Result<()> {
         std::process::exit(0);
     }
 
-    let notes = db.notes().get_all_with_tags().await?;
+    let notes = api.get_all_notes().await?;
 
     if notes.is_empty() {
         eprintln!("No notes found to export");

@@ -1,8 +1,8 @@
 use std::path::PathBuf;
 
 use notes_core::error::Result;
-use notes_core::db::Database;
 
+use crate::client::ApiClient;
 use crate::utils::file_dialog::file;
 use crate::utils::read_file_content::read_file_content;
 use crate::utils::import::import_without_separating::import_without_separating;
@@ -13,7 +13,7 @@ use crate::models::cli::ImportCommand;
 
 use crate::config::IMPORT_FILETYPES;
 
-pub async fn import(cmd: ImportCommand, db: &Database,) -> Result<()> {
+pub async fn import(cmd: ImportCommand, api: &ApiClient,) -> Result<()> {
     // Get file through command line args or file dialog if no arg
     let file = match &cmd.file {
         Some(path) => PathBuf::from(path),
@@ -55,8 +55,8 @@ pub async fn import(cmd: ImportCommand, db: &Database,) -> Result<()> {
         .unwrap_or(0);
 
     let result = match mode {
-        1 => import_without_separating(db, &extension.unwrap(), content, title).await,
-        2 => import_with_separators(db, &extension.unwrap(), content).await,
+        1 => import_without_separating(api, &extension.unwrap(), content, title).await,
+        2 => import_with_separators(api, &extension.unwrap(), content).await,
         _ => {
             println!("Please enter a number from 1-2.");
             return Ok(())

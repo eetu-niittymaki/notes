@@ -54,7 +54,7 @@ pub struct AllCommand {
 
 #[derive(Args, Clone)]
 pub struct GetCommand {
-    #[arg(short='i', long="id", help="ID of the note to fetch")]
+    #[arg(help="ID of the note to fetch")]
     pub id: i64,
 }
 

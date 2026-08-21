@@ -12,7 +12,7 @@ impl ApiClient {
     pub async fn get_all_tags(&self) -> Result<Vec<TagWithCount>> {
         Ok(self
             .http
-            .get(format!("{}tag", self.base_url))
+            .get(format!("{}tags/all", self.base_url))
             .send()
             .await?
             .error_for_status()?
@@ -34,7 +34,7 @@ impl ApiClient {
         )
     }
 
-    pub async fn add_tag(&self, query: CreateTagQuery) -> Result<Tag> {
+    pub async fn add_tag(&self, query: CreateTagQuery) -> Result<u64> {
         Ok(self
             .http
             .post(format!("{}tags", self.base_url))
@@ -42,7 +42,7 @@ impl ApiClient {
             .send()
             .await?
             .error_for_status()?
-            .json::<Tag>()
+            .json::<u64>()
             .await?
         )
     }

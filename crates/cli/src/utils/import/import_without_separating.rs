@@ -1,14 +1,13 @@
 use notes_core::error::Result;
-use notes_core::db::Database;
-
 use notes_core::models::note::CreateNoteQuery;
 
+use crate::client::ApiClient;
 use crate::utils::import::md_to_text::md_to_text;
 use crate::utils::import::html_to_text::html_to_text;
 use crate::utils::get_user_input::get_user_input;
 
 pub async fn import_without_separating (
-    db: &Database,
+    api: &ApiClient,
     extension: &str,
     content: String,
     title: &str
@@ -29,24 +28,24 @@ pub async fn import_without_separating (
         },
         _ => {
             println!("Please enter a number from 1-2.");
-            return Ok(0);
+            return Ok(0)
         }
     };
 
-    let rows = match extension {
-        "md" => db.notes().create(CreateNoteQuery { 
+    let changed_rows = match extension {
+        "md" => api.create_note(CreateNoteQuery { 
             title: title, 
-            content: md_to_text(&content) }).await,
+            content: md_to_text(&content) }).await?,
 
-        "html" => db.notes().create(CreateNoteQuery { 
+        "html" => api.create_note(CreateNoteQuery { 
             title: title,  
-            content: html_to_text(&content) }).await,
+            content: html_to_text(&content) }).await?,
 
-        "txt" => db.notes().create(CreateNoteQuery { 
+        "txt" => api.create_note(CreateNoteQuery { 
             title: title, 
-            content: content }).await,
+            content: content }).await?,
         _ => unreachable!()
     };
 
-    Ok(rows.unwrap())
+    Ok(changed_rows)
 }

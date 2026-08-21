@@ -1,10 +1,7 @@
 use actix_web::{web, HttpResponse, Result};
 
 use notes_core::db::Database;
-
 use notes_core::models::tag::{
-    Tag,
-    TagWithCount,
     TagQuery,
     CreateTagQuery,
     DeleteTagQuery
@@ -22,9 +19,9 @@ pub async fn get_all_tags(
     Ok(HttpResponse::Ok().json(tags))
 }
 
-pub async fn get_tag(
+pub async fn get_tags_for_note(
     db: web::Data<Database>,
-    query: web::Json<TagQuery>,
+    query: web::Query<TagQuery>,
 ) -> Result<HttpResponse, actix_web::Error> {
     let tags = db
         .tags()
@@ -37,24 +34,24 @@ pub async fn get_tag(
 
 pub async fn create_tag(
     db: web::Data<Database>,
-    payload: web::Json<CreateTagQuery>,
+    query: web::Query<CreateTagQuery>,
 ) -> Result<HttpResponse, actix_web::Error> {
-    let id = db
+    let tag = db
         .tags()
-        .add(payload.into_inner())
+        .add(query.into_inner())
         .await
         .map_err(actix_web::error::ErrorInternalServerError)?;
 
-    Ok(HttpResponse::Created().json(id))
+    Ok(HttpResponse::Created().json(tag))
 }
 
 pub async fn delete_tag(
     db: web::Data<Database>,
-    payload: web::Json<DeleteTagQuery>,
+    query: web::Query<DeleteTagQuery>,
 ) -> Result<HttpResponse, actix_web::Error> {
     let delete = db
         .tags()
-        .delete(payload.into_inner())
+        .delete(query.into_inner())
         .await
         .map_err(actix_web::error::ErrorInternalServerError)?;
 

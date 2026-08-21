@@ -7,7 +7,6 @@ use crate::error::Result;
 use crate::models::tag::{
     Tag, 
     TagWithCount,
-    TagQuery,
     CreateTagQuery,
     DeleteTagQuery,
 };

@@ -1,7 +1,8 @@
 use libsql::Connection;
 
 use crate::error::Result;
-use crate::models::note::Note;
+use crate::models::note::{Note, NoteSearchQuery};
+use crate::models::tag::TagSearchQuery;
 
 mod search;
 
@@ -14,11 +15,11 @@ impl<'a> SearchRepository<'a> {
         Self { conn }
     }  
     
-    pub async fn notes(&self, title: Option<&str>, content: Option<&str>) -> Result<Vec<Note>> {
-        search::notes(self.conn, title, content).await
+    pub async fn notes(&self, query: NoteSearchQuery) -> Result<Vec<Note>> {
+        search::notes(self.conn, query.title.as_deref(), query.content.as_deref()).await
     }
 
-    pub async fn tags(&self, tag: &str) -> Result<Vec<Note>> {
-        search::tags(self.conn, &tag).await
+    pub async fn tags(&self, query: TagSearchQuery) -> Result<Vec<Note>> {
+        search::tags(self.conn, &query.tag).await
     }
 }

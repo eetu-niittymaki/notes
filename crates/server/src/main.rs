@@ -30,20 +30,26 @@ async fn main() -> std::io::Result<()> {
 
     let db = web::Data::new(db);
 
+    // Actix routes
     HttpServer::new(move || {
         App::new()
             .app_data(db.clone())
             .route("/", web::get().to(index))
             // Notes
-            .route("/notes", web::get().to(handlers::notes::get_all_notes))
-            .route("/note", web::get().to(handlers::notes::get_note))
+            .route("/notes/all", web::get().to(handlers::notes::get_all_notes))
+            .route("/notes", web::get().to(handlers::notes::get_note))
             .route("/notes", web::post().to(handlers::notes::create_note))
             .route("/notes", web::patch().to(handlers::notes::update_note))
             .route("/notes", web::delete().to(handlers::notes::delete_note))
             .route("/notes/all", web::delete().to(handlers::notes::delete_all_notes))
             // Tags
-            .route("/tags", web::get().to(handlers::tags::get_all_tags))
-            .route("/tag", web::post().to(handlers::tags::create_tag))
+            .route("/tags/all", web::get().to(handlers::tags::get_all_tags))
+            .route("/tags", web::get().to(handlers::tags::get_tags_for_note))
+            .route("/tags", web::post().to(handlers::tags::create_tag))
+            .route("/tags", web::delete().to(handlers::tags::delete_tag))
+            // Search
+            .route("/search/tags", web::get().to(handlers::search::search_tags))
+            .route("/search/notes", web::get().to(handlers::search::search_notes))
     })
     .bind(("127.0.0.1", port))?
     .run()

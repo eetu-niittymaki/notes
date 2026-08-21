@@ -13,6 +13,7 @@ use crate::utils::text_editor::text_editor;
 pub async fn edit(cmd: EditCommand, api: &ApiClient) -> Result<()> {
     let note = api.get_note(NoteQuery { id: cmd.id }).await?;
 
+    // Shape query relatively based on if title or content command flag is given
     let query = match cmd.field {
         EditField::Title => {
             let new_title = text_editor(

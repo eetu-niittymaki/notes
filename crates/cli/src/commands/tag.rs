@@ -1,12 +1,10 @@
 use notes_core::error::Result;
 use notes_core::models::tag::{
-    TagWithCount,
     CreateTagQuery, 
     DeleteTagQuery
 };
 
 use crate::client::ApiClient;
-use crate::config;
 use crate::models::cli::TagCommand;
 
 pub async fn tag(cmd: TagCommand, api: &ApiClient) -> Result<()> {
@@ -18,8 +16,12 @@ pub async fn tag(cmd: TagCommand, api: &ApiClient) -> Result<()> {
                     name: name.clone()
                 }
             ).await?;
-                  
-            println!("Tag '{}' added to note!", add_tag.name);
+            
+            if add_tag > 0 {
+                println!("Tag '{}' added to note", name);
+            } else {
+                println!("Adding tag failed!");
+            }
         }
 
         TagCommand::Delete { name } => {

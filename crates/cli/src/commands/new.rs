@@ -13,7 +13,11 @@ pub async fn new(cmd: NewCommand, api: &ApiClient) -> Result<()> {
 
     let create_note = api.create_note(query).await?;
 
-    println!("Note '{}' added", create_note.title);
+    if create_note > 0 {
+        println!("Note added");
+    } else {
+        println!("Failed to add note!");
+    }
     
     Ok(())
 }

@@ -29,3 +29,8 @@ pub struct CreateTagQuery {
 pub struct DeleteTagQuery {
     pub name: String,
 }
+
+#[derive(Serialize, Deserialize)]
+pub struct TagSearchQuery {
+    pub tag: String,
+}

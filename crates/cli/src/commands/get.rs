@@ -8,7 +8,7 @@ use notes_core::models::tag::TagQuery;
 pub async fn get(cmd: GetCommand, api: &ApiClient) -> Result<()> {
     let note =  api.get_note(NoteQuery { id: cmd.id }).await?;
 
-    let tags = api.get_tags_for_note(TagQuery { note_id: cmd.id }).await?;
+    let tags = api.get_tags_for_note(TagQuery { note_id: note.id}).await?;
 
     println!("{} | {}", note.id, note.title);
     

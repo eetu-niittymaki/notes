@@ -47,6 +47,12 @@ pub struct NoteQuery {
 }
 
 #[derive(Serialize, Deserialize)]
+pub struct NoteSearchQuery {
+    pub title: Option<String>,
+    pub content: Option<String>,
+}
+
+#[derive(Serialize, Deserialize)]
 pub struct NoteResponse {
     pub notes: Vec<Note>,
 }
