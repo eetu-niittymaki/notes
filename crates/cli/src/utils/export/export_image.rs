@@ -3,9 +3,7 @@ use std::path::PathBuf;
 use hyper_render::{render, Config, OutputFormat};
 
 use notes_core::error::Result;
-
-use crate::utils::export::build_html::build_html;
-
+use notes_core::text_builders::build_html::build_html;
 use notes_core::models::note::NoteWithTags;
 
 pub fn export_image(
@@ -25,13 +23,13 @@ pub fn export_image(
         Ok(bytes) => bytes,
         Err(e) => {
             eprintln!("Render failed: {e}");
-            std::process::exit(0);
+            std::process::exit(1);
         }
     };
 
     if let Err(e) = std::fs::write(outfile_path, bytes) {
         eprintln!("Failed to write output: {e}");
-        std::process::exit(0);
+        std::process::exit(1);
     }
 
     Ok(())

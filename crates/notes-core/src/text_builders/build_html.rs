@@ -1,4 +1,4 @@
-use notes_core::models::note::NoteWithTags;
+use crate::models::note::NoteWithTags;
 
 pub fn build_html(
     notes: Vec<NoteWithTags>,
@@ -48,8 +48,8 @@ pub fn build_html(
     <h4 class="created_at">{}</h4>
     
 "#,
+        note.title,
         note.created_at.split_whitespace().next().unwrap(),
-        note.title
     ));
 
     if !note.tags.is_empty() {

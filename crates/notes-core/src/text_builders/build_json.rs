@@ -1,6 +1,6 @@
 use serde_json::{json, Map, Value};
 
-use notes_core::models::note::NoteWithTags;
+use crate::models::note::NoteWithTags;
 
 pub fn build_json(notes: Vec<NoteWithTags>) -> String {
     let notes_json: Vec<_> = notes

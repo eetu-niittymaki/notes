@@ -1,9 +1,8 @@
+use crate::client::ApiClient;
 use notes_core::error::Result;
 use notes_core::models::note::CreateNoteQuery;
-
-use crate::client::ApiClient;
-use crate::utils::import::md_to_text::md_to_text;
-use crate::utils::import::html_to_text::html_to_text;
+use notes_core::text_parsers::md_to_text::md_to_text;
+use notes_core::text_parsers::html_to_text::html_to_text;
 use crate::utils::get_user_input::get_user_input;
 
 pub async fn import_without_separating (

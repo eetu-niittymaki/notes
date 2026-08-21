@@ -2,10 +2,10 @@ use std::fs::OpenOptions;
 use std::io::Write;
 use std::path::PathBuf;
 
-use crate::utils::export::build_html::build_html;
-use crate::utils::export::build_md::build_md;
-use crate::utils::export::build_txt::build_txt;
-use crate::utils::export::build_json::build_json;
+use notes_core::text_builders::build_html::build_html;
+use notes_core::text_builders::build_md::build_md;
+use notes_core::text_builders::build_txt::build_txt;
+use notes_core::text_builders::build_json::build_json;
 
 use notes_core::error::Result;
 

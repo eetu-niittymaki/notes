@@ -1,4 +1,4 @@
-use notes_core::models::note::NoteWithTags;
+use crate::models::note::NoteWithTags;
 
 pub fn build_txt(
     notes: Vec<NoteWithTags>,

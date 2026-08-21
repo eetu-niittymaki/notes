@@ -2830,7 +2830,9 @@ name = "notes-core"
 version = "0.1.0"
 dependencies = [
  "libsql",
+ "pulldown-cmark",
  "reqwest",
+ "scraper",
  "serde",
  "serde_json",
 ]
