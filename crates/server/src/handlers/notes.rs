@@ -3,7 +3,11 @@ use actix_web::{web, HttpResponse, Result};
 use notes_core::db::Database;
 
 use notes_core::models::note::{
-    CreateNote, DeleteNote, NoteQuery, NoteUpdate, UpdateNoteQuery
+    CreateNoteQuery,
+    DeleteNoteQuery, 
+    NoteQuery, 
+    NoteUpdate, 
+    UpdateNoteQuery
 };
 
 pub async fn get_note(
@@ -33,7 +37,7 @@ pub async fn get_all_notes(
 
 pub async fn create_note(
     db: web::Data<Database>,
-    payload: web::Json<CreateNote>,
+    payload: web::Json<CreateNoteQuery>,
 ) -> Result<HttpResponse, actix_web::Error> {
     let id = db
         .notes()
@@ -81,7 +85,7 @@ pub async fn update_note(
 
 
 pub async fn delete_note(
-    query: web::Query<DeleteNote>,
+    query: web::Query<DeleteNoteQuery>,
     db: web::Data<Database>,
 ) -> Result<HttpResponse, actix_web::Error> {
     let deleted = db.notes()

@@ -1,27 +1,17 @@
 use notes_core::error::Result;
-use notes_core::db::Database;
 
 use notes_core::models::note::{
-    Note, 
-    NoteUpdate, 
-    NoteWithTags, 
+    NoteQuery,
     UpdateNoteQuery
 };
 
-use crate::config;
+use crate::client::ApiClient;
+
 use crate::models::cli::{EditCommand, EditField};
 use crate::utils::text_editor::text_editor;
 
-pub async fn edit(cmd: EditCommand, db: &Database,) -> Result<()> {
-    let client = reqwest::Client::new();
-
-    let note = client
-        .get(format!("{}note", config::URL))
-        .query(&[("id", cmd.id)])
-        .send()
-        .await?
-        .json::<NoteWithTags>()
-        .await?;
+pub async fn edit(cmd: EditCommand, api: &ApiClient) -> Result<()> {
+    let note = api.get_note(NoteQuery { id: cmd.id }).await?;
 
     let query = match cmd.field {
         EditField::Title => {
@@ -51,14 +41,12 @@ pub async fn edit(cmd: EditCommand, db: &Database,) -> Result<()> {
         }
     };
 
-    let response = client
-        .patch(format!("{}notes", config::URL))
-        .query(&query)
-        .send()
-        .await?;
+    let update = api.update_note(query).await?;
 
-    if response.status().is_success() {
-        println!("Note updated successfully!");
+    if update {
+        println!("Note updated successfully");
+    } else {
+        println!("Error in updating note!")
     }
 
     Ok(())

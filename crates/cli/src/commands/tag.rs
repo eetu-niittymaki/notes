@@ -1,38 +1,41 @@
 use notes_core::error::Result;
-use notes_core::models::tag::CreateTag;
-use notes_core::models::tag::DeleteTag;
-use notes_core::db::Database;
+use notes_core::models::tag::{
+    TagWithCount,
+    CreateTagQuery, 
+    DeleteTagQuery
+};
 
+use crate::client::ApiClient;
+use crate::config;
 use crate::models::cli::TagCommand;
 
-pub async fn tag(cmd: TagCommand, db: &Database,) -> Result<()> {
+pub async fn tag(cmd: TagCommand, api: &ApiClient) -> Result<()> {
     match cmd {
         TagCommand::Add { note_id, name } => {
-            let rows = db.tags().add(CreateTag { 
-                id: note_id,
-                name: &name 
-            }).await?;
-
-            if rows == 1 {
-                println!("Tag '{}' added to note {}!", name, note_id);
-            } else {
-                println!("Note already has that tag");
-            }
+            let add_tag = api.add_tag(
+         CreateTagQuery { 
+                    note_id,
+                    name: name.clone()
+                }
+            ).await?;
+                  
+            println!("Tag '{}' added to note!", add_tag.name);
         }
 
         TagCommand::Delete { name } => {
-            let rows = db.tags().delete(DeleteTag { name: &name })
-            .await?;
+            let delete = api.delete_tag(
+                DeleteTagQuery { name: name.clone() }
+            ).await?;
 
-            if rows == 1 {
-                println!("Tag '{}' deleted!", name);
+            if delete {
+                println!("Tag '{name}' deleted!");
             } else {
                 println!("No matching tag found");
             }
         }
 
         TagCommand::List => {
-            let tags = db.tags().all().await?;
+            let tags = api.get_all_tags().await?;
 
             if tags.is_empty() {
                 println!("No tags found");

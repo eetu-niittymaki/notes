@@ -8,7 +8,7 @@ use libsql::Connection;
 use crate::error::Result;
 
 use crate::models::note::{
-    CreateNote, 
+    CreateNoteQuery, 
     Note, 
     NoteUpdate, 
     NoteWithTags
@@ -23,7 +23,7 @@ impl<'a> NotesRepository<'a> {
         Self { conn }
     }   
     
-    pub async fn create(&self, note: CreateNote) -> Result<u64> {
+    pub async fn create(&self, note: CreateNoteQuery) -> Result<u64> {
         create::create(self.conn, &note.title, &note.content).await
     }
     

@@ -1,27 +1,21 @@
 use notes_core::error::Result;
-use notes_core::db::Database;
-use notes_core::models::note::DeleteNote;
+use notes_core::models::note::DeleteNoteQuery;
 
+use crate::client::ApiClient;
 use crate::models::cli::DeleteCommand;
 
 use crate::utils::get_user_input::get_user_input;
 
-use crate::config;
-
-pub async fn delete(cmd: DeleteCommand, db: &Database,) -> Result<()> {
-    let client = reqwest::Client::new();
+pub async fn delete(cmd: DeleteCommand, api: &ApiClient) -> Result<()> {
 
     if cmd.all {
         println!("Delete all notes? y/n");
         let confirm = get_user_input().trim().to_lowercase();
 
         if confirm == "y" || confirm == "yes" {
-            let response = &client
-                .delete(format!("{}notes/all", config::URL))
-                .send()
-                .await?;
+            let delete_all = api.delete_all_notes().await?;
 
-            if response.status().is_success() {
+            if delete_all {
                 println!("All notes deleted!");
             } else {
                 println!("No notes to delete")
@@ -34,15 +28,11 @@ pub async fn delete(cmd: DeleteCommand, db: &Database,) -> Result<()> {
         }
     } 
 
-    let query = DeleteNote { id: cmd.id };
+    let query = DeleteNoteQuery { id: cmd.id };
 
-    let response = client
-        .delete(format!("{}notes", config::URL))
-        .query(&query)
-        .send()
-        .await?;
+    let delete = api.delete_note(query).await?;
 
-    if response.status().is_success() {
+    if delete {
         println!("Note deleted!") 
     } else  {
         println!("No matching note found")

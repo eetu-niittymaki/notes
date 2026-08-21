@@ -7,8 +7,9 @@ use crate::error::Result;
 use crate::models::tag::{
     Tag, 
     TagWithCount,
-    CreateTag,
-    DeleteTag,
+    TagQuery,
+    CreateTagQuery,
+    DeleteTagQuery,
 };
 
 pub mod get;
@@ -24,8 +25,8 @@ impl<'a> TagsRepository<'a> {
         Self { conn }
     }  
 
-    pub async fn add(&self, tag: CreateTag<'_>) -> Result<u64> {
-        create::add(self.conn, tag.id, &tag.name).await
+    pub async fn add(&self, tag: CreateTagQuery) -> Result<u64> {
+        create::add(self.conn, tag.note_id, &tag.name).await
     }
     
     pub async fn all(&self) -> Result<Vec<TagWithCount>> {
@@ -40,7 +41,7 @@ impl<'a> TagsRepository<'a> {
         get::for_note(self.conn, note_id).await
     }
 
-    pub async fn delete(&self, tag: DeleteTag<'_>) -> Result<u64> {
-        delete::one(self.conn, &tag.name).await
+    pub async fn delete(&self, tag: DeleteTagQuery) -> Result<u64> {
+        delete::delete(self.conn, &tag.name).await
     }
 }

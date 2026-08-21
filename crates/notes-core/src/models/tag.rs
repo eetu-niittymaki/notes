@@ -6,18 +6,26 @@ pub struct Tag {
     pub name: String,
 }
 
-#[derive(Debug)]
+
+#[derive(Debug, Serialize, Deserialize)]
 pub struct TagWithCount {
     pub id: i64,
     pub name: String,
     pub note_count: i64,
 }
 
-pub struct CreateTag<'a> {
-    pub id: i64,
-    pub name: &'a str,
+#[derive(Debug, Serialize, Deserialize)]
+pub struct TagQuery {
+    pub note_id: i64
 }
 
-pub struct DeleteTag<'a> {
-    pub name: &'a str,
+#[derive(Debug, Serialize, Deserialize, Clone)]
+pub struct CreateTagQuery {
+    pub note_id: i64,
+    pub name: String,
+}
+
+#[derive(Debug, Serialize, Deserialize, Clone)]
+pub struct DeleteTagQuery {
+    pub name: String,
 }

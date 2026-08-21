@@ -1,18 +1,10 @@
-use notes_core::db::Database;
 use notes_core::error::Result;
 
+use crate::client::ApiClient;
 use crate::models::cli::AllCommand;
 
-use notes_core::models::note::NoteWithTags;
-
-use crate::config;
-
-pub async fn all(cmd: AllCommand, db: &Database) -> Result<()> {
-    let notes_with_tags = reqwest::get(
-        format!("{}notes", config::URL))
-        .await?
-        .json::<Vec<NoteWithTags>>()
-        .await?;
+pub async fn all(cmd: AllCommand, api: &ApiClient) -> Result<()> {
+    let notes_with_tags = api.get_all_notes().await?;
 
     if notes_with_tags.is_empty() {
         println!("No notes found");

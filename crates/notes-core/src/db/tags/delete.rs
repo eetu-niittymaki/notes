@@ -2,7 +2,7 @@ use libsql::Connection;
 
 use crate::error::Result;
 
-pub async fn one(
+pub async fn delete(
     conn: &Connection, 
     name: &str
 ) -> Result<u64> {

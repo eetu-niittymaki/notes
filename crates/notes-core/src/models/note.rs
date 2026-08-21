@@ -24,7 +24,7 @@ pub struct NoteWithTags {
 }
 
 #[derive(Serialize, Deserialize)]
-pub struct CreateNote {
+pub struct CreateNoteQuery {
     pub title: String,
     pub content: String
 }
@@ -37,7 +37,7 @@ pub struct UpdateNoteQuery {
 }
 
 #[derive(Serialize, Deserialize)]
-pub struct DeleteNote {
+pub struct DeleteNoteQuery {
     pub id: i64,
 }
 

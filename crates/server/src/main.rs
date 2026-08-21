@@ -34,12 +34,16 @@ async fn main() -> std::io::Result<()> {
         App::new()
             .app_data(db.clone())
             .route("/", web::get().to(index))
+            // Notes
             .route("/notes", web::get().to(handlers::notes::get_all_notes))
             .route("/note", web::get().to(handlers::notes::get_note))
             .route("/notes", web::post().to(handlers::notes::create_note))
             .route("/notes", web::patch().to(handlers::notes::update_note))
             .route("/notes", web::delete().to(handlers::notes::delete_note))
             .route("/notes/all", web::delete().to(handlers::notes::delete_all_notes))
+            // Tags
+            .route("/tags", web::get().to(handlers::tags::get_all_tags))
+            .route("/tag", web::post().to(handlers::tags::create_tag))
     })
     .bind(("127.0.0.1", port))?
     .run()
