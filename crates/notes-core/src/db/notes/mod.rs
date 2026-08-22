@@ -27,20 +27,20 @@ impl<'a> NotesRepository<'a> {
         create::create(self.conn, &note.title, &note.content).await
     }
     
-    pub async fn get(&self, id: i64) -> Result<NoteWithTags> {
-        get::one(self.conn, id).await
+    pub async fn get(&self, id: i64, user_id: i64) -> Result<NoteWithTags> {
+        get::one(self.conn, id, user_id).await
     }
 
-    pub async fn get_all(&self) -> Result<Vec<Note>> {
-        get::all(self.conn).await
+    pub async fn get_all(&self, user_id: i64) -> Result<Vec<Note>> {
+        get::all(self.conn, user_id).await
     }
 
-    pub async fn get_all_with_tags(&self) -> Result<Vec<NoteWithTags>> {
-        get::all_with_tags(self.conn).await
+    pub async fn get_all_with_tags(&self, user_id: i64) -> Result<Vec<NoteWithTags>> {
+        get::all_with_tags(self.conn, user_id).await
     }
 
-    pub async fn update(&self, id: i64, updater: NoteUpdate) -> Result<u64> {
-        update::update(self.conn, id, updater).await
+    pub async fn update(&self, id: i64, user_id: i64, updater: NoteUpdate) -> Result<u64> {
+        update::update(self.conn, id, user_id, updater).await
     }
 
     pub async fn delete(&self, id: i64) -> Result<u64> {

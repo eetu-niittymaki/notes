@@ -7,13 +7,17 @@ pub async fn delete(
     id: i64
 ) -> Result<u64> {
         Ok(conn.execute(
-            "DELETE FROM notes WHERE id = ?1",
-        [id],
+            "DELETE FROM notes 
+                WHERE id = ?1 
+                AND user_id = ?2",
+        [id, 1],
         ).await?)
 }
 
 pub async fn delete_all(conn: &Connection) -> Result<u64> {
     Ok(conn.execute(
-        "DELETE FROM notes",())
+        "DELETE FROM notes
+            WHERE user_id = ?1",
+            [1])
         .await?)
 }

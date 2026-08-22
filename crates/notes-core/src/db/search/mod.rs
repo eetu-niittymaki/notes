@@ -16,10 +16,10 @@ impl<'a> SearchRepository<'a> {
     }  
     
     pub async fn notes(&self, query: NoteSearchQuery) -> Result<Vec<Note>> {
-        search::notes(self.conn, query.title.as_deref(), query.content.as_deref()).await
+        search::notes(self.conn, query.user_id, query.title.as_deref(), query.content.as_deref()).await
     }
 
     pub async fn tags(&self, query: TagSearchQuery) -> Result<Vec<Note>> {
-        search::tags(self.conn, &query.tag).await
+        search::tags(self.conn, query.user_id, &query.tag, ).await
     }
 }

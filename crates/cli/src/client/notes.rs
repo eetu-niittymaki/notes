@@ -1,18 +1,20 @@
 use super::ApiClient;
 use notes_core::error::Result;
 use notes_core::models::note::{
-    NoteWithTags,
-    NoteQuery,
     CreateNoteQuery, 
     DeleteNoteQuery, 
+    GetAllNotesQuery, 
+    NoteQuery, 
+    NoteWithTags, 
     UpdateNoteQuery
 };
 
 impl ApiClient {
-    pub async fn get_all_notes(&self) -> Result<Vec<NoteWithTags>> {
+    pub async fn get_all_notes(&self, query: GetAllNotesQuery) -> Result<Vec<NoteWithTags>> {
         Ok(self
             .http
             .get(format!("{}notes/all", self.base_url))
+            .query(&query)
             .send()
             .await?
             .error_for_status()?
@@ -48,7 +50,7 @@ impl ApiClient {
     }
 
     pub async fn update_note(&self, query: UpdateNoteQuery) -> Result<bool> {
-        let response = self
+        self
             .http
             .patch(format!("{}notes", self.base_url))
             .query(&query)
@@ -56,9 +58,7 @@ impl ApiClient {
             .await?
             .error_for_status()?;
 
-        let rows_affected = response.json::<u64>().await?;
-
-        Ok(rows_affected > 0)
+        Ok(true)
     }
 
     pub async fn delete_note(&self, query: DeleteNoteQuery) -> Result<bool> {

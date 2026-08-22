@@ -25,19 +25,19 @@ impl<'a> TagsRepository<'a> {
     }  
 
     pub async fn add(&self, tag: CreateTagQuery) -> Result<u64> {
-        create::add(self.conn, tag.note_id, &tag.name).await
+        create::add(self.conn, 1, tag.note_id, &tag.name,).await
     }
     
     pub async fn all(&self) -> Result<Vec<TagWithCount>> {
-        get::all(self.conn).await
+        get::all(self.conn, 1).await
     }
 
     pub async fn all_for_notes(&self) -> Result<HashMap<i64, Vec<Tag>>> {
-        get::all_for_notes(self.conn).await
+        get::all_for_notes(self.conn, 1).await
     }
 
     pub async fn for_note(&self, note_id: i64) -> Result<Vec<Tag>> {
-        get::for_note(self.conn, note_id).await
+        get::for_note(self.conn, note_id, 1).await
     }
 
     pub async fn delete(&self, tag: DeleteTagQuery) -> Result<u64> {

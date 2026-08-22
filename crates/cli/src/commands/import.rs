@@ -8,9 +8,7 @@ use crate::utils::read_file_content::read_file_content;
 use crate::utils::import::import_without_separating::import_without_separating;
 use crate::utils::import::import_with_separators::import_with_separators;
 use crate::utils::get_user_input::get_user_input;
-
 use crate::models::cli::ImportCommand;
-
 use crate::config::IMPORT_FILETYPES;
 
 pub async fn import(cmd: ImportCommand, api: &ApiClient,) -> Result<()> {

@@ -1,17 +1,15 @@
 use notes_core::error::Result;
-
 use notes_core::models::note::{
     NoteQuery,
     UpdateNoteQuery
 };
 
 use crate::client::ApiClient;
-
 use crate::models::cli::{EditCommand, EditField};
 use crate::utils::text_editor::text_editor;
 
 pub async fn edit(cmd: EditCommand, api: &ApiClient) -> Result<()> {
-    let note = api.get_note(NoteQuery { id: cmd.id }).await?;
+    let note = api.get_note(NoteQuery { id: cmd.id, user_id : 1 }).await?;
 
     // Shape query relatively based on if title or content command flag is given
     let query = match cmd.field {
@@ -23,6 +21,7 @@ pub async fn edit(cmd: EditCommand, api: &ApiClient) -> Result<()> {
 
             UpdateNoteQuery {
                 id: cmd.id,
+                user_id: 1,
                 title: Some(new_title),
                 content: None,
             }
@@ -36,6 +35,7 @@ pub async fn edit(cmd: EditCommand, api: &ApiClient) -> Result<()> {
 
             UpdateNoteQuery {
                 id: cmd.id,
+                user_id: 1,
                 title: None,
                 content: Some(new_content),
             }

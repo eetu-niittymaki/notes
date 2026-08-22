@@ -8,7 +8,6 @@ use notes_core::text_builders::build_txt::build_txt;
 use notes_core::text_builders::build_json::build_json;
 
 use notes_core::error::Result;
-
 use notes_core::models::note::NoteWithTags;
 
 pub fn export_text(

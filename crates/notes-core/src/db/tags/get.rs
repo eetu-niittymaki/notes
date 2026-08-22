@@ -5,7 +5,10 @@ use libsql::Connection;
 use crate::error::Result;
 use crate::models::tag::{Tag, TagWithCount};
 
-pub async fn all(conn: &Connection) -> Result<Vec<TagWithCount>> {
+pub async fn all(
+    conn: &Connection,
+    user_id: i64,
+) -> Result<Vec<TagWithCount>> {
     let statement = conn
         .prepare(
             r#"
@@ -16,13 +19,14 @@ pub async fn all(conn: &Connection) -> Result<Vec<TagWithCount>> {
             FROM tags AS tag
             LEFT JOIN note_tags AS note_tag
                 ON tag.id = note_tag.tag_id
+            WHERE tag.user_id = ?1
             GROUP BY tag.id, tag.name
             ORDER BY tag.name ASC
             "#,
         )
         .await?;
 
-    let mut rows = statement.query(()).await?;
+    let mut rows = statement.query([user_id]).await?;
 
     let mut tags = Vec::new();
 
@@ -39,23 +43,29 @@ pub async fn all(conn: &Connection) -> Result<Vec<TagWithCount>> {
 
 pub async fn all_for_notes(
     conn: &Connection,
+    user_id: i64,
 ) -> Result<HashMap<i64, Vec<Tag>>> {
     let statement = conn
         .prepare(
             r#"
-            SELECT
-                note_tag.note_id,
-                tag.id,
-                tag.name
+            SELECT  note_tag.note_id,
+                    tag.id,
+                    tag.name
             FROM note_tags AS note_tag
             JOIN tags AS tag
                 ON tag.id = note_tag.tag_id
+            JOIN notes AS note
+                ON note.id = note_tag.note_id
+            WHERE tag.user_id = ?1
+            AND note.user_id = ?1
             ORDER BY note_tag.note_id, tag.name
             "#,
         )
         .await?;
 
-    let mut rows = statement.query(()).await?;
+    let mut rows = statement
+        .query([user_id])
+        .await?;
 
     let mut note_tags: HashMap<i64, Vec<Tag>> = HashMap::new();
 
@@ -78,6 +88,7 @@ pub async fn all_for_notes(
 
 pub async fn for_note(
     conn: &Connection,
+    user_id: i64,
     note_id: i64,
 ) -> Result<Vec<Tag>> {
     let statement = conn
@@ -89,14 +100,18 @@ pub async fn for_note(
             FROM tags AS tag
             JOIN note_tags AS note_tag
                 ON tag.id = note_tag.tag_id
+            JOIN notes AS note
+                ON note.id = note_tag.note_id
             WHERE note_tag.note_id = ?1
+              AND note.user_id = ?2
+              AND tag.user_id = ?2
             ORDER BY tag.name
             "#,
         )
         .await?;
 
     let mut rows = statement
-        .query([note_id])
+        .query([note_id, user_id])
         .await?;
 
     let mut tags = Vec::new();

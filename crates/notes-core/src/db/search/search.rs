@@ -6,16 +6,18 @@ use crate::models::note::Note;
 fn note_from_row(row: &libsql::Row) -> Result<Note> {
     Ok(Note {
         id: row.get(0)?,
-        title: row.get(1)?,
-        content: row.get(2)?,
-        created_at: row.get(3)?,
-        updated_at: row.get(4)?,
-        favorite: row.get(5)?,
+        user_id: row.get(1)?,
+        title: row.get(2)?,
+        content: row.get(3)?,
+        created_at: row.get(4)?,
+        updated_at: row.get(5)?,
+        favorite: row.get(6)?,
     })
 }
 
 pub async fn notes(
     conn: &Connection,
+    user_id: i64,
     title: Option<&str>,
     content: Option<&str>,
 ) -> Result<Vec<Note>> {
@@ -27,6 +29,7 @@ pub async fn notes(
             .prepare(
                 r#"
                 SELECT id,
+                       user_id,
                        title,
                        content,
                        created_at,
@@ -34,11 +37,12 @@ pub async fn notes(
                        favorite
                 FROM notes
                 WHERE title LIKE ?1
+                AND user_id = ?2
                 "#,
             )
             .await?;
 
-        let mut rows = statement.query([pattern]).await?;
+        let mut rows = statement.query((pattern, user_id)).await?;
 
         let mut notes = Vec::new();
 
@@ -57,6 +61,7 @@ pub async fn notes(
             .prepare(
                 r#"
                 SELECT id,
+                       user_id,
                        title,
                        content,
                        created_at,
@@ -64,11 +69,12 @@ pub async fn notes(
                        favorite
                 FROM notes
                 WHERE content LIKE ?1
+                AND user_id = ?2
                 "#,
             )
             .await?;
 
-        let mut rows = statement.query([pattern]).await?;
+        let mut rows = statement.query((pattern, user_id)).await?;
 
         let mut notes = Vec::new();
 
@@ -85,12 +91,14 @@ pub async fn notes(
 // Search for notes that have a specific tag attached to them
 pub async fn tags(
     conn: &Connection,
+    user_id: i64,
     tag: &str,
 ) -> Result<Vec<Note>> {
     let statement = conn
         .prepare(
             r#"
             SELECT note.id,
+                   note.user_id,
                    note.title,
                    note.content,
                    note.created_at,
@@ -102,11 +110,13 @@ pub async fn tags(
             JOIN tags AS tag
                 ON note_tag.tag_id = tag.id
             WHERE tag.name = ?1
+            AND note.user_id = ?2
+            AND tag.user_id = ?2
             "#,
         )
         .await?;
 
-    let mut rows = statement.query([tag]).await?;
+    let mut rows = statement.query((tag, user_id)).await?;
 
     let mut notes = Vec::new();
 

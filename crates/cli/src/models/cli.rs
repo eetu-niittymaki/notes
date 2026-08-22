@@ -80,12 +80,9 @@ pub struct DeleteCommand {
 
 #[derive(Parser, Debug, Clone)]
 pub struct SearchCommand {
-    #[arg(short='t', long="title", help="Title of the note to search")]
-    pub title: Option<String>,
-    #[arg(short='c', long="content", help="Content to search for in notes")]
-    pub content: Option<String>,
-    #[arg(long="tag", help="Search for notes that have specific tag")]
-    pub tag: Option<String>,
+    pub field: SearchField,
+    #[arg(help="Pattern to search matches for")]
+    pub pattern: String
 }
 
 #[derive(Parser, Debug, Clone)]
@@ -120,4 +117,11 @@ pub enum TagCommand {
 pub enum EditField {
     Title,
     Content,
+}
+
+#[derive(ValueEnum, Clone, Debug)]
+pub enum SearchField {
+    Title,
+    Content,
+    Tag
 }

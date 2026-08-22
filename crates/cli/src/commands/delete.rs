@@ -3,7 +3,6 @@ use notes_core::models::note::DeleteNoteQuery;
 
 use crate::client::ApiClient;
 use crate::models::cli::DeleteCommand;
-
 use crate::utils::get_user_input::get_user_input;
 
 pub async fn delete(cmd: DeleteCommand, api: &ApiClient) -> Result<()> {

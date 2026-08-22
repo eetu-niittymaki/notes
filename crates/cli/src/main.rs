@@ -5,11 +5,13 @@ use notes_core::error::Result;
 use models::cli::{Cli, Commands};
 
 use crate::client::ApiClient;
+use crate::auth::credential_manager;
 
 mod models;
 mod config;
 mod commands;
 mod client;
+mod auth;
 mod utils;
 
 #[tokio::main]
@@ -24,7 +26,18 @@ async fn main() {
 async fn try_main() -> Result<()> {
     let cli = Cli::parse();
 
-    let  api = ApiClient::new(config::URL);
+    let  api = ApiClient::new(config::SERVER_BASE_URL);
+
+    match credential_manager::load_token()? {
+        Some(token) => {
+            println!("Token found")
+            //run(cli, &api).await;
+        }
+        
+        None => {
+            println!("Not logged in.");
+        }
+    }
 
     run(cli, &api).await
 }

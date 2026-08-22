@@ -7,6 +7,7 @@ pub enum Error {
     // Error from input/output operations,
     Io(std::io::Error),
     Reqwest(reqwest::Error),
+    Keyring(keyring::Error),
     NoteNotFound,
 }
 
@@ -17,6 +18,7 @@ impl fmt::Display for Error {
             Error::Database(e) => write!(f, "Error in accessign database: {}", e),
             Error::Io(e) => write!(f, "File operation failed: {}", e),
             Error::Reqwest(e) => write!(f, "Could not contact the server: {}", e),
+            Error::Keyring(e) => write!(f, "Error in getting login token: {}", e),
             Error::NoteNotFound => write!(f, "Note not found"),
         }
     }
@@ -44,6 +46,13 @@ impl From<std::io::Error> for Error {
 impl From<reqwest::Error> for Error {
     fn from(error: reqwest::Error) -> Self {
         Error::Reqwest(error)
+    }
+}
+
+// Automatically convert keyring::Error into custom Error type
+impl From<keyring::Error> for Error {
+    fn from(error: keyring::Error) -> Self {
+        Error::Keyring(error)
     }
 }
 

@@ -1,5 +1,4 @@
 use notes_core::error::Result;
-
 use notes_core::models::note::CreateNoteQuery;
 
 use crate::client::ApiClient;
@@ -11,7 +10,9 @@ pub async fn new(cmd: NewCommand, api: &ApiClient) -> Result<()> {
         content: cmd.content
     };
 
+    println!("before api");
     let create_note = api.create_note(query).await?;
+    println!("after api");
 
     if create_note > 0 {
         println!("Note added");

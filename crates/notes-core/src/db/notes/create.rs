@@ -1,4 +1,4 @@
-use libsql::Connection;
+use libsql::{Connection, params};
 
 use crate::error::Result;
 
@@ -8,8 +8,8 @@ pub async fn create(
     content: &str,
 ) -> Result<u64> {
     Ok(conn.execute(
-        "INSERT INTO notes (title, content)
-         VALUES (?1, ?2)",
-        [title, content],
+        "INSERT INTO notes (user_id, title, content)
+            VALUES (?1, ?2, ?3)",
+        params![1, title, content],
     ).await?)
 }

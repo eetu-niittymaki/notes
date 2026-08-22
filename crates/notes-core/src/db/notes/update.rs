@@ -7,6 +7,7 @@ use crate::models::note::NoteUpdate;
 pub async fn update(
     conn: &Connection,
     id: i64,
+    user_id: i64,
     update: NoteUpdate,
 ) -> Result<u64> {
     match (id, update) {
@@ -15,8 +16,9 @@ pub async fn update(
                 "UPDATE notes
                  SET title = ?1,
                      updated_at = CURRENT_TIMESTAMP
-                 WHERE id = ?2",
-                (new_title, id),
+                 WHERE id = ?2
+                 AND user_id = ?3",
+                (new_title, id, user_id),
             ).await?)
         }
 
@@ -25,8 +27,9 @@ pub async fn update(
                 "UPDATE notes
                  SET content = ?1,
                      updated_at = CURRENT_TIMESTAMP
-                 WHERE id = ?2",
-                (new_content, id),
+                 WHERE id = ?2
+                 AND user_id = ?3",
+                (new_content, id, user_id),
             ).await?)
         }
     }

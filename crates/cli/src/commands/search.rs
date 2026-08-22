@@ -3,30 +3,31 @@ use notes_core::models::note::NoteSearchQuery;
 use notes_core::models::tag::TagSearchQuery;
 
 use crate::client::ApiClient;
-use crate::models::cli::SearchCommand;
+use crate::models::cli::{SearchCommand, SearchField};
 
 pub async fn search(cmd: SearchCommand, api: &ApiClient,) -> Result<()> {
-    if cmd.title.is_some() && cmd.content.is_some() {
-        eprintln!("Please provide either a title or text content, not both.");
-        return Ok(());
-    }
-
-    let notes = match (&cmd.title, &cmd.content, &cmd.tag) {
-        (_, _, Some(tag)) => {
+    let notes = match cmd.field {
+        SearchField::Tag => {
             api.search_tags(TagSearchQuery {
-                tag: tag.to_string(),
+                user_id: 1,
+                tag: cmd.pattern,
             }).await?
         }
 
-        (title, content, None) if title.is_some() || content.is_some() => {
-            api.search_notes(NoteSearchQuery {
-                title: title.clone(),
-                content: content.clone(),
+        SearchField::Title => {
+            api.search_notes(NoteSearchQuery { 
+                user_id: 1, 
+                title: Some(cmd.pattern), 
+                content: None
             }).await?
         }
 
-        _ => {
-            return Ok(());
+        SearchField::Content => {
+            api.search_notes(NoteSearchQuery { 
+                user_id: 1, 
+                title: None,
+                content: Some(cmd.pattern)
+            }).await?
         }
     };
 

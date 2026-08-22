@@ -5,6 +5,7 @@ use notes_core::models::note::{
     CreateNoteQuery,
     DeleteNoteQuery, 
     NoteQuery, 
+    GetAllNotesQuery,
     NoteUpdate, 
     UpdateNoteQuery
 };
@@ -15,7 +16,7 @@ pub async fn get_note(
 ) -> Result<HttpResponse, actix_web::Error> {
     let notes = db
         .notes()
-        .get(query.id)
+        .get(query.id, query.user_id)
         .await
         .map_err(actix_web::error::ErrorInternalServerError)?;
 
@@ -24,10 +25,11 @@ pub async fn get_note(
 
 pub async fn get_all_notes(
     db: web::Data<Database>,
+    query: web::Query<GetAllNotesQuery>,
 ) -> Result<HttpResponse, actix_web::Error> {
     let notes = db
         .notes()
-        .get_all_with_tags()
+        .get_all_with_tags(query.user_id)
         .await
         .map_err(actix_web::error::ErrorInternalServerError)?;
 
@@ -71,7 +73,7 @@ pub async fn update_note(
 
     let updated = db
         .notes()
-        .update(query.id, update)
+        .update(query.id, query.user_id, update)
         .await
         .map_err(actix_web::error::ErrorInternalServerError)?;
 
