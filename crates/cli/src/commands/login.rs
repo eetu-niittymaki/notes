@@ -6,7 +6,7 @@ use crate::auth::auth;
 
 pub async fn login(api: &ApiClient) -> Result<()> {
     match credential_manager::load_tokens().await? {
-        Some(token) => { 
+        Some(_token) => { 
             println!("Already logged in");
             Ok(())
         }

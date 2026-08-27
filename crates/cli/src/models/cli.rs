@@ -42,11 +42,11 @@ pub enum Commands {
     #[command(subcommand)]
     /// Attach a tag to a note, delete tag, list all tags
     Tag(TagCommand),
-    /// Create user account for serivce
+    /// Create user account for service
     Register,
-    /// Login to service, save credentials to local machine
+    /// Login to service, save credentials to OS specific credential manager
     Login,
-    /// Delete saved login credentials from local machine 
+    /// Delete saved login credentials from credential manager
     Logout,
     /// Prints the programs version number
     Version

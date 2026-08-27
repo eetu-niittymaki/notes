@@ -22,4 +22,7 @@
 ### export - Export all notes to file (txt, md, html, png or pdf)
 ### import - Import a files (txt, md, html) contents as plain text to database
 ### tag - Attach a tag to a note, delete tag, list all tags
+### register - Create user account for service
+### login - Login to service, save credentials to OS specific credential manager
+### logout - Delete saved login credentials from credential manager
 ### version - Prints the programs version number
