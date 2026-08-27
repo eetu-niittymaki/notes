@@ -1,4 +1,5 @@
 use super::ApiClient;
+
 use notes_core::error::Result;
 use notes_core::models::tag::{
     Tag,
@@ -10,54 +11,41 @@ use notes_core::models::tag::{
 
 impl ApiClient {
     pub async fn get_all_tags(&self) -> Result<Vec<TagWithCount>> {
-        Ok(self
-            .http
-            .get(format!("{}tags/all", self.base_url))
-            .send()
-            .await?
-            .error_for_status()?
-            .json()
-            .await?
-        )
+        let response = self
+            .send(self
+                .get("tags/all"))
+                .await?;
+
+        Ok(response.json().await?)
     }
 
     pub async fn get_tags_for_note(&self, query: TagQuery) -> Result<Vec<Tag>> {
-        Ok(self
-            .http
-            .get(format!("{}tags", self.base_url))
-            .query(&query)
-            .send()
-            .await?
-            .error_for_status()?
-            .json::<Vec<Tag>>()
-            .await?
-        )
+        let response = self
+            .send(self
+                .get("tags")
+                .query(&query))
+                .await?;
+
+        Ok(response.json().await?)
     }
 
     pub async fn add_tag(&self, query: CreateTagQuery) -> Result<u64> {
-        Ok(self
-            .http
-            .post(format!("{}tags", self.base_url))
-            .query(&query)
-            .send()
-            .await?
-            .error_for_status()?
-            .json::<u64>()
-            .await?
-        )
+        let response = self
+            .send(self
+                .post("tags")
+                .query(&query))
+                .await?;
+
+        Ok(response.json().await?)    
     }
 
     pub async fn delete_tag(&self, query: DeleteTagQuery) -> Result<bool> {
         let response = self
-            .http
-            .delete(format!("{}tags", self.base_url))
-            .query(&query)
-            .send()
-            .await?
-            .error_for_status()?;
+            .send(self
+                .delete("tags")
+                .query(&query))
+                .await?;
 
-        let rows_affected = response.json::<u64>().await?;
-
-        Ok(rows_affected > 0)
+        Ok(response.json().await?)
     }
 }

@@ -7,4 +7,6 @@ pub mod search;
 pub mod export;
 pub mod import;
 pub mod tag;
+pub mod login;
+pub mod logout;
 pub mod version;

@@ -10,27 +10,31 @@ use crate::db::tags::get::{all_for_notes, for_note};
 fn note_from_row(row: &libsql::Row) -> Result<Note> {
     Ok(Note {
         id: row.get(0)?,
-        user_id: row.get(1)?,
-        title: row.get(2)?,
-        content: row.get(3)?,
-        created_at: row.get(4)?,
-        updated_at: row.get(5)?,
-        favorite: row.get(6)?,
+        title: row.get(1)?,
+        content: row.get(2)?,
+        created_at: row.get(3)?,
+        updated_at: row.get(4)?,
+        favorite: row.get(5)?,
     })
 }
 
 pub async fn one(
     conn: &Connection,
-    id: i64,
     user_id: i64,
+    note_id: i64,
 ) -> Result<NoteWithTags> {
     let mut rows = conn
         .query("
-            SELECT *
+            SELECT id,
+                    title,
+                    content,
+                    created_at,
+                    updated_at,
+                    favorite
             FROM notes
             WHERE id = ?1
             AND user_id = ?2",
-            [id, user_id],
+            [note_id, user_id],
         )
         .await?;
 
@@ -41,16 +45,15 @@ pub async fn one(
         }
     };
 
-    let tags = for_note(conn, id, 1).await?;
+    let tags = for_note(conn, user_id, note_id).await?;
 
     Ok(NoteWithTags {
         id: row.get(0)?,
-        user_id: row.get(1)?,
-        title: row.get(2)?,
-        content: row.get(3)?,
-        created_at: row.get(4)?,
-        updated_at: row.get(5)?,
-        favorite: row.get(6)?,
+        title: row.get(1)?,
+        content: row.get(2)?,
+        created_at: row.get(3)?,
+        updated_at: row.get(4)?,
+        favorite: row.get(5)?,
         tags,
     })
 }
@@ -62,7 +65,6 @@ pub async fn all(
     let mut rows = conn
         .query(
             "SELECT id,
-                    user_id,
                     title,
                     content,
                     created_at,
@@ -100,7 +102,6 @@ pub async fn all_with_tags(
 
             NoteWithTags {
                 id: note.id,
-                user_id: note.user_id,
                 title: note.title,
                 content: note.content,
                 created_at: note.created_at,

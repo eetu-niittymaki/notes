@@ -42,6 +42,10 @@ pub enum Commands {
     #[command(subcommand)]
     /// Attach a tag to a note, delete tag, list all tags
     Tag(TagCommand),
+    /// Login to service, save credentials to local machine
+    Login,
+    /// Delete saved login credentials from local machine 
+    Logout,
     /// Prints the programs version number
     Version
 }

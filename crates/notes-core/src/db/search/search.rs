@@ -6,12 +6,11 @@ use crate::models::note::Note;
 fn note_from_row(row: &libsql::Row) -> Result<Note> {
     Ok(Note {
         id: row.get(0)?,
-        user_id: row.get(1)?,
-        title: row.get(2)?,
-        content: row.get(3)?,
-        created_at: row.get(4)?,
-        updated_at: row.get(5)?,
-        favorite: row.get(6)?,
+        title: row.get(1)?,
+        content: row.get(2)?,
+        created_at: row.get(3)?,
+        updated_at: row.get(4)?,
+        favorite: row.get(5)?,
     })
 }
 
@@ -29,7 +28,6 @@ pub async fn notes(
             .prepare(
                 r#"
                 SELECT id,
-                       user_id,
                        title,
                        content,
                        created_at,
@@ -61,7 +59,6 @@ pub async fn notes(
             .prepare(
                 r#"
                 SELECT id,
-                       user_id,
                        title,
                        content,
                        created_at,
@@ -98,7 +95,6 @@ pub async fn tags(
         .prepare(
             r#"
             SELECT note.id,
-                   note.user_id,
                    note.title,
                    note.content,
                    note.created_at,

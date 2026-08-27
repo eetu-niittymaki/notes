@@ -1,35 +1,42 @@
 use actix_web::{web, HttpResponse, Result};
 
-use notes_core::db::Database;
 use notes_core::models::note::{
     CreateNoteQuery,
     DeleteNoteQuery, 
     NoteQuery, 
-    GetAllNotesQuery,
     NoteUpdate, 
     UpdateNoteQuery
 };
 
+use crate::auth::user::AuthenticatedUser;
+use crate::AppState;
+
 pub async fn get_note(
-    db: web::Data<Database>,
+    state: web::Data<AppState>,
+    user: AuthenticatedUser,
     query: web::Query<NoteQuery>,
 ) -> Result<HttpResponse, actix_web::Error> {
-    let notes = db
+    let res = state
+        .db
         .notes()
-        .get(query.id, query.user_id)
-        .await
+        .get(user.id, query.id)
+        .await;
+        //.map_err(actix_web::error::ErrorInternalServerError)?;
+
+    let note = res
         .map_err(actix_web::error::ErrorInternalServerError)?;
 
-    Ok(HttpResponse::Ok().json(notes))
+    Ok(HttpResponse::Ok().json(note))
 }
 
 pub async fn get_all_notes(
-    db: web::Data<Database>,
-    query: web::Query<GetAllNotesQuery>,
+    state: web::Data<AppState>,
+    user: AuthenticatedUser,
 ) -> Result<HttpResponse, actix_web::Error> {
-    let notes = db
+    let notes = state
+        .db
         .notes()
-        .get_all_with_tags(query.user_id)
+        .get_all_with_tags(user.id)
         .await
         .map_err(actix_web::error::ErrorInternalServerError)?;
 
@@ -37,20 +44,26 @@ pub async fn get_all_notes(
 }
 
 pub async fn create_note(
-    db: web::Data<Database>,
+    state: web::Data<AppState>,
+    user: AuthenticatedUser,
     query: web::Json<CreateNoteQuery>,
 ) -> Result<HttpResponse, actix_web::Error> {
-    let id = db
+    let id = state
+        .db
         .notes()
-        .create(query.into_inner())
+        .create(user.id, query.into_inner())
         .await
-        .map_err(actix_web::error::ErrorInternalServerError)?;
+        .map_err(|e| {
+            eprintln!("create note failed: {:?}", e);
+            actix_web::error::ErrorInternalServerError(e)
+        })?;
 
     Ok(HttpResponse::Created().json(id))
 }
 
 pub async fn update_note(
-    db: web::Data<Database>,
+    state: web::Data<AppState>,
+    user: AuthenticatedUser,
     query: web::Query<UpdateNoteQuery>,
 ) -> Result<HttpResponse, actix_web::Error> {
     let update = match (&query.title, &query.content) {
@@ -71,9 +84,10 @@ pub async fn update_note(
         }
     };
 
-    let updated = db
+    let updated = state
+        .db
         .notes()
-        .update(query.id, query.user_id, update)
+        .update(user.id, query.id, update)
         .await
         .map_err(actix_web::error::ErrorInternalServerError)?;
 
@@ -86,11 +100,14 @@ pub async fn update_note(
 
 
 pub async fn delete_note(
-    db: web::Data<Database>,
+    state: web::Data<AppState>,
+    user: AuthenticatedUser,
     query: web::Query<DeleteNoteQuery>,
 ) -> Result<HttpResponse, actix_web::Error> {
-    let deleted = db.notes()
-                .delete(query.id)
+    let deleted = state
+                .db
+                .notes()
+                .delete(user.id, query.id)
                 .await
                 .map_err(actix_web::error::ErrorInternalServerError)?;
 
@@ -104,11 +121,13 @@ pub async fn delete_note(
 }
 
 pub async fn delete_all_notes(
-    db: web::Data<Database>,
+    state: web::Data<AppState>,
+    user: AuthenticatedUser,
 ) -> Result<HttpResponse, actix_web::Error> {
-    let deleted = db
+    let deleted = state
+        .db
         .notes()
-        .delete_all()
+        .delete_all(user.id)
         .await
         .map_err(actix_web::error::ErrorInternalServerError)?;
 

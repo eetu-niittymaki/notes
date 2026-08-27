@@ -10,10 +10,9 @@ pub async fn new(cmd: NewCommand, api: &ApiClient) -> Result<()> {
         content: cmd.content
     };
 
-    println!("before api");
     let create_note = api.create_note(query).await?;
-    println!("after api");
 
+    // Check rows affected
     if create_note > 0 {
         println!("Note added");
     } else {

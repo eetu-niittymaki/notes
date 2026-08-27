@@ -5,8 +5,9 @@ use notes_core::models::tag::TagQuery;
 use crate::client::ApiClient;
 use crate::models::cli::GetCommand;
 
+
 pub async fn get(cmd: GetCommand, api: &ApiClient) -> Result<()> {
-    let note =  api.get_note(NoteQuery { id: cmd.id, user_id: 1}).await?;
+    let note =  api.get_note(NoteQuery { id: cmd.id }).await?;
 
     let tags = api.get_tags_for_note(TagQuery { note_id: note.id}).await?;
 

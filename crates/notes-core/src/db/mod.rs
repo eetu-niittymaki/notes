@@ -7,10 +7,14 @@ use crate::db::create_tables::create_tables;
 pub use notes::NotesRepository;
 pub use tags::TagsRepository;
 pub use search::SearchRepository;
+pub use users::UsersRepository;
+pub use auth::AuthService;
 
 pub mod notes;
 pub mod tags;
 pub mod search;
+pub mod users;
+pub mod auth;
 pub mod create_tables;
 
 pub struct Database {
@@ -40,5 +44,13 @@ impl Database {
 
     pub fn search(&self) -> SearchRepository<'_> {
         SearchRepository::new(&self.conn)
+    }
+
+    pub fn users(&self) -> UsersRepository<'_> {
+        UsersRepository::new(&self.conn)
+    }
+
+    pub fn auth(&self) -> AuthService<'_> {
+        AuthService::new(&self.conn)
     }
 }

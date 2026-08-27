@@ -1,5 +1,6 @@
 
-pub const SERVER_BASE_URL: &str  = "http://localhost:8080/";
+pub const BASE_URL: &str  = "http://localhost:8080/api/";
+pub const AUTH_URL: &str  = "http://localhost:8080/";
 
 pub const IMPORT_FILETYPES: [&str; 3] = ["md", "txt", "html"];
 

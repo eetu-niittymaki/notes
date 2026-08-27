@@ -9,14 +9,12 @@ pub async fn search(cmd: SearchCommand, api: &ApiClient,) -> Result<()> {
     let notes = match cmd.field {
         SearchField::Tag => {
             api.search_tags(TagSearchQuery {
-                user_id: 1,
                 tag: cmd.pattern,
             }).await?
         }
 
         SearchField::Title => {
             api.search_notes(NoteSearchQuery { 
-                user_id: 1, 
                 title: Some(cmd.pattern), 
                 content: None
             }).await?
@@ -24,7 +22,6 @@ pub async fn search(cmd: SearchCommand, api: &ApiClient,) -> Result<()> {
 
         SearchField::Content => {
             api.search_notes(NoteSearchQuery { 
-                user_id: 1, 
                 title: None,
                 content: Some(cmd.pattern)
             }).await?

@@ -9,21 +9,34 @@ pub async fn create_tables(conn: &Connection) -> libsql::Result<()> {
             password_hash TEXT NOT NULL,
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP
         );
+        
         -- Only for testing
-        INSERT INTO users (username, password_hash) 
-        VALUES('Testi', '12345')
-        ON CONFLICT (username) DO NOTHING;
+        -- INSERT INTO users (username, password_hash) 
+        -- VALUES('Testi', '123')
+        -- ON CONFLICT (username) DO NOTHING;
+
+        -- INSERT INTO users (username, password_hash) 
+        -- VALUES('Testi2', '456')
+        -- ON CONFLICT (username) DO NOTHING;
+
+        -- INSERT INTO users (username, password_hash) 
+        -- VALUES('Testi3', '789')
+        -- ON CONFLICT (username) DO NOTHING;
 
         CREATE TABLE IF NOT EXISTS notes (
             id INTEGER PRIMARY KEY,
             user_id INTEGER NOT NULL,
-            title TEXT NOT NULL UNIQUE,
+            title TEXT NOT NULL,
             content TEXT NOT NULL,
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
             updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
             favorite BOOLEAN NOT NULL DEFAULT 0,
 
-            FOREIGN KEY (user_id) REFERENCES users(id)
+            FOREIGN KEY (user_id) 
+                REFERENCES users(id)
+                ON DELETE CASCADE,
+
+            UNIQUE (user_id, title)
         );
 
         CREATE INDEX IF NOT EXISTS idx_notes_user_id ON notes(user_id);
@@ -33,7 +46,10 @@ pub async fn create_tables(conn: &Connection) -> libsql::Result<()> {
             user_id INTEGER NOT NULL,
             name TEXT NOT NULL,
 
-            FOREIGN KEY (user_id) REFERENCES users(id),
+            FOREIGN KEY (user_id) 
+                REFERENCES users(id)
+                ON DELETE CASCADE,
+
             UNIQUE (user_id, name)
         );
 

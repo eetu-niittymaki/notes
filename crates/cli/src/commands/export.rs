@@ -1,5 +1,4 @@
 use notes_core::error::Result;
-use notes_core::models::note::GetAllNotesQuery;
 
 use crate::client::ApiClient;
 use crate::models::cli::ExportCommand;
@@ -17,7 +16,7 @@ pub async fn export(cmd: ExportCommand, api: &ApiClient,) -> Result<()> {
         std::process::exit(0);
     }
 
-    let notes = api.get_all_notes( GetAllNotesQuery { user_id: 1 }).await?;
+    let notes = api.get_all_notes().await?;
 
     if notes.is_empty() {
         eprintln!("No notes found to export");

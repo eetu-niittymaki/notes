@@ -23,12 +23,12 @@ impl<'a> NotesRepository<'a> {
         Self { conn }
     }   
     
-    pub async fn create(&self, note: CreateNoteQuery) -> Result<u64> {
-        create::create(self.conn, &note.title, &note.content).await
+    pub async fn create(&self, user_id: i64, note: CreateNoteQuery) -> Result<u64> {
+        create::create(self.conn, user_id, &note.title, &note.content).await
     }
     
-    pub async fn get(&self, id: i64, user_id: i64) -> Result<NoteWithTags> {
-        get::one(self.conn, id, user_id).await
+    pub async fn get(&self, user_id: i64, id: i64) -> Result<NoteWithTags> {
+        get::one(self.conn, user_id, id).await
     }
 
     pub async fn get_all(&self, user_id: i64) -> Result<Vec<Note>> {
@@ -39,15 +39,15 @@ impl<'a> NotesRepository<'a> {
         get::all_with_tags(self.conn, user_id).await
     }
 
-    pub async fn update(&self, id: i64, user_id: i64, updater: NoteUpdate) -> Result<u64> {
-        update::update(self.conn, id, user_id, updater).await
+    pub async fn update(&self, user_id: i64, id: i64, updater: NoteUpdate) -> Result<u64> {
+        update::update(self.conn, user_id, id, updater).await
     }
 
-    pub async fn delete(&self, id: i64) -> Result<u64> {
-        delete::delete(self.conn, id).await
+    pub async fn delete(&self, user_id: i64, id: i64) -> Result<u64> {
+        delete::delete(self.conn, user_id, id).await
     }
 
-    pub async fn delete_all(&self) -> Result<u64> {
-        delete::delete_all(self.conn).await
+    pub async fn delete_all(&self, user_id: i64) -> Result<u64> {
+        delete::delete_all(self.conn, user_id).await
     }
 }

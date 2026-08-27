@@ -6,10 +6,9 @@ use crate::models::cli::DeleteCommand;
 use crate::utils::get_user_input::get_user_input;
 
 pub async fn delete(cmd: DeleteCommand, api: &ApiClient) -> Result<()> {
-
     if cmd.all {
         println!("Delete all notes? y/n");
-        let confirm = get_user_input().trim().to_lowercase();
+        let confirm = get_user_input().to_lowercase();
 
         if confirm == "y" || confirm == "yes" {
             let delete_all = api.delete_all_notes().await?;

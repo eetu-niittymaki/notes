@@ -14,7 +14,8 @@ serde_json = { version = "1.0.151", features = ["preserve_order"] }
 tokio = { version = "1.53.1", features = ["full"] }
 reqwest = { version = "0.13.4", features = ["json", "query"] }
 keyring = "4.1.6"
-argon2 = "0.5.3"
+serde = "1.0.229"
+rpassword = "7.5.4"
 
 [profile.release]
 opt-level = 3

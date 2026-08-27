@@ -1,88 +1,66 @@
 use super::ApiClient;
+
 use notes_core::error::Result;
 use notes_core::models::note::{
     CreateNoteQuery, 
     DeleteNoteQuery, 
-    GetAllNotesQuery, 
     NoteQuery, 
     NoteWithTags, 
     UpdateNoteQuery
 };
 
 impl ApiClient {
-    pub async fn get_all_notes(&self, query: GetAllNotesQuery) -> Result<Vec<NoteWithTags>> {
-        Ok(self
-            .http
-            .get(format!("{}notes/all", self.base_url))
-            .query(&query)
-            .send()
-            .await?
-            .error_for_status()?
-            .json()
-            .await?
-        )
+    pub async fn get_all_notes(&self) -> Result<Vec<NoteWithTags>> {
+        let response = self
+            .send(self.get("notes/all"))
+            .await?;
+
+        Ok(response.json().await?)
     }
 
     pub async fn get_note(&self, query: NoteQuery) -> Result<NoteWithTags> {
-        Ok(self
-            .http
-            .get(format!("{}notes", self.base_url))
-            .query(&query)
-            .send()
-            .await?
-            .error_for_status()?
-            .json::<NoteWithTags>()
-            .await?
-        )
+        let response = self
+            .send(self
+            .get("notes")
+            .query(&query))
+            .await?;
+
+        Ok(response.json::<NoteWithTags>().await?)  
     }
 
     pub async fn create_note(&self, query: CreateNoteQuery) -> Result<u64> {
-        Ok(self
-            .http
-            .post(format!("{}notes", self.base_url))
-            .json(&query)
-            .send()
-            .await?
-            .error_for_status()?
-            .json::<u64>()
-            .await?
-        )
+        let response = self
+            .send(self
+                .post("notes")
+                .json(&query))
+                .await?;
+
+        Ok(response.json::<u64>().await?)     
     }
 
     pub async fn update_note(&self, query: UpdateNoteQuery) -> Result<bool> {
-        self
-            .http
-            .patch(format!("{}notes", self.base_url))
-            .query(&query)
-            .send()
-            .await?
-            .error_for_status()?;
+        self.send(self
+            .patch("notes")
+            .query(&query))
+            .await?;
 
         Ok(true)
     }
 
     pub async fn delete_note(&self, query: DeleteNoteQuery) -> Result<bool> {
-        self
-            .http
-            .delete(format!("{}notes", self.base_url))
-            .query(&query)
-            .send()
-            .await?
-            .error_for_status()?;
+        self.send(self
+            .delete("notes")
+            .query(&query))
+            .await?;
 
         Ok(true)
     }
 
     pub async fn delete_all_notes(&self) -> Result<bool> {
-        let response = self
-            .http
-            .delete(format!("{}notes/all", self.base_url))
-            .send()
-            .await?
-            .error_for_status()?;
+        self.send(self
+            .delete("notes/all"))
+            .await?;
 
-        let rows_affected = response.json::<u64>().await?;
-
-        Ok(rows_affected > 0)
+        Ok(true)
     }
 }

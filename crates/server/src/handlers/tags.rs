@@ -1,18 +1,22 @@
 use actix_web::{web, HttpResponse, Result};
 
-use notes_core::db::Database;
 use notes_core::models::tag::{
     TagQuery,
     CreateTagQuery,
     DeleteTagQuery
 };
 
+use crate::auth::user::AuthenticatedUser;
+use crate::AppState;
+
 pub async fn get_all_tags(
-    db: web::Data<Database>,
+    state: web::Data<AppState>,
+    user: AuthenticatedUser,
 ) -> Result<HttpResponse, actix_web::Error> {
-    let tags = db
+    let tags = state
+        .db
         .tags()
-        .all()
+        .all(user.id)
         .await
         .map_err(actix_web::error::ErrorInternalServerError)?;
 
@@ -20,12 +24,14 @@ pub async fn get_all_tags(
 }
 
 pub async fn get_tags_for_note(
-    db: web::Data<Database>,
+    state: web::Data<AppState>,
+    user: AuthenticatedUser,
     query: web::Query<TagQuery>,
 ) -> Result<HttpResponse, actix_web::Error> {
-    let tags = db
+    let tags = state
+        .db
         .tags()
-        .for_note(query.note_id)
+        .for_note(user.id, query.note_id)
         .await
         .map_err(actix_web::error::ErrorInternalServerError)?;
 
@@ -33,12 +39,14 @@ pub async fn get_tags_for_note(
 }
 
 pub async fn create_tag(
-    db: web::Data<Database>,
+    state: web::Data<AppState>,
+    user: AuthenticatedUser,
     query: web::Query<CreateTagQuery>,
 ) -> Result<HttpResponse, actix_web::Error> {
-    let tag = db
+    let tag = state
+        .db
         .tags()
-        .add(query.into_inner())
+        .add(user.id, query.into_inner())
         .await
         .map_err(actix_web::error::ErrorInternalServerError)?;
 
@@ -46,12 +54,14 @@ pub async fn create_tag(
 }
 
 pub async fn delete_tag(
-    db: web::Data<Database>,
+    state: web::Data<AppState>,
+    user: AuthenticatedUser,
     query: web::Query<DeleteTagQuery>,
 ) -> Result<HttpResponse, actix_web::Error> {
-    let delete = db
+    let delete = state
+        .db
         .tags()
-        .delete(query.into_inner())
+        .delete(user.id, query.into_inner())
         .await
         .map_err(actix_web::error::ErrorInternalServerError)?;
 

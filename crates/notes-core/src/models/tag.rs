@@ -32,6 +32,5 @@ pub struct DeleteTagQuery {
 
 #[derive(Serialize, Deserialize)]
 pub struct TagSearchQuery {
-    pub user_id: i64,
     pub tag: String,
 }

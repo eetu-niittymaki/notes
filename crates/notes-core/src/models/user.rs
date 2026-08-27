@@ -1,27 +1,31 @@
 use serde::{Deserialize, Serialize};
 
-
 #[derive(Debug, Serialize, Deserialize)]
 pub struct User {
-    id: i64,
-    username: String,
-    password_hash: String,
-    created_at: String
-    }
+    pub id: i64,
+    pub username: String,
+    pub password_hash: String,
+    pub created_at: String
+}
 
 #[derive(Debug, Serialize, Deserialize)]
-pub struct NewUser<'a> {
-    username: &'a str,
-    password_hash: &'a str,
+pub struct NewUser {
+    pub username: String,
+    pub password_hash: String,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct LoginUser {
-    username: String,
-    password_hash: String,
+    pub username: String,
+    pub password_hash: String,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct GetUser {
+    pub user_id: i64,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct DeleteUser {
-    id: i64,
+    pub id: i64,
 }

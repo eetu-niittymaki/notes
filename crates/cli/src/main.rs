@@ -6,6 +6,8 @@ use models::cli::{Cli, Commands};
 
 use crate::client::ApiClient;
 use crate::auth::credential_manager;
+use crate::auth::auth::{login, register};
+use crate::utils::get_user_input::get_user_input;
 
 mod models;
 mod config;
@@ -26,19 +28,35 @@ async fn main() {
 async fn try_main() -> Result<()> {
     let cli = Cli::parse();
 
-    let  api = ApiClient::new(config::SERVER_BASE_URL);
+    let mut api = ApiClient::new(config::BASE_URL, config::AUTH_URL, None);
 
-    match credential_manager::load_token()? {
-        Some(token) => {
-            println!("Token found")
-            //run(cli, &api).await;
-        }
-        
+    let token = match credential_manager::load_tokens().await? {
+        Some(token) => token,
         None => {
-            println!("Not logged in.");
-        }
-    }
+            loop {
+                println!("Not logged in.");
+                println!("[L]ogin");
+                println!("[R]egister new user");
+                println!("[Q]uit");
 
+                match get_user_input().as_str() {
+                    "l" => {
+                        break login(&api).await?;
+                    }
+                    "r" => {
+                        break register(&api).await?;
+                    }
+                    "q" => std::process::exit(0),
+                    _ => {
+                        println!("Please give valid input");
+                    }
+                }
+            }
+        }
+    };
+
+    api.set_token(token.access_token);
+    
     run(cli, &api).await
 }
 
@@ -53,6 +71,8 @@ async fn run(cli: Cli, api: &ApiClient) -> Result<()> {
         Some(Commands::Export(cmd)) => commands::export::export(cmd, api).await?,
         Some(Commands::Import(cmd)) => commands::import::import(cmd, api).await?,
         Some(Commands::Tag(cmd)) => commands::tag::tag(cmd, api).await?,
+        Some(Commands::Login) => commands::login::login(api).await?,
+        Some(Commands::Logout) => commands::logout::logout().await?,
         Some(Commands::Version) => commands::version::version(),
         None => {}
     }

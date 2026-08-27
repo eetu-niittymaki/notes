@@ -5,7 +5,6 @@ use crate::models::tag::Tag;
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Note {
     pub id: i64,
-    pub user_id: i64,
     pub title: String,
     pub content: String,
     pub created_at: String,
@@ -16,7 +15,6 @@ pub struct Note {
 #[derive( Debug, Serialize, Deserialize)]
 pub struct NoteWithTags {
     pub id: i64,
-    pub user_id: i64,
     pub title: String,
     pub content: String,
     pub created_at: String,
@@ -34,7 +32,6 @@ pub struct CreateNoteQuery {
 #[derive(Serialize, Deserialize)]
 pub struct UpdateNoteQuery {
     pub id: i64,
-    pub user_id: i64,
     pub title: Option<String>,
     pub content: Option<String>
 }
@@ -44,20 +41,14 @@ pub struct DeleteNoteQuery {
     pub id: i64,
 }
 
-#[derive(Serialize, Deserialize)]
+
+#[derive(Debug, Serialize, Deserialize)]
 pub struct NoteQuery {
     pub id: i64,
-    pub user_id: i64,
-}
-
-#[derive(Serialize, Deserialize)]
-pub struct GetAllNotesQuery {
-    pub user_id: i64,
 }
 
 #[derive(Serialize, Deserialize)]
 pub struct NoteSearchQuery {
-    pub user_id: i64,
     pub title: Option<String>,
     pub content: Option<String>,
 }

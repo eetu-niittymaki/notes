@@ -1,16 +1,20 @@
 use actix_web::{web, HttpResponse, Result};
 
-use notes_core::db::Database;
 use notes_core::models::note::NoteSearchQuery;
 use notes_core::models::tag::TagSearchQuery;
 
+use crate::auth::user::AuthenticatedUser;
+use crate::AppState;
+
 pub async fn search_tags(
-    db: web::Data<Database>,
+    state: web::Data<AppState>,
+    user: AuthenticatedUser,
     query: web::Query<TagSearchQuery>,
 ) -> Result<HttpResponse, actix_web::Error> {
-    let tags = db
+    let tags = state
+        .db
         .search()
-        .tags(query.into_inner())
+        .tags(user.id, query.into_inner())
         .await
         .map_err(actix_web::error::ErrorInternalServerError)?;
 
@@ -18,12 +22,14 @@ pub async fn search_tags(
 }
 
 pub async fn search_notes(
-    db: web::Data<Database>,
+    state: web::Data<AppState>,
+    user: AuthenticatedUser,
     query: web::Query<NoteSearchQuery>,
 ) -> Result<HttpResponse, actix_web::Error> {
-    let notes = db
+    let notes = state
+        .db
         .search()
-        .notes(query.into_inner())
+        .notes(user.id, query.into_inner())
         .await
         .map_err(actix_web::error::ErrorInternalServerError)?;
 
