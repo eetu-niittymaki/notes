@@ -30,6 +30,18 @@ async fn try_main() -> Result<()> {
 
     let mut api = ApiClient::new(config::BASE_URL, config::AUTH_URL, None);
 
+    // So that these commands can be run without tokens set
+    match &cli.command {
+        Some(Commands::Login)
+        | Some(Commands::Register)
+        | Some(Commands::Logout)
+        | Some(Commands::Version) => {
+            return run(cli, &api).await;
+        }
+
+        _ => {}
+    }
+
     let token = match credential_manager::load_tokens().await? {
         Some(token) => token,
         None => {
@@ -71,6 +83,7 @@ async fn run(cli: Cli, api: &ApiClient) -> Result<()> {
         Some(Commands::Export(cmd)) => commands::export::export(cmd, api).await?,
         Some(Commands::Import(cmd)) => commands::import::import(cmd, api).await?,
         Some(Commands::Tag(cmd)) => commands::tag::tag(cmd, api).await?,
+        Some(Commands::Register) => commands::register::register(api).await?,
         Some(Commands::Login) => commands::login::login(api).await?,
         Some(Commands::Logout) => commands::logout::logout().await?,
         Some(Commands::Version) => commands::version::version(),

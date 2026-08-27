@@ -18,7 +18,7 @@ const LOGO: &str = "\x1b[1;38;2;46;49;146m
 #[command(arg_required_else_help = true)]
 pub struct Cli {
     #[command(subcommand)]
-    pub command: Option<Commands>
+    pub command: Option<Commands>,
 }
 
 #[derive(Subcommand)]
@@ -42,6 +42,8 @@ pub enum Commands {
     #[command(subcommand)]
     /// Attach a tag to a note, delete tag, list all tags
     Tag(TagCommand),
+    /// Create user account for serivce
+    Register,
     /// Login to service, save credentials to local machine
     Login,
     /// Delete saved login credentials from local machine 
@@ -49,6 +51,7 @@ pub enum Commands {
     /// Prints the programs version number
     Version
 }
+
 
 #[derive(Parser, Debug, Clone)]
 pub struct AllCommand {
