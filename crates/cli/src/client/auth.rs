@@ -29,14 +29,10 @@ impl ApiClient {
             .json(&request)
             .send()
             .await?;
-        
-        if response.status() == reqwest::StatusCode::CONFLICT {
-            return Err(notes_core::error::Error::UserAlreadyExists);
-        }
 
-        Ok(response
-            .error_for_status()?
-            .json::<AuthResponse>()
-            .await?)
+        let body = response.text().await?;
+
+        let response: AuthResponse = serde_json::from_str(&body)?;
+        Ok(response)
     }
 }

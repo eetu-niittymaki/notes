@@ -3,7 +3,6 @@ use std::env;
 use actix_web::{web, App, HttpResponse, HttpServer, Result, middleware::from_fn};
 use dotenvy::dotenv;
 
-use notes_core::config;
 use notes_core::db::Database;
 
 use crate::auth::middleware::auth_middleware;
@@ -29,14 +28,10 @@ async fn main() -> std::io::Result<()> {
         .parse::<u16>()
         .expect("Invalid port");
 
-    let mut db_path = config::get_db_path();
-    
-    db_path.pop();
-    db_path.pop();
-    db_path.pop();
-    db_path.push("notes.db");
+    let db_url = env::var("DATABASE_URL").expect("Database URL not set");
+    let db_token = env::var("DATABASE_TOKEN").expect("Database token not set");
 
-    let db = Database::open(&db_path)
+    let db = Database::open(db_url, db_token)
         .await
         .expect("Failed to open database");
 

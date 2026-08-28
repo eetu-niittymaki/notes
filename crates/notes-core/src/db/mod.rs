@@ -1,8 +1,7 @@
-use std::path::Path;
 
 use libsql::{Builder, Connection};
 
-use crate::db::create_tables::create_tables;
+//use crate::db::create_tables::create_tables;
 
 pub use notes::NotesRepository;
 pub use tags::TagsRepository;
@@ -22,14 +21,14 @@ pub struct Database {
 }
 
 impl Database {
-    pub async fn open(path: &Path) -> libsql::Result<Self> {
-        let db = Builder::new_local(path)
+    pub async fn open(url: String, token: String) -> libsql::Result<Self> {
+        let db = Builder::new_remote(url, token)
             .build()
             .await?;
-
+        
         let conn = db.connect()?;
 
-        create_tables(&conn).await?;
+        //create_tables(&conn).await?;
 
         Ok(Self { conn })
     }

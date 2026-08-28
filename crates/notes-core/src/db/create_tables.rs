@@ -9,19 +9,6 @@ pub async fn create_tables(conn: &Connection) -> libsql::Result<()> {
             password_hash TEXT NOT NULL,
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP
         );
-        
-        -- Only for testing
-        -- INSERT INTO users (username, password_hash) 
-        -- VALUES('Testi', '123')
-        -- ON CONFLICT (username) DO NOTHING;
-
-        -- INSERT INTO users (username, password_hash) 
-        -- VALUES('Testi2', '456')
-        -- ON CONFLICT (username) DO NOTHING;
-
-        -- INSERT INTO users (username, password_hash) 
-        -- VALUES('Testi3', '789')
-        -- ON CONFLICT (username) DO NOTHING;
 
         CREATE TABLE IF NOT EXISTS notes (
             id INTEGER PRIMARY KEY,

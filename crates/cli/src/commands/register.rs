@@ -7,7 +7,7 @@ use crate::auth::auth;
 pub async fn register(api: &ApiClient) -> Result<()> {
     match credential_manager::load_tokens().await? {
         Some(_token) => { 
-            println!("Already logged in");
+            println!("Can't register new user when logged in");
             Ok(())
         }
         None => {
