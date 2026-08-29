@@ -1,3 +1,4 @@
 *.db
 *.ps1
 /target
+.env
