@@ -14,7 +14,8 @@ pub enum Error {
     NoteNotFound,
     UserNotFound,
     UserAlreadyExists,
-    Unauthorized
+    Unauthorized,
+    LoginError
 }
 
 // `Display` determines how the error looks when printed
@@ -32,6 +33,7 @@ impl fmt::Display for Error {
             Error::UserNotFound => write!(f, "User not found"),
             Error::UserAlreadyExists => write!(f, "Username is already taken"),
             Error::Unauthorized => write!(f, "Your session has ended. Please login again"),
+            Error::LoginError => write!(f, "Invalid login information"),
         }
     }
 }
@@ -90,4 +92,4 @@ impl From<jsonwebtoken::errors::Error> for Error {
 }
 
 // Alias for Rust's standard Result type
-pub type Result<T> = std::result::Result<T, Error>;
+pub type Result<T, E = Error> = std::result::Result<T, E>;

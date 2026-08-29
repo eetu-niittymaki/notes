@@ -1,6 +1,6 @@
 use super::ApiClient;
 
-use notes_core::error::Result;
+use notes_core::error::{Result, Error};
 use notes_core::models::auth::{
     AuthResponse,
     LoginRequest,
@@ -8,17 +8,23 @@ use notes_core::models::auth::{
 };
 
 impl ApiClient {
-    pub async fn login(&self, request: LoginRequest) -> Result<AuthResponse> {
+    pub async fn login(&self, request: LoginRequest) -> Result<AuthResponse, Error> {
         let response = self
             .http
             .post(format!("{}auth/login", self.auth_url))
             .json(&request)
             .send()
-            .await?
-            .error_for_status()?
-            .json::<AuthResponse>()
             .await?;
 
+        let status = response.status();
+
+        if status.is_client_error() {
+            return Err(Error::LoginError);
+        }
+
+        let body = response.text().await?;
+
+        let response: AuthResponse = serde_json::from_str(&body)?;
         Ok(response)
     }
 
