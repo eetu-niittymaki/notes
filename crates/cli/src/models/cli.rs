@@ -13,7 +13,7 @@ const LOGO: &str = "\x1b[1;38;2;46;49;146m
 
 #[derive(Parser)]
 #[command(name = "notes")]
-#[command(about = "  CLI tool for locally saving, viewing, editing and exporting notes")]
+#[command(about = "  CLI tool for saving, viewing, editing, importing and exporting notes")]
 #[command(before_help = LOGO)]
 #[command(arg_required_else_help = true)]
 pub struct Cli {

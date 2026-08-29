@@ -1,8 +1,8 @@
 # notes
 
-![image](https://i.postimg.cc/Y9gXKThL/img.png)
+![image](https://i.postimg.cc/zXybQCZh/img.png)
 
-## CLI tool for locally saving, viewing, editing and exporting notes
+## CLI tool for saving, viewing, editing, importing and exporting notes
 
 # Installation
 ## Download and run install.ps1 in powershell 
