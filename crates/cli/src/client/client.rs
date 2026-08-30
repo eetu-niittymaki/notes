@@ -82,7 +82,7 @@ impl ApiClient {
             }
 
             reqwest::StatusCode::NOT_FOUND => {
-                Err(Error::NoteNotFound)
+                Err(Error::NotFound)
             }
 
             _ => Ok(response.error_for_status()?),

@@ -25,7 +25,7 @@ pub async fn get_note(
         //.map_err(actix_web::error::ErrorInternalServerError)?;
 
     let note = res.map_err(|err| match err {
-        Error::NoteNotFound => {
+        Error::NotFound => {
             actix_web::error::ErrorNotFound("Note not found")
         }
         err => actix_web::error::ErrorInternalServerError(err),

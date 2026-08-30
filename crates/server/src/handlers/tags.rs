@@ -58,12 +58,18 @@ pub async fn delete_tag(
     user: AuthenticatedUser,
     query: web::Query<DeleteTagQuery>,
 ) -> Result<HttpResponse, actix_web::Error> {
-    let delete = state
+    let deleted = state
         .db
         .tags()
         .delete(user.id, query.into_inner())
         .await
         .map_err(actix_web::error::ErrorInternalServerError)?;
 
-    Ok(HttpResponse::Created().json(delete))
+    if deleted == 0 {
+        return Err(actix_web::error::ErrorNotFound(
+            "Tag not found",
+        ));
+    }
+
+    Ok(HttpResponse::NoContent().finish())
 }

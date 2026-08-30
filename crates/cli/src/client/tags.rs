@@ -46,6 +46,6 @@ impl ApiClient {
                 .query(&query))
                 .await?;
 
-        Ok(response.json().await?)
+         Ok(response.status().is_success()) 
     }
 }

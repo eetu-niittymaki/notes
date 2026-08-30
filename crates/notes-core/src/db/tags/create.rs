@@ -21,7 +21,7 @@ pub async fn add(
 
     rows.next()
         .await?
-        .ok_or(crate::error::Error::NoteNotFound)?;
+        .ok_or(crate::error::Error::NotFound)?;
 
     // Create the user's tag if it doesn't already exist.
     conn.execute(
@@ -46,7 +46,7 @@ pub async fn add(
     let row = rows
         .next()
         .await?
-        .ok_or(crate::error::Error::NoteNotFound)?;
+        .ok_or(crate::error::Error::NotFound)?;
 
     let tag_id: i64 = row.get(0)?;
 

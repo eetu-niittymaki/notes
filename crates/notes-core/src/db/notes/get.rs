@@ -1,6 +1,6 @@
 use libsql::Connection;
 
-use crate::error::Error::NoteNotFound;
+use crate::error::Error::NotFound;
 use crate::error::Result;
 
 use crate::models::note::{Note, NoteWithTags};
@@ -41,7 +41,7 @@ pub async fn one(
     let row = match rows.next().await? {
         Some(row) => row,
         None => {
-            return Err(NoteNotFound.into());
+            return Err(NotFound.into());
         }
     };
 
