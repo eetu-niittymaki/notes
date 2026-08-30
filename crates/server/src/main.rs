@@ -81,7 +81,7 @@ async fn main() -> std::io::Result<()> {
                     .route("/users", web::delete().to(handlers::users::delete_user))
                 )
     })
-    .bind(("0.0.0.0", port))?
+    .bind(("127.0.0.1", port))?
     .run()
     .await
 }

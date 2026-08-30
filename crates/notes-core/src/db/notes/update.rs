@@ -10,27 +10,29 @@ pub async fn update(
     note_id: i64,
     update: NoteUpdate,
 ) -> Result<u64> {
-    match (note_id, update) {
-        (note_id, NoteUpdate::Title(new_title)) => {
-            Ok(conn.execute(
+    let rows_matched = match update {
+        NoteUpdate::Title(new_title) => {
+            conn.execute(
                 "UPDATE notes
                  SET title = ?1,
                      updated_at = CURRENT_TIMESTAMP
                  WHERE id = ?2
                  AND user_id = ?3",
                 (new_title, note_id, user_id),
-            ).await?)
+            ).await?
         }
 
-        (note_id, NoteUpdate::Content(new_content)) => {
-            Ok(conn.execute(
+        NoteUpdate::Content(new_content) => {
+            conn.execute(
                 "UPDATE notes
                  SET content = ?1,
                      updated_at = CURRENT_TIMESTAMP
                  WHERE id = ?2
                  AND user_id = ?3",
                 (new_content, note_id, user_id),
-            ).await?)
+            ).await?
         }
-    }
+    };
+
+    Ok(rows_matched)
 }

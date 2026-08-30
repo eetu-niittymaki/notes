@@ -81,6 +81,10 @@ impl ApiClient {
                 Err(Error::UserAlreadyExists)
             }
 
+            reqwest::StatusCode::NOT_FOUND => {
+                Err(Error::NoteNotFound)
+            }
+
             _ => Ok(response.error_for_status()?),
         }
     }

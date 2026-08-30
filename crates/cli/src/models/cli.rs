@@ -80,7 +80,7 @@ pub struct EditCommand {
 #[derive(Parser, Debug, Clone)]
 pub struct DeleteCommand {
     #[arg(help="ID of the note to delete")]
-    pub id: i64,
+    pub id: Option<i64>,
     #[arg(short='a', long="all", help="Delete all notes")]
     pub all: bool,
 }

@@ -26,7 +26,7 @@ pub async fn delete(cmd: DeleteCommand, api: &ApiClient) -> Result<()> {
         }
     } 
 
-    let query = DeleteNoteQuery { id: cmd.id };
+    let query = DeleteNoteQuery { id: cmd.id.expect("Give ID of note to delete") };
 
     let delete = api.delete_note(query).await?;
 

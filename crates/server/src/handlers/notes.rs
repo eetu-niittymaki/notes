@@ -10,6 +10,7 @@ use notes_core::models::note::{
 
 use crate::auth::user::AuthenticatedUser;
 use crate::AppState;
+use notes_core::error::Error;
 
 pub async fn get_note(
     state: web::Data<AppState>,
@@ -23,8 +24,12 @@ pub async fn get_note(
         .await;
         //.map_err(actix_web::error::ErrorInternalServerError)?;
 
-    let note = res
-        .map_err(actix_web::error::ErrorInternalServerError)?;
+    let note = res.map_err(|err| match err {
+        Error::NoteNotFound => {
+            actix_web::error::ErrorNotFound("Note not found")
+        }
+        err => actix_web::error::ErrorInternalServerError(err),
+    })?;
 
     Ok(HttpResponse::Ok().json(note))
 }
