@@ -1,32 +1,101 @@
+use diffy::{create_patch, PatchFormatter};
+
 use notes_core::error::Result;
-use notes_core::models::history::{GetHistoryQuery, GetVersionQuery};
+use notes_core::models::history::{
+    GetHistoryQuery, 
+    GetVersionQuery, 
+    NoteHistory
+};
 
 use crate::client::ApiClient;
-use crate::models::cli::HistoryCommand;
+use crate::commands::version::version;
+use crate::models::cli::{HistoryAction, HistoryCommand};
+
+fn print_header() {
+    println!(
+        "{:<8} | {:<20} | {:<30} | {}",
+        "Version",
+        "Title",
+        "Content",
+        "Date"
+    );
+
+    println!(
+        "{:-<8}-+-{:-<20}-+-{:-<30}-+-{:-<20}",
+        "",
+        "",
+        "",
+        ""
+    );
+}
+
+fn print_row(note: &NoteHistory) {
+    println!(
+        "{:<8} | {:<20} | {:<30} | {}",
+        format!("v{}", note.version_number),
+        note.title,
+        note.content,
+        note.created_at
+    );
+}
 
 pub async fn history(cmd: HistoryCommand, api: &ApiClient) -> Result<()> {
-    match cmd {
-        HistoryCommand::All { note_id } => {
-            let notes: Vec<notes_core::models::history::NoteHistory> = api.get_full_history(
+    let note_id = cmd.note_id;
+
+    match cmd.action {
+        HistoryAction::All => {
+            let notes: Vec<NoteHistory> = api.get_full_history(
                 GetHistoryQuery { note_id }
             ).await?;
 
-            println!("Version | Title | Content | Date");
-            println!("--------------------------------");
+            if notes.is_empty() {
+                println!("Note not found");
+                return Ok(())
+            }
+
+            print_header();
             
             for note in notes {
-                println!("v{} | {} | {} | {}", note.version_number, note.title, note.content, note.created_at)
+                print_row(&note);
             }
         }
 
-        HistoryCommand::Get { note_id, version_number } => {
+        HistoryAction::Get { version_number } => {
             let note = api.get_version( 
                 GetVersionQuery { note_id, version_number }
             ).await?;
 
-            println!("Version | Title | Content | Date");
-            println!("--------------------------------");
-            println!("v{} | {} | {} | {}", note.version_number, note.title, note.content, note.created_at)
+            if let Some(note) = note {
+                print_header();
+                print_row(&note)
+            } 
+        }
+
+        HistoryAction::Diff { first_item, second_item } => {
+            let version_one = api.get_version( 
+                GetVersionQuery { note_id, version_number: first_item }
+            ).await?;
+
+            let version_two = api.get_version( 
+                GetVersionQuery { note_id, version_number: second_item }
+            ).await?;
+
+            if let Some(version_one) = version_one &&
+                let Some(version_two) = version_two {
+                    let title_patch = create_patch(
+                        &version_one.title, 
+                        &version_two.title
+                    );
+
+                    let content_patch = create_patch(
+                        &version_one.content, 
+                        &version_two.content
+                    );
+                    
+                    let f = PatchFormatter::new().with_color();
+                    println!("Title: \n{}", f.fmt_patch(&title_patch));
+                    print!("Content: \n{}", f.fmt_patch(&content_patch));
+                }
         }
     }
 

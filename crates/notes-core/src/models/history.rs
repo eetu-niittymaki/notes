@@ -20,3 +20,10 @@ pub struct GetVersionQuery {
     pub note_id: i64,
     pub version_number: i64
 }
+
+#[derive(Serialize, Deserialize)]
+pub struct GetDifferenceQuery {
+    pub note_id: i64,
+    pub first_item: i64,
+    pub second_item: i64,
+}

@@ -17,7 +17,7 @@ impl ApiClient {
         Ok(response.json().await?)
     }
 
-    pub async fn get_version(&self, query: GetVersionQuery) -> Result<NoteHistory> {
+    pub async fn get_version(&self, query: GetVersionQuery) -> Result<Option<NoteHistory>> {
         let response = self
             .send(self.get("notes/history")
             .query(&query))

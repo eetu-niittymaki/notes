@@ -42,7 +42,6 @@ pub enum Commands {
     #[command(subcommand)]
     /// Attach a tag to a note, delete tag, list all tags
     Tag(TagCommand),
-    #[command(subcommand)]
     /// Get history of edits made to note
     History(HistoryCommand),
     /// Create user account for service
@@ -123,17 +122,28 @@ pub enum TagCommand {
     List,
 }
 
+#[derive(Args)]
+pub struct HistoryCommand {
+    pub note_id: i64,
+
+    #[command(subcommand)]
+    pub action: HistoryAction,
+}
+
 #[derive(Subcommand)]
-pub enum HistoryCommand {
+pub enum HistoryAction {
     #[command(about = "Get notes whole edit history")]
-    All {
-        note_id: i64,
+    All,
+
+    #[command(about = "Get specific version of note from history")]
+    Get {
+        version_number: i64
     },
 
-    #[command(about = "Get specific history")]
-    Get {
-        note_id: i64,
-        version_number: i64
+    #[command(about = "Get difference between two versions")]
+    Diff {
+        first_item: i64,
+        second_item: i64
     },
 
 }
