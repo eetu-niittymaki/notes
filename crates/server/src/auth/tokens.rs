@@ -54,13 +54,13 @@ fn create_access_token(user: &User, jwt: &JwtService) -> Result<String> {
 
     Ok(token)
 }
-
+/*
 fn create_refresh_token() -> String {
     let bytes: [u8; 32] = rand::random();
 
     URL_SAFE_NO_PAD.encode(bytes)
 }
-
+ */
 pub fn verify_access_token(token: &str, jwt: &JwtService) -> Result<Claims> {
     let mut validation = Validation::new(Algorithm::HS256);
 

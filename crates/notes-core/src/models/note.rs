@@ -23,7 +23,7 @@ pub struct NoteWithTags {
     pub tags: Vec<Tag>,
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Clone)]
 pub struct CreateNoteQuery {
     pub title: String,
     pub content: String

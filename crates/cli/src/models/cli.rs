@@ -42,6 +42,9 @@ pub enum Commands {
     #[command(subcommand)]
     /// Attach a tag to a note, delete tag, list all tags
     Tag(TagCommand),
+    #[command(subcommand)]
+    /// Get history of edits made to note
+    History(HistoryCommand),
     /// Create user account for service
     Register,
     /// Login to service, save credentials to OS specific credential manager
@@ -118,6 +121,21 @@ pub enum TagCommand {
 
     #[command(about = "List all tags and how many notes use them")]
     List,
+}
+
+#[derive(Subcommand)]
+pub enum HistoryCommand {
+    #[command(about = "Get notes whole edit history")]
+    All {
+        note_id: i64,
+    },
+
+    #[command(about = "Get specific history")]
+    Get {
+        note_id: i64,
+        version_number: i64
+    },
+
 }
 
 #[derive(ValueEnum, Clone, Debug)]

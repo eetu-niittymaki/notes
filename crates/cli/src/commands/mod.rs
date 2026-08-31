@@ -7,6 +7,7 @@ pub mod search;
 pub mod export;
 pub mod import;
 pub mod tag;
+pub mod history;
 pub mod register;
 pub mod login;
 pub mod logout;

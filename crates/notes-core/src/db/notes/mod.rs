@@ -23,7 +23,7 @@ impl<'a> NotesRepository<'a> {
         Self { conn }
     }   
     
-    pub async fn create(&self, user_id: i64, note: CreateNoteQuery) -> Result<u64> {
+    pub async fn create(&self, user_id: i64, note: CreateNoteQuery) -> Result<i64> {
         create::create(self.conn, user_id, &note.title, &note.content).await
     }
     

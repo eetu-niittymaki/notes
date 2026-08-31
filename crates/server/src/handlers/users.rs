@@ -2,13 +2,14 @@ use actix_web::{web, HttpResponse, Result};
 
 use notes_core::db::Database;
 use notes_core::models::user::{
-    User,
-    NewUser,
-    GetUser,
+    //User,
+    //NewUser,
+    //GetUser,
     DeleteUser,
 };
 
 // Not used
+/* 
 pub async fn create_user(
     db: web::Data<Database>,
     query: web::Query<NewUser>,
@@ -35,6 +36,7 @@ pub async fn get_user(
 
     Ok(HttpResponse::Ok().json(User::from(user.unwrap())))
 }
+*/
 
 pub async fn delete_user(
     db: web::Data<Database>,

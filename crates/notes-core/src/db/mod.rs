@@ -7,12 +7,15 @@ pub use notes::NotesRepository;
 pub use tags::TagsRepository;
 pub use search::SearchRepository;
 pub use users::UsersRepository;
+pub use history::HistoryRepository;
 pub use auth::AuthService;
+
 
 pub mod notes;
 pub mod tags;
 pub mod search;
 pub mod users;
+pub mod history;
 pub mod auth;
 pub mod create_tables;
 
@@ -51,5 +54,9 @@ impl Database {
 
     pub fn auth(&self) -> AuthService<'_> {
         AuthService::new(&self.conn)
+    }
+
+    pub fn history(&self) -> HistoryRepository<'_> {
+        HistoryRepository::new(&self.conn)
     }
 }

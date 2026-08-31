@@ -49,6 +49,19 @@ pub async fn create_tables(conn: &Connection) -> libsql::Result<()> {
             FOREIGN KEY (note_id) REFERENCES notes(id) ON DELETE CASCADE,
             FOREIGN KEY (tag_id) REFERENCES tags(id) ON DELETE CASCADE
         );
+
+        CREATE TABLE IF NOT EXISTS notes_history (
+            id INTEGER PRIMARY KEY,
+            user_id INTEGER NOT NULL,
+            note_id INTEGER NOT NULL,
+            version_number INTEGER NOT NULL,
+            title TEXT NOT NULL,
+            content TEXT NOT NULL,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+
+            FOREIGN KEY (note_id) REFERENCES notes(id) ON DELETE CASCADE,
+            UNIQUE(user_id, version_number)
+        );
         "#,
     )
     .await?;

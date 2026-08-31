@@ -12,6 +12,33 @@ use crate::auth::user::AuthenticatedUser;
 use crate::AppState;
 use notes_core::error::Error;
 
+async fn add_history(
+    state: &web::Data<AppState>,
+    user_id: i64,
+    note_id: i64,
+    version_number: i64,
+    title: &str,
+    content: &str
+) -> Result<(), actix_web::Error> {
+    state
+        .db
+        .history()
+        .create(
+            user_id,
+            note_id,
+            version_number,
+            title,
+            content,
+        )
+        .await
+        .map_err(|e| {
+            eprintln!("create note history failed: {:?}", e);
+            actix_web::error::ErrorInternalServerError(e)
+        })?;
+
+    Ok(())
+}
+
 pub async fn get_note(
     state: web::Data<AppState>,
     user: AuthenticatedUser,
@@ -56,12 +83,21 @@ pub async fn create_note(
     let id = state
         .db
         .notes()
-        .create(user.id, query.into_inner())
+        .create(user.id, query.clone())
         .await
         .map_err(|e| {
             eprintln!("create note failed: {:?}", e);
             actix_web::error::ErrorInternalServerError(e)
         })?;
+
+    add_history(
+        &state, 
+        user.id, 
+        id, 
+        1, 
+        &query.title, 
+        &query.content
+    ).await?;
 
     Ok(HttpResponse::Created().json(id))
 }
@@ -99,6 +135,31 @@ pub async fn update_note(
     if updated == 0 {
         return Err(actix_web::error::ErrorNotFound("Note not found"));
     }
+
+    // Get the latest edits version number 
+    let latest_version = state
+        .db
+        .history()
+        .newest(user.id, query.id)
+        .await
+        .map_err(actix_web::error::ErrorInternalServerError)?;
+
+    // Get that notes current title and content
+    let note = state
+        .db
+        .notes()
+        .get(user.id, query.id)
+        .await
+        .map_err(actix_web::error::ErrorInternalServerError)?;
+
+    add_history(
+        &state, 
+        user.id, 
+        query.id, 
+        latest_version.version_number + 1, 
+        &note.title, 
+        &note.content
+    ).await?;
 
     Ok(HttpResponse::NoContent().finish())
 }

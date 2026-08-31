@@ -79,6 +79,10 @@ async fn main() -> std::io::Result<()> {
 
                     // Users
                     .route("/users", web::delete().to(handlers::users::delete_user))
+
+                    // History
+                    .route("/notes/history/all", web::get().to(handlers::history::get_full_history))
+                    .route("/notes/history", web::get().to(handlers::history::get_version))
                 )
     })
     .bind(("0.0.0.0", port))?

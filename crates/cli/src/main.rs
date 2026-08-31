@@ -83,6 +83,7 @@ async fn run(cli: Cli, api: &ApiClient) -> Result<()> {
         Some(Commands::Export(cmd)) => commands::export::export(cmd, api).await?,
         Some(Commands::Import(cmd)) => commands::import::import(cmd, api).await?,
         Some(Commands::Tag(cmd)) => commands::tag::tag(cmd, api).await?,
+        Some(Commands::History(cmd)) => commands::history::history(cmd, api).await?,
         Some(Commands::Register) => commands::register::register(api).await?,
         Some(Commands::Login) => commands::login::login(api).await?,
         Some(Commands::Logout) => commands::logout::logout().await?,
