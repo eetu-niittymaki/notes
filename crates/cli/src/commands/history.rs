@@ -13,15 +13,17 @@ use crate::models::cli::{HistoryAction, HistoryCommand};
 
 fn print_header() {
     println!(
-        "{:<8} | {:<20} | {:<30} | {}",
+        "{:<8} | {:<20} | {:<30} | {:<20} | {}",
         "Version",
         "Title",
         "Content",
+        "Operation",
         "Date"
     );
 
     println!(
-        "{:-<8}-+-{:-<20}-+-{:-<30}-+-{:-<20}",
+        "{:-<8}-+-{:-<20}-+-{:-<30}-+-{:-<20}-+-{:-<20}",
+        "",
         "",
         "",
         "",
@@ -31,10 +33,11 @@ fn print_header() {
 
 fn print_row(note: &NoteHistory) {
     println!(
-        "{:<8} | {:<20} | {:<30} | {}",
+        "{:<8} | {:<20} | {:<30} | {:<20} | {}",
         format!("v{}", note.version_number),
         note.title,
         note.content,
+        note.operation,
         note.created_at
     );
 }

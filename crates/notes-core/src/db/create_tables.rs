@@ -57,6 +57,7 @@ pub async fn create_tables(conn: &Connection) -> libsql::Result<()> {
             version_number INTEGER NOT NULL,
             title TEXT NOT NULL,
             content TEXT NOT NULL,
+            operation TEXT NOT NULL,
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
 
             FOREIGN KEY (note_id) REFERENCES notes(id) ON DELETE CASCADE,

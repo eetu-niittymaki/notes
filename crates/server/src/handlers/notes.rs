@@ -10,34 +10,8 @@ use notes_core::models::note::{
 
 use crate::auth::user::AuthenticatedUser;
 use crate::AppState;
+use crate::handlers::history::{add_history, get_latest_version};
 use notes_core::error::Error;
-
-async fn add_history(
-    state: &web::Data<AppState>,
-    user_id: i64,
-    note_id: i64,
-    version_number: i64,
-    title: &str,
-    content: &str
-) -> Result<(), actix_web::Error> {
-    state
-        .db
-        .history()
-        .create(
-            user_id,
-            note_id,
-            version_number,
-            title,
-            content,
-        )
-        .await
-        .map_err(|e| {
-            eprintln!("create note history failed: {:?}", e);
-            actix_web::error::ErrorInternalServerError(e)
-        })?;
-
-    Ok(())
-}
 
 pub async fn get_note(
     state: web::Data<AppState>,
@@ -95,6 +69,7 @@ pub async fn create_note(
         user.id, 
         id, 
         1, 
+        "Created",
         &query.title, 
         &query.content
     ).await?;
@@ -137,12 +112,7 @@ pub async fn update_note(
     }
 
     // Get the latest edits version number 
-    let latest_version = state
-        .db
-        .history()
-        .newest(user.id, query.id)
-        .await
-        .map_err(actix_web::error::ErrorInternalServerError)?;
+    let latest_version = get_latest_version(&state, user.id, query.id).await?;
 
     // Get that notes current title and content
     let note = state
@@ -157,6 +127,7 @@ pub async fn update_note(
         user.id, 
         query.id, 
         latest_version.version_number + 1, 
+        "Edited",
         &note.title, 
         &note.content
     ).await?;

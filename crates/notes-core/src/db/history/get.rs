@@ -10,9 +10,10 @@ fn parse_row(row: &libsql::Row) -> Result<NoteHistory> {
         id: row.get(0)?,
         note_id: row.get(1)?,
         version_number: row.get(2)?,
-        title: row.get(3)?,
-        content: row.get(4)?,
-        created_at: row.get(5)?,
+        operation: row.get(3)?,
+        title: row.get(4)?,
+        content: row.get(5)?,
+        created_at: row.get(6)?,
     })
 }
 
@@ -26,6 +27,7 @@ pub async fn all(
             "SELECT id,
                     note_id,
                     version_number,
+                    operation,
                     title,
                     content,
                     created_at
@@ -57,6 +59,7 @@ pub async fn one(
             "SELECT id,
                     note_id,
                     version_number,
+                    operation,
                     title,
                     content,
                     created_at
@@ -84,6 +87,7 @@ pub async fn newest(
             "SELECT id,
                     note_id,
                     version_number,
+                    operation,
                     title,
                     content,
                     created_at

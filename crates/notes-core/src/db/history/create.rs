@@ -7,6 +7,7 @@ pub async fn create(
     user_id: i64,
     note_id: i64,
     version_number: i64,
+    operation: &str,
     title: &str,
     content: &str,
 ) -> Result<u64> {
@@ -14,11 +15,12 @@ pub async fn create(
         "INSERT INTO notes_history (
             user_id, 
             note_id, 
-            version_number, 
+            version_number,
+            operation,
             title, 
             content
         )
-        VALUES (?1, ?2, ?3, ?4, ?5)",
-        params![user_id, note_id, version_number, title, content],
+        VALUES (?1, ?2, ?3, ?4, ?5, ?6)",
+        params![user_id, note_id, version_number, operation, title, content],
     ).await?)
 }

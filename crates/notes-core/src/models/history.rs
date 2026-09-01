@@ -5,6 +5,7 @@ pub struct NoteHistory {
     pub id: i64,
     pub note_id: i64,
     pub version_number: i64,
+    pub operation: String,
     pub title: String,
     pub content: String,
     pub created_at: String,
