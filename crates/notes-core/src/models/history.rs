@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 
-#[derive(Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct NoteHistory {
     pub id: i64,
     pub note_id: i64,
@@ -26,4 +26,11 @@ pub struct GetDifferenceQuery {
     pub note_id: i64,
     pub first_item: i64,
     pub second_item: i64,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct RestoreNoteQuery {
+    pub note_id: i64,
+    pub title: String,
+    pub content: String,
 }

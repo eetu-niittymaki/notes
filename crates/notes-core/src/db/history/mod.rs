@@ -1,5 +1,6 @@
 mod get;
 mod create;
+mod update;
 
 use libsql::Connection;
 
@@ -45,5 +46,15 @@ impl<'a> HistoryRepository<'a> {
 
     pub async fn newest(&self, user_id: i64, id: i64) -> Result<NoteHistory> {
         get::newest(self.conn, user_id, id).await
+    }
+
+    pub async fn restore(
+            &self, 
+            user_id: i64, 
+            note_id: i64, 
+            new_title: &str, 
+            new_content: &str
+        ) -> Result<u64> {
+        update::restore_version(self.conn, user_id, note_id, new_title, new_content).await
     }
 }

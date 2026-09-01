@@ -58,7 +58,6 @@ impl ApiClient {
         let request = self
             .http
             .patch(format!("{}{}", self.base_url, path));
-
         self.authorize(request)
     }
 

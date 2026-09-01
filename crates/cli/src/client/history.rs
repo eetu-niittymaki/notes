@@ -2,9 +2,10 @@ use super::ApiClient;
 
 use notes_core::error::Result;
 use notes_core::models::history::{
+    NoteHistory,
     GetHistoryQuery, 
-    GetVersionQuery, 
-    NoteHistory
+    GetVersionQuery,
+    RestoreNoteQuery,
 };
 
 impl ApiClient {
@@ -24,5 +25,14 @@ impl ApiClient {
             .await?;
 
         Ok(response.json().await?)
+    }
+
+    pub async fn restore_version(&self, query: RestoreNoteQuery) -> Result<u64> {
+        let response = self
+            .send(self.patch("notes/history")
+            .query(&query))
+            .await?;
+        
+        Ok(response.json::<u64>().await?)
     }
 }

@@ -42,7 +42,7 @@ pub enum Commands {
     #[command(subcommand)]
     /// Attach a tag to a note, delete tag, list all tags
     Tag(TagCommand),
-    /// Get history of edits made to note
+    /// Get history of edits made to note, diff of versions, restore note to specific version
     History(HistoryCommand),
     /// Create user account for service
     Register,
@@ -135,7 +135,7 @@ pub enum HistoryAction {
     #[command(about = "Get notes whole edit history")]
     All,
 
-    #[command(about = "Get specific version of note from history")]
+    #[command(about = "Get specific version of note")]
     Get {
         version_number: i64
     },
@@ -146,6 +146,10 @@ pub enum HistoryAction {
         second_item: i64
     },
 
+    #[command(about = "Restore note to previous version")]
+    Restore {
+        version_number: i64,
+    },
 }
 
 #[derive(ValueEnum, Clone, Debug)]

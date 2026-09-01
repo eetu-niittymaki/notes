@@ -83,6 +83,7 @@ async fn main() -> std::io::Result<()> {
                     // History
                     .route("/notes/history/all", web::get().to(handlers::history::get_full_history))
                     .route("/notes/history", web::get().to(handlers::history::get_version))
+                    .route("/notes/history", web::patch().to(handlers::history::restore_version))
                 )
     })
     .bind(("0.0.0.0", port))?

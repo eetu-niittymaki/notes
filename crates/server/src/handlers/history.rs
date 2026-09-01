@@ -2,7 +2,8 @@ use actix_web::{web, HttpResponse, Result};
 
 use notes_core::models::history::{
     GetHistoryQuery,
-    GetVersionQuery
+    GetVersionQuery,
+    RestoreNoteQuery
 };
 
 use crate::auth::user::AuthenticatedUser;
@@ -19,7 +20,6 @@ pub async fn get_full_history(
         .history()
         .get_all(user.id, query.note_id)
         .await;
-        //.map_err(actix_web::error::ErrorInternalServerError)?;
 
     let history = res.map_err(|err| match err {
         Error::NotFound => {
@@ -41,7 +41,27 @@ pub async fn get_version(
         .history()
         .get_one(user.id, query.note_id, query.version_number)
         .await;
-        //.map_err(actix_web::error::ErrorInternalServerError)?;
+
+    let history = res.map_err(|err| match err {
+        Error::NotFound => {
+            actix_web::error::ErrorNotFound("Note history not found")
+        }
+        err => actix_web::error::ErrorInternalServerError(err),
+    })?;
+
+    Ok(HttpResponse::Ok().json(history))
+}
+
+pub async fn restore_version(
+    state: web::Data<AppState>,
+    user: AuthenticatedUser,
+    query: web::Query<RestoreNoteQuery>,
+) -> Result<HttpResponse, actix_web::Error> {
+    let res = state
+        .db
+        .history()
+        .restore(user.id, query.note_id, &query.title, &query.content)
+        .await;
 
     let history = res.map_err(|err| match err {
         Error::NotFound => {

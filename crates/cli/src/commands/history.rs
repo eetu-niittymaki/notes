@@ -4,11 +4,11 @@ use notes_core::error::Result;
 use notes_core::models::history::{
     GetHistoryQuery, 
     GetVersionQuery, 
-    NoteHistory
+    NoteHistory, 
+    RestoreNoteQuery
 };
 
 use crate::client::ApiClient;
-use crate::commands::version::version;
 use crate::models::cli::{HistoryAction, HistoryCommand};
 
 fn print_header() {
@@ -96,6 +96,28 @@ pub async fn history(cmd: HistoryCommand, api: &ApiClient) -> Result<()> {
                     println!("Title: \n{}", f.fmt_patch(&title_patch));
                     print!("Content: \n{}", f.fmt_patch(&content_patch));
                 }
+        }
+
+        HistoryAction::Restore { version_number } => {
+            let version = api.get_version(
+                GetVersionQuery { note_id, version_number }
+            ).await?;
+
+            if let Some(version) = version {
+                let query = RestoreNoteQuery { 
+                    note_id: version.note_id,
+                    title: version.title,
+                    content: version.content,
+                };
+
+                let restore = api.restore_version(query).await?;
+
+                if restore  > 0 {
+                    println!("Note restored to v{}", version.version_number);
+                } else {
+                    println!("Note restoration failed")
+                }
+            }
         }
     }
 
